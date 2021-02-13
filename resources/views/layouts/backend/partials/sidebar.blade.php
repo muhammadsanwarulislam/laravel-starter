@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li class="app-sidebar__heading">User Management</li>
-                <li class="{{ Route::is('backend.roles.index*') ? 'mm-active' : '' }}">
+                <li class="{{ Route::is('backend.super-admin.index*') || Route::is('backend.roles.index*') ? 'mm-active' : '' }}">
                     <a href="#"
                         class="">
                         <i class="metismenu-icon pe-7s-users"></i>
@@ -51,6 +51,15 @@
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                     </a>
                     <ul>
+                    @canany('backend.super-admin.index')
+                        <li>
+                            <a href="{{route('backend.super-admin.index')}}"
+                                class="{{ Route::is('backend.super-admin.index*') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon"></i>
+                                Users
+                            </a>
+                        </li>                       
+                        @endcanany
                         @canany('backend.roles.index')
                             <li>
                                 <a href="{{ route('backend.roles.index') }}"
