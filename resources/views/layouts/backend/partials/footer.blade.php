@@ -7,7 +7,7 @@
             </div>
             <div class="app-footer-right">
                 <strong> Developed &amp; <i class="fas fa-heart"></i> by </strong>&nbsp;
-                <a target="_blank" href="">FuzzionIT</a>
+                <a target="_blank" href="">MUHAMMAD SANWARUL ISLAM</a>
             </div>
         </div>
     </div>
