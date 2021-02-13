@@ -9,8 +9,6 @@ use Repository\User\UserRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
-use App\Notifications\RegisteredUserMail;
-use Illuminate\Support\Facades\Notification;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
 
@@ -49,7 +47,6 @@ class SuperAdminController extends Controller
             $this->superAdminRepo->updateProfileByID($user->id,$request->except('user_id') + [
                 'user_id'       => $user->id
             ]);
-            Notification::send($user, new RegisteredUserMail());
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
@@ -94,12 +91,6 @@ class SuperAdminController extends Controller
         return back();
     }
 
-    public function vendorList()
-    {
-        $vendors    = $this->superAdminRepo->allVendor();
-        return view('backend.user_management.super_admin.vendorList',compact('vendors'));
-    }
-
     public function togglePublish($id)
     {
         $publish = $this->superAdminRepo->publishByID($id);
@@ -108,11 +99,6 @@ class SuperAdminController extends Controller
     public function toggleBlock($id)
     {
         $block = $this->superAdminRepo->blockByID($id);
-        return back();
-    }
-    public function toggleShopOwner($id)
-    {
-        $showOwner = $this->superAdminRepo->showOwnerByID($id);
         return back();
     }
 }

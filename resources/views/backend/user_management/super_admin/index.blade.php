@@ -40,7 +40,6 @@
                             <th class="text-center">#</th>
                             <th>Name</th>
                             <th class="text-center">Email</th>
-                            <th class="text-center">Owner Status</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Busniess Status</th>
                             <th class="text-center">Joined At</th>
@@ -54,12 +53,6 @@
                             <td>
                                 <div class="widget-content p-0">
                                     <div class="widget-content-wrapper">
-                                        <div class="widget-content-left mr-3">
-                                            <div class="widget-content-left">
-                                                <img class="img-fluid img-thumbnail" src="{{$user->profile ? asset('storage/'.$user->profile->image) : asset('users/user.png') }}" width="50"
-                                                    height="50" alt="" alt="{{ $user->name}}">
-                                            </div>
-                                        </div>
                                         <div class="widget-content-left flex2">
                                             <div class="widget-heading">{{ $user->name }}</div>
                                             <div class="widget-subheading opacity-7">
@@ -74,26 +67,6 @@
                                 </div>
                             </td>
                             <td class="text-center">{{ $user->email }}</td>
-                            <td class="text-center">
-                                @if($user->owner_id === 1)
-                                <form action="{{ route('backend.owner.status', $user->id) }}" method="post">
-                                    @csrf
-                                    @method('POST')
-                                    <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-success">
-                                        Approved
-                                    </button>
-                                </form>
-                                @else
-                                <form action="{{ route('backend.owner.status', $user->id) }}" method="post">
-                                    @csrf
-                                    @method('POST')
-                                        <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-danger">
-                                            Pending
-                                        </button>
-
-                                </form>
-                                @endif
-                            </td>
                             <td class="text-center">
                                 @if($user->status === 1)
                                 <form action="{{ route('backend.users.publish', $user->id) }}" method="post">
@@ -130,7 +103,6 @@
                                         <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-danger">
                                             Unblocked
                                         </button>
-
                                 </form>
                                 @endif
                             </td>
