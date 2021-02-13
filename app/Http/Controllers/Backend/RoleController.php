@@ -12,25 +12,25 @@ use App\Http\Requests\Roles\UpdateRoleRequest;
 class RoleController extends Controller
 {
     protected $roleRepo;
-    
+
     public function __construct(RoleRepository $roles)
     {
-        $this->roleRepo=$roles;
+        $this->roleRepo = $roles;
 
     }
-    
+
     public function index()
     {
         Gate::authorize('backend.roles.index');
         $roles = $this->roleRepo->getAll();
-        return view('backend.roles.index',compact('roles'));
+        return view('backend.roles.index', compact('roles'));
     }
 
     public function create()
     {
         Gate::authorize('backend.roles.create');
         $modules = $this->roleRepo->allModules();
-        return view('backend.roles.form',compact('modules'));
+        return view('backend.roles.form', compact('modules'));
     }
 
     public function store(StoreRoleRequest $request)
@@ -45,12 +45,12 @@ class RoleController extends Controller
         Gate::authorize('backend.roles.edit');
         $role = $this->roleRepo->findByID($id);
         $modules = $this->roleRepo->allModules();
-        return view('backend.roles.form',compact('role','modules'));
+        return view('backend.roles.form', compact('role', 'modules'));
     }
 
     public function update($id, UpdateRoleRequest $request)
     {
-        $role = $this->roleRepo->updateByID($id,['name'=> $request['name']])->permissions()->sync($request['permissions']);
+        $role = $this->roleRepo->updateByID($id, ['name' => $request['name']])->permissions()->sync($request['permissions']);
         notify()->success('Role Successfully Updated.', 'Updated');
         return redirect()->route('backend.roles.index');
     }
