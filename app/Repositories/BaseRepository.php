@@ -1,10 +1,12 @@
 <?php
+
 namespace Repository;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
 
-Abstract class BaseRepository {
+Abstract class BaseRepository
+{
 
     abstract function model();
 

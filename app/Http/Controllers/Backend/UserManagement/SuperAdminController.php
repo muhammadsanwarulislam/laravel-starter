@@ -16,7 +16,7 @@ class SuperAdminController extends Controller
 {
     protected $superAdminRepo;
     
-    public function __construct(UserRepository $superAdmin, )
+    public function __construct(UserRepository $superAdmin)
     {
         $this->superAdminRepo=$superAdmin;
     }
