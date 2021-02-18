@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\UserManagement;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Repository\Role\RoleRepository;
 use Repository\User\UserRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
@@ -15,10 +16,14 @@ use App\Http\Requests\Users\UpdateUserRequest;
 class SuperAdminController extends Controller
 {
     protected $superAdminRepo;
+    protected $roleRepo;
     
-    public function __construct(UserRepository $superAdmin, )
+    public function __construct(
+        UserRepository $superAdminRepository, 
+        RoleRepository $roleRepository)
     {
-        $this->superAdminRepo=$superAdmin;
+        $this->superAdminRepo   =  $superAdminRepository;
+        $this->roleRepo         =  $roleRepository;
     }
 
     public function index()
@@ -31,7 +36,7 @@ class SuperAdminController extends Controller
     public function create()
     {
         Gate::authorize('backend.super-admin.create');
-        $roles = $this->superAdminRepo->allRole();
+        $roles = $this->roleRepo->getAll();
         return view('backend.user_management.super_admin.form', compact('roles'));
     }
 
@@ -57,7 +62,7 @@ class SuperAdminController extends Controller
     public function edit($id)
     {
         Gate::authorize('backend.super-admin.edit');
-        $roles  = $this->superAdminRepo->allRole();
+        $roles  = $this->roleRepo->getAll();
         $user   = $this->superAdminRepo->findByID($id);
         return view('backend.user_management.super_admin.form', compact('roles','user'));
     }
