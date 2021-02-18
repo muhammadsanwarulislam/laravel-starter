@@ -17,11 +17,6 @@ class UserRepository extends BaseRepository {
         return User::class;
     }
 
-    public function allRole()
-    {
-        return Role::get();
-    }
-
     public function findByUser($id)
     {
         return Profile::where('user_id', $id)->first();
