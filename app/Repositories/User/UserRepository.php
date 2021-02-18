@@ -27,16 +27,15 @@ class UserRepository extends BaseRepository {
         return Profile::where('user_id', $id)->first();
     }
 
-    public function updateProfileByID($id, array $modelData)
+    public function updateOrNewBy(User $user, array $profileData = []): Profile
     {
-        $profile = Profile::where('user_id', $id)->first();
-         if($profile != null)
-        {
-            $profile->update($modelData);
-        }else{
-            return Profile::create($modelData);
+        if ($profile = $user->profile) {
+            $profile->update($profileData);
+            return $profile->refresh();
         }
+        return $user->profile()->create($profileData);
     }
+
 
     public function storeFile(UploadedFile $file)
     {

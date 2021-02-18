@@ -38,21 +38,12 @@ class SuperAdminController extends Controller
     public function store(StoreUserRequest $request)
     {
         Gate::authorize('backend.super-admin.create');
-        DB::beginTransaction();
-        try {
-            $user = $this->superAdminRepo->create($request->except('role_id','password') + [
-                'role_id'   =>  $request->role,
-                'password'  => Hash::make($request->password),
+        $user = DB::transaction(function () use ($request){
+            $user = $this->superAdminRepo->create($request->except('role_id') + [
+                'role_id'   =>  $request->role
             ]);
-            $this->superAdminRepo->updateProfileByID($user->id,$request->except('user_id') + [
-                'user_id'       => $user->id
-            ]);
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-            notify()->error($e);
-            return redirect()->route('backend.super-admin.index');
-        }
+            $this->superAdminRepo->updateOrNewBy($user);
+        });
         notify()->success('User Successfully Added.', 'Added');
         return redirect()->route('backend.super-admin.index');
     }
@@ -74,10 +65,9 @@ class SuperAdminController extends Controller
     public function update($id, UpdateUserRequest $request)
     {
         Gate::authorize('backend.super-admin.edit');
-        $user       = $this->superAdminRepo->findByID($id);
-        $user  = $this->superAdminRepo->updateByID($id,$request->except('role_id','password') + [
-            'role_id'   =>  $request->role,
-            'password'  => Hash::make($request->password),
+        $user  = $this->superAdminRepo->findByID($id);
+        $user  = $this->superAdminRepo->updateByID($id,$request->except('role_id') + [
+            'role_id'   =>  $request->role
         ]);
         notify()->success('User Successfully Updated.', 'Updated');
         return redirect()->route('backend.super-admin.index');
