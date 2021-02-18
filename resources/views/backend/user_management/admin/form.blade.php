@@ -3,12 +3,6 @@
 
 @push('css')
 <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
-
-<style>
-.dropify-wrapper .dropify-message p {
-    font-size: initial;
-}
-</style>
 @endpush
 @section('content')
 <div class="app-page-title">
@@ -56,10 +50,6 @@
                             <x-forms.textbox label="Password" type="password" name="password" placeholder="******" />
 
                             <x-forms.textbox label="Confirmation Password" type="password" name="password_confirmation" placeholder="******" />
-
-                            <x-forms.textbox label="Phone Number" name="phone_number" value="{{ $user->phone_number ?? ''  }}"
-                                field-attributes="required autofocus">
-                            </x-forms.textbox>
                         </div>
                     </div>
                 </div>

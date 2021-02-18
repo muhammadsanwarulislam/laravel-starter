@@ -10,7 +10,12 @@ class RoleRepository extends BaseRepository {
     {
         return Role::class;
     }
-    
+
+    public function getAllRoleForAdmin()
+    {
+        return $this->model()::where('slug', '!=', 'super_admin')->get();
+    }
+
     public function updateByID($id, array $modelData)
     {
         $model = $this->findOrFailByID($id);

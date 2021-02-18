@@ -17,6 +17,12 @@ class UserRepository extends BaseRepository {
         return User::class;
     }
 
+    public function getAllForAdmin()
+    {
+        return $this->model()::whereNotIn('name', ['Super Admin'])->get();
+    }
+
+
     public function findByUser($id)
     {
         return Profile::where('user_id', $id)->first();
