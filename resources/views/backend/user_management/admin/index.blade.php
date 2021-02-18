@@ -40,12 +40,6 @@
                             <th class="text-center">#</th>
                             <th>Name</th>
                             <th class="text-center">Email</th>
-                            @can('backend.super_admin.index')
-                                <th class="text-center">Status</th>
-                            @endcan
-                            @can('backend.super_admin.index')
-                                <th class="text-center">Busniess Status</th>
-                            @endcan
                             <th class="text-center">Joined At</th>
                             <th class="text-center">Actions</th>
                         </tr>
@@ -57,12 +51,6 @@
                             <td>
                                 <div class="widget-content p-0">
                                     <div class="widget-content-wrapper">
-                                        <div class="widget-content-left mr-3">
-                                            <div class="widget-content-left">
-                                                <img class="img-fluid img-thumbnail" src="{{$user->profile ? asset('storage/'.$user->profile->image) : asset('users/user.png') }}" width="50"
-                                                    height="50" alt="" alt="{{ $user->name}}">
-                                            </div>
-                                        </div>
                                         <div class="widget-content-left flex2">
                                             <div class="widget-heading">{{ $user->name }}</div>
                                             <div class="widget-subheading opacity-7">
@@ -77,52 +65,6 @@
                                 </div>
                             </td>
                             <td class="text-center">{{ $user->email }}</td>
-
-                            @can('backend.super_admin.index')
-                                <td class="text-center">
-                                    @if($user->status === 1)
-                                    <form action="{{ route('backend.users.publish', $user->id) }}" method="post">
-                                        @csrf
-                                        @method('POST')
-                                        <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-success">
-                                            Approved
-                                        </button>
-                                    </form>
-                                    @else
-                                    <form action="{{ route('backend.users.publish', $user->id) }}" method="post">
-                                        @csrf
-                                        @method('POST')
-                                            <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-danger">
-                                                Pending
-                                            </button>
-
-                                    </form>
-                                    @endif
-                                </td>
-                            @endcan
-
-                            @can('backend.super_admin.index')
-                                <td class="text-center">
-                                    @if($user->suspend === 1)
-                                    <form action="{{ route('backend.users.blocked', $user->id) }}" method="post">
-                                        @csrf
-                                        @method('POST')
-                                        <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-warning">
-                                            Blocked
-                                        </button>
-                                    </form>
-                                    @else
-                                    <form action="{{ route('backend.users.blocked', $user->id) }}" method="post">
-                                        @csrf
-                                        @method('POST')
-                                            <button class="mb-2 mr-2 border-0 btn-transition btn btn-outline-danger">
-                                                Unblocked
-                                            </button>
-
-                                    </form>
-                                    @endif
-                                </td>
-                            @endcan
                             <td class="text-center">{{ $user->created_at->diffForHumans() }}</td>
                             <td class="text-center">
                                 <a class="fa-eye-style" href="{{ route('backend.admin.show',$user->id) }}"><i
