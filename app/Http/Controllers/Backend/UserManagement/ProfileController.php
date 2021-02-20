@@ -14,9 +14,9 @@ class ProfileController extends Controller
 {
     protected $userProfileRepo;
 
-    public function __construct(UserRepository $userProfile)
+    public function __construct(UserRepository $userProfileRepository)
     {
-        $this->userProfileRepo=$userProfile;
+        $this->userProfileRepo=$userProfileRepository;
 
     }
 
