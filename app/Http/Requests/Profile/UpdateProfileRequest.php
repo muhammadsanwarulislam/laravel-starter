@@ -19,10 +19,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'address'           => 'required|string|max:120',
             'image'             => 'nullable|image',
-            'bio'               => 'required|string|max:244',
-            'nid'               => 'required|string|max:18',
-            'passport_id'       => 'required|string|max:18',
-            'driving_license'   => 'required|string|max:18'
+            'bio'               => 'required|string|max:244'
         ];
     }
 }

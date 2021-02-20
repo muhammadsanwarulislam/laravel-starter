@@ -78,52 +78,6 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <label for="nid" class="col-md-3 col-form-label text-md-right">{{ __('NID') }}</label>
-
-                        <div class="col-md-6">
-                            <input id="nid" type="text" class="form-control @error('nid') is-invalid @enderror"
-                                name="nid" value="{{ Auth::user()->profile->nid ?? old('nid') }}" required autocomplete="nid"
-                                autofocus>
-
-                            @error('nid')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="passport_id" class="col-md-3 col-form-label text-md-right">{{ __('Passport ID') }}</label>
-
-                        <div class="col-md-6">
-                            <input id="passport_id" type="text" class="form-control @error('passport_id') is-invalid @enderror"
-                                name="passport_id" value="{{ Auth::user()->profile->passport_id ?? old('passport_id') }}" required autocomplete="passport_id"
-                                autofocus>
-
-                            @error('passport_id')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="driving_license" class="col-md-3 col-form-label text-md-right">{{ __('Driving License') }}</label>
-
-                        <div class="col-md-6">
-                            <input id="driving_license" type="text" class="form-control @error('driving_license') is-invalid @enderror"
-                                name="driving_license" value="{{ Auth::user()->profile->driving_license ?? old('driving_license') }}" required autocomplete="driving_license"
-                                autofocus>
-
-                            @error('driving_license')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
-                            @enderror
-                        </div>
-                    </div>
-
                     <div class="form-group row mb-0">
                         <div class="col-md-6 offset-md-3">
                             <button type="submit" class="btn btn-primary">

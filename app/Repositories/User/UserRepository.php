@@ -22,7 +22,6 @@ class UserRepository extends BaseRepository {
         return $this->model()::whereNotIn('name', ['Super Admin'])->get();
     }
 
-
     public function findByUser($id)
     {
         return Profile::where('user_id', $id)->first();
@@ -37,6 +36,16 @@ class UserRepository extends BaseRepository {
         return $user->profile()->create($profileData);
     }
 
+    public function updateProfileByID($id, array $modelData)
+    {
+        $profile = Profile::where('user_id', $id)->first();
+         if($profile != null)
+        {
+            $profile->update($modelData);
+        }else{
+            return Profile::create($modelData);
+        }
+    }
 
     public function storeFile(UploadedFile $file)
     {
