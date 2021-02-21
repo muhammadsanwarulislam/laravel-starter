@@ -17,14 +17,23 @@ class UserRepository extends BaseRepository {
         return User::class;
     }
 
-    public function allRole()
+    public function getAllForAdmin()
     {
-        return Role::get();
+        return $this->model()::whereNotIn('name', ['Super Admin'])->get();
     }
 
     public function findByUser($id)
     {
         return Profile::where('user_id', $id)->first();
+    }
+
+    public function updateOrNewBy(User $user, array $profileData = []): Profile
+    {
+        if ($profile = $user->profile) {
+            $profile->update($profileData);
+            return $profile->refresh();
+        }
+        return $user->profile()->create($profileData);
     }
 
     public function updateProfileByID($id, array $modelData)

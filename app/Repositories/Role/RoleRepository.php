@@ -2,7 +2,6 @@
 
 namespace Repository\Role;
 use App\Models\Role;
-use App\Models\Module;
 use Repository\BaseRepository;
 
 class RoleRepository extends BaseRepository {
@@ -12,11 +11,11 @@ class RoleRepository extends BaseRepository {
         return Role::class;
     }
 
-    public function allModules()
+    public function getAllRoleForAdmin()
     {
-        return Module::get();
+        return $this->model()::where('slug', '!=', 'super_admin')->get();
     }
-    
+
     public function updateByID($id, array $modelData)
     {
         $model = $this->findOrFailByID($id);
