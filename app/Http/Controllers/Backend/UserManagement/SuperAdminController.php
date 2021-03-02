@@ -10,8 +10,10 @@ use Repository\User\UserRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use App\Http\Requests\Users\StoreUserRequest;
 use App\Http\Requests\Users\UpdateUserRequest;
+use App\Notifications\RegisteredUserConfirmationMail;
 
 class SuperAdminController extends Controller
 {
@@ -48,6 +50,7 @@ class SuperAdminController extends Controller
                 'role_id'   =>  $request->role
             ]);
             $this->superAdminRepo->updateOrNewBy($user);
+            Notification::send($user, new RegisteredUserConfirmationMail($user));
         });
         notify()->success('User Successfully Added.', 'Added');
         return redirect()->route('backend.super-admin.index');
