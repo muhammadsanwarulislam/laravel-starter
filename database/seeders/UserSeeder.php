@@ -23,7 +23,8 @@ class UserSeeder extends Seeder
             'name'          => 'Super Admin',
             'email'         => 'super@gmail.com',
             'password'      => Hash::make('12345678'),
-            'status'        => true
+            'status'        => true,
+            'suspend'       => false
         ]);
 
         // Create admin
@@ -33,7 +34,8 @@ class UserSeeder extends Seeder
             'name'          => 'Admin',
             'email'         => 'admin@gmail.com',
             'password'      => Hash::make('12345678'),
-            'status'        => true
+            'status'        => true,
+            'suspend'       => false
         ]);
     }
 }
