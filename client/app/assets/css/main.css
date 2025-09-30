@@ -1,0 +1,107 @@
+@custom-variant dark (&:where(.dark, .dark *));
+@import "tailwindcss";
+
+html, body {
+  font-size: 12px;
+}
+
+html[lang="bn"] {
+  font-family: 'Noto Sans Bengali', sans-serif;
+}
+
+:root {
+  --theme-50: #eff6ff;
+  --theme-100: #dbeafe;
+  --theme-200: #bfdbfe;
+  --theme-300: #93c5fd;
+  --theme-400: #60a5fa;
+  --theme-500: #3b82f6;
+  --theme-600: #2563eb;
+  --theme-700: #1d4ed8;
+  --theme-800: #1e40af;
+  --theme-900: #1e3a8a;
+  --theme-color: var(--theme-500); /* default */
+}
+
+.bg-theme       { background-color: var(--theme-color); }
+.bg-theme-50    { background-color: var(--theme-50); }
+.bg-theme-100   { background-color: var(--theme-100); }
+.bg-theme-200   { background-color: var(--theme-200); }
+.bg-theme-300   { background-color: var(--theme-300); }
+.bg-theme-400   { background-color: var(--theme-400); }
+.bg-theme-500   { background-color: var(--theme-500); }
+.bg-theme-600   { background-color: var(--theme-600); }
+.bg-theme-700   { background-color: var(--theme-700); }
+.bg-theme-800   { background-color: var(--theme-800); }
+.bg-theme-900   { background-color: var(--theme-900); }
+
+.text-theme       { color: var(--theme-color); }
+.text-theme-50    { color: var(--theme-50); }
+.text-theme-100   { color: var(--theme-100); }
+.text-theme-200   { color: var(--theme-200); }
+.text-theme-300   { color: var(--theme-300); }
+.text-theme-400   { color: var(--theme-400); }
+.text-theme-500   { color: var(--theme-500); }
+.text-theme-600   { color: var(--theme-600); }
+.text-theme-700   { color: var(--theme-700); }
+.text-theme-800   { color: var(--theme-800); }
+.text-theme-900   { color: var(--theme-900); }
+
+.border-theme       { border-color: var(--theme-color); }
+.border-theme-50    { border-color: var(--theme-50); }
+.border-theme-100   { border-color: var(--theme-100); }
+.border-theme-200   { border-color: var(--theme-200); }
+.border-theme-300   { border-color: var(--theme-300); }
+.border-theme-400   { border-color: var(--theme-400); }
+.border-theme-500   { border-color: var(--theme-500); }
+.border-theme-600   { border-color: var(--theme-600); }
+.border-theme-700   { border-color: var(--theme-700); }
+.border-theme-800   { border-color: var(--theme-800); }
+.border-theme-900   { border-color: var(--theme-900); }
+
+.hover\:bg-theme:hover         { background-color: var(--theme-color); }
+.hover\:bg-theme-100:hover     { background-color: var(--theme-100); }
+.hover\:text-theme:hover       { color: var(--theme-color); }
+.focus\:border-theme:focus     { border-color: var(--theme-color); }
+.focus\:border-theme-300:focus { border-color: var(--theme-300); }
+
+button{
+    cursor: pointer;
+}
+
+/* WebKit-based browsers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--theme-200);
+}
+
+/* Dark mode overrides */
+.dark ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--theme-200);
+}
