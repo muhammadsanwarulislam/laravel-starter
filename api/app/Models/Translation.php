@@ -13,7 +13,7 @@ class Translation extends Model
 
     public function translatable(): MorphTo
     {
-        return $this->morphTo(__FUNCTION__, 'translatable_type', 'translatable_id');
+        return $this->morphTo();
     }
 
     public function language()
