@@ -6,11 +6,7 @@ A full-stack starter kit with a Nuxt.js frontend and a Laravel API backend. Buil
   - Use the app in my preferred language
   - Work with clean, pattern-based code
   - Learn modern Laravel API best practices
-## Instructions  
-|           #                |   **Instructions**                          |
-|----------------------------|---------------------------------------------|
-| Setup Laravel Project      |  [Follow Setup Instructions](#q1)<br>       |
-## Q1
+## Project setup
 **Setup Laravel(api) Project**
 
 Follow the steps mentioned below to install and run the project.
