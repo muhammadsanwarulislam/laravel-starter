@@ -1,7 +1,8 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Http\Controllers\Localization;
 
+use App\Traits\JsonResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
@@ -9,6 +10,7 @@ use Repository\Localization\LocalizationRepository;
 
 class LocalizationController extends Controller
 {
+    use JsonResponseTrait;
     private $localizationRepo;
 
     public function __construct(LocalizationRepository $localizationRepo)
@@ -25,10 +27,10 @@ class LocalizationController extends Controller
             $translations = $this->localizationRepo->getTranslationsByLocale($locale);
 
             if (empty($translations)) {
-                return response()->json(['error' => 'No translations found for this locale'], 404);
+                return $this->errorJsonResponse('No translations found for the specified locale');
             }
 
-            return response()->json($translations);
+            return $this->successJsonResponse('Translations fetched successfully', $translations);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch translations'], 500);
         }
@@ -41,9 +43,9 @@ class LocalizationController extends Controller
     {
         try {
             $languages = $this->localizationRepo->getActiveLanguages();
-            return response()->json($languages);
+            return $this->successJsonResponse('Languages fetched successfully', $languages);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch languages'], 500);
+            return $this->errorJsonResponse('Failed to fetch languages');
         }
     }
 
@@ -67,12 +69,12 @@ class LocalizationController extends Controller
             );
 
             if (!$translation) {
-                return response()->json(['error' => 'Language not found'], 404);
+                return $this->errorJsonResponse('Language not found');
             }
 
-            return response()->json(['message' => 'Translation updated successfully', 'translation' => $translation]);
+            return $this->successJsonResponse('Translation updated successfully', $translation);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update translation'], 500);
+            return $this->errorJsonResponse('Failed to update translation');
         }
     }
 
@@ -94,12 +96,12 @@ class LocalizationController extends Controller
             );
 
             if (!$success) {
-                return response()->json(['error' => 'Language not found'], 404);
+                return $this->errorJsonResponse('Language not found or invalid translations data');
             }
 
-            return response()->json(['message' => 'Translations updated successfully']);
+            return $this->successJsonResponse('Translations updated successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to update translations'], 500);
+            return $this->errorJsonResponse('Failed to bulk update translations');
         }
     }
 
@@ -116,7 +118,7 @@ class LocalizationController extends Controller
                 'translations' => json_decode($jsonContent, true)
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to export translations'], 500);
+            return $this->errorJsonResponse('Failed to export translations');
         }
     }
 
@@ -136,12 +138,12 @@ class LocalizationController extends Controller
             );
 
             if (!$success) {
-                return response()->json(['error' => 'Invalid JSON or language not found'], 400);
+                return $this->errorJsonResponse('Invalid JSON or language not found');
             }
 
-            return response()->json(['message' => 'Translations imported successfully']);
+            return $this->successJsonResponse('Translations imported successfully');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to import translations'], 500);
+            return $this->errorJsonResponse('Failed to import translations');
         }
     }
 }

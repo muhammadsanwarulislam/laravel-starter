@@ -1,5 +1,5 @@
 export const useLocale = () => {
-    const locale = useState('locale', () => useCookie('locale').value || 'en');
+    const locale = useState('locale', () => useCookie('locale').value || 'bn');
     const translations = useState('translations', () => ({}));
     const languages = useState('languages', () => []);
 
@@ -27,7 +27,7 @@ export const useLocale = () => {
                 console.error(`Failed to fetch translations for ${selectedLocale}:`, res.error);
                 translations.value = {};
             } else {
-                translations.value = res.data || {};
+                translations.value = res.data.data || {};
             }
         } catch (error) {
             console.error(`Failed to fetch translations for ${selectedLocale}:`, error);
