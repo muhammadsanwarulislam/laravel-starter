@@ -8,6 +8,8 @@ use Repository\BaseRepository;
 
 class LocalizationRepository extends BaseRepository
 {
+    const TRANSLATION_API_ENDPOINT_NAME = 'translations';
+    const LANGUAGES_API_ENDPOINT_NAME = 'languages';
     public function model()
     {
         return Language::class;

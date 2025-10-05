@@ -4,6 +4,7 @@ use Repository\User\UserRepository;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Localization\LocalizationController;
+use Repository\Localization\LocalizationRepository;
 
 Route::post(UserRepository::REGISTER_API_ENDPOINT_NAME, [AuthController::class, 'signup']);
 Route::post(UserRepository::LOGIN_API_ENDPOINT_NAME, [AuthController::class, 'signin']);
@@ -18,5 +19,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/translations/import/{locale}', [LocalizationController::class, 'importTranslations']);
 });
 
-Route::get('/translations/{locale}', [LocalizationController::class, 'getTranslations']);
-Route::get('/languages', [LocalizationController::class, 'getLanguages']);
+Route::get(LocalizationRepository::TRANSLATION_API_ENDPOINT_NAME.'/{locale}', [LocalizationController::class, 'getTranslations']);
+Route::get(LocalizationRepository::LANGUAGES_API_ENDPOINT_NAME, [LocalizationController::class, 'getLanguages']);
