@@ -72,18 +72,6 @@
             {{ t('settings') }}
           </NuxtLink>
         </li>
-        <li>
-          <NuxtLink
-            class="flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150"
-            @click="openChangePassword">
-            <svg class="h-4 w-4 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 17a2 2 0 100-4 2 2 0 000 4zM6 10V7a6 6 0 1112 0v3M5 10h14a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2z" />
-            </svg>
-            {{ t('change_password') }}
-          </NuxtLink>
-        </li>
         <li class="border-t border-gray-100 dark:border-gray-800 mt-1">
           <NuxtLink
             class="flex items-center px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150"

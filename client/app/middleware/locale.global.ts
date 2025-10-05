@@ -1,6 +1,5 @@
 export default defineNuxtRouteMiddleware(async () => {
-    const { changeLocale } = useLocale();
-    const userLocale = useCookie('locale').value || 'en'; 
-    await changeLocale(userLocale);
-  });
-  
+  const { locale, changeLocale } = useLocale();
+  const userLocale = locale.value || 'bn';
+  await changeLocale(userLocale);
+});

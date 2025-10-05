@@ -1,16 +1,18 @@
 export const useLocale = () => {
-    const locale = useState('locale', () => 'bn');
+    const locale = useState('locale', () => useCookie('locale').value || 'en');
     const translations = useState('translations', () => ({}));
     const languages = useState('languages', () => []);
 
     // Fetch available languages
     const fetchLanguages = async () => {
         try {
-            const { data } = await useFetch('/languages', {
-                baseURL: useRuntimeConfig().public.apiURL,
-                method: 'GET',
-            });
-            languages.value = data.value || [];
+            const res = await $http('/languages');
+            if (res.error) {
+                console.error('Failed to fetch languages:', res.error);
+                languages.value = [];
+            } else {
+                languages.value = res.data || [];
+            }
         } catch (error) {
             console.error('Failed to fetch languages:', error);
             languages.value = [];
@@ -20,11 +22,13 @@ export const useLocale = () => {
     // Fetch translations for specific locale
     const fetchTranslations = async (selectedLocale: string) => {
         try {
-            const { data } = await useFetch(`/translations/${selectedLocale}`, {
-                baseURL: useRuntimeConfig().public.apiURL,
-                method: 'GET',
-            });
-            translations.value = data.value || {};
+            const res = await $http(`/translations/${selectedLocale}`);
+            if (res.error) {
+                console.error(`Failed to fetch translations for ${selectedLocale}:`, res.error);
+                translations.value = {};
+            } else {
+                translations.value = res.data || {};
+            }
         } catch (error) {
             console.error(`Failed to fetch translations for ${selectedLocale}:`, error);
             translations.value = {};
@@ -39,6 +43,7 @@ export const useLocale = () => {
     // Change locale
     const changeLocale = async (newLocale: string) => {
         locale.value = newLocale;
+        useCookie('locale').value = newLocale;
         await fetchTranslations(newLocale);
     };
 

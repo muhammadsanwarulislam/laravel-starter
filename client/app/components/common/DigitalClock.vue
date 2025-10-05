@@ -10,7 +10,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 const {
-  showServerTime
+  showServerTime, isMobile
 } = useSidebar();
 
 const time = ref('')

@@ -14,9 +14,7 @@ class LocalizationRepository extends BaseRepository
     }
     public function getActiveLanguages()
     {
-        return Language::active()
-            ->orderBy('sort_order')
-            ->get();
+        return $this->model()::where('is_active', true)->orderBy('sort_order')->get();
     }
 
     public function getDefaultLanguage()

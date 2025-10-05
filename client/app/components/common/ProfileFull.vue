@@ -132,46 +132,31 @@
             class="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium transition-colors">
             {{ showMoreDetails ? 'Hide Details' : 'Show More' }}
           </button>
-          <formButton @click="isEditing = true"
-            class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-semibold">
-            Edit Profile
-          </formButton>
+          <CommonButton @click="isEditing = true"
+            class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 font-semibold" />
         </div>
 
         <!-- Edit Mode -->
         <form v-else @submit.prevent="saveProfile" class="space-y-6">
           <h4 class="text-sm font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">Basic Info</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <formInput v-model="form.name" label="Name" type="text" placeholder="Full Name" />
-            <formInput v-model="form.email" label="Email" type="email" placeholder="user@example.com" />
+            <input v-model="form.name" label="Name" type="text" placeholder="Full Name" />
+            <input v-model="form.email" label="Email" type="email" placeholder="user@example.com" />
           </div>
 
-          <formInput v-model="form.bio" label="Bio" type="textarea" placeholder="Tell us about yourself..." rows="3" />
+          <input v-model="form.bio" label="Bio" type="textarea" placeholder="Tell us about yourself..." rows="3" />
 
           <!-- Contact & Location -->
           <div class="space-y-4">
             <h4 class="text-sm font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">Contact & Location
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <formInput v-model="form.phone" label="Phone" type="tel" icon="phone" placeholder="+1 (555) 123-4567" />
-              <formInput v-model="form.location" label="Location" type="text" icon="map-pin"
+              <input v-model="form.phone" label="Phone" type="tel" icon="phone" placeholder="+1 (555) 123-4567" />
+              <input v-model="form.location" label="Location" type="text" icon="map-pin"
                 placeholder="City, Country" />
             </div>
-            <formInput v-model="form.website" label="Website" type="url" icon="globe"
+            <input v-model="form.website" label="Website" type="url" icon="globe"
               placeholder="https://example.com" />
-          </div>
-
-          <!-- Social Media Inputs -->
-          <div class="space-y-4">
-            <h4 class="text-sm font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">Social Media</h4>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <formInput v-model="form.facebook" label="Facebook" type="text" icon="facebook"
-                placeholder="facebook.com/username" />
-              <formInput v-model="form.twitter" label="Twitter" type="text" icon="twitter"
-                placeholder="twitter.com/username" />
-              <formInput v-model="form.linkedin" label="LinkedIn" type="text" icon="linkedin"
-                placeholder="linkedin.com/in/username" />
-            </div>
           </div>
 
           <!-- Avatar Upload -->
@@ -197,14 +182,10 @@
 
           <!-- Save / Cancel -->
           <div class="flex space-x-4">
-            <formButton type="submit"
-              class="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-lime-600 text-white rounded-xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 font-semibold">
-              Save
-            </formButton>
-            <formButton @click="cancelEdit" type="button"
-              class="flex-1 px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 font-semibold">
-              Cancel
-            </formButton>
+            <CommonButton type="submit" :button-text="'Save Changes'"
+              class="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-lime-600 text-white rounded-xl hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 font-semibold" />
+            <CommonButton @click="cancelEdit" type="button" :button-text="'Cancel'"
+              class="flex-1 px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 font-semibold" />
           </div>
         </form>
       </div>
