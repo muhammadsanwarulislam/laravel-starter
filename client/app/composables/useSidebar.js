@@ -8,7 +8,7 @@ export const useSidebar = () => {
   const activeItem = useState("activeItem", () => null);
   const openSubmenu = useState("openSubmenu", () => null);
   const fontSize = useState("fontSize", () => 16)
-  const themeColor = useState("themeColor", () => 'blue') // default blue
+  const themeColor = useState("themeColor", () => 'blue') 
   const notificationSound = useState("notificationSound", () => true)
   const showServerTime = useState("showServerTime", () => true)
   const loginTime = useState("loginTime", () => new Date())

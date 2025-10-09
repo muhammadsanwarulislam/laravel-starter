@@ -2,7 +2,7 @@
   <button :type="type" :disabled="isLoading" :class="buttonClasses"
     class="w-full bg-fuchsia-900 text-white py-2 rounded-md text-lg font-medium hover:bg-fuchsia-800 transition">
     <span v-if="isLoading">
-      <IconsLoding />
+      <CommonLoading />
       Loading...
     </span>
     <span v-else-if="isSuccess" class="text-green-500">Success!</span>

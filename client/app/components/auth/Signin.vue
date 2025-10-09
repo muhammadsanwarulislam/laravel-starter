@@ -104,9 +104,8 @@ const handleSignIn = async () => {
     }, 100);
   } else {
     errors.value = response.error || {};
-    notify(response.error?.message || 'Login failed', 'error');
+    isLoading.value = false;
   }
   
-  isLoading.value = false;
 };
 </script>
