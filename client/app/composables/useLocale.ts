@@ -6,7 +6,7 @@ export const useLocale = () => {
     // Fetch available languages
     const fetchLanguages = async () => {
         try {
-            const res = await $http('/languages');
+            const res = await $http('/languages?offset=0&limit=10&option=list');
             if (res.error) {
                 console.error('Failed to fetch languages:', res.error);
                 languages.value = [];

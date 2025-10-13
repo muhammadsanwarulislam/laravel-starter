@@ -5,20 +5,21 @@ namespace Repository;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 abstract class BaseRepository
 {
     abstract function model();
 
-    public function getAll($offset, $limit, $searchData = null, $option = null)
+    public function getAll($offset, $limit, $searchData = null, $searchFields = null, $option = null)
     {
         if (app()->environment('production')) {
-            $cacheKey = $this->generateCacheKey($offset, $limit, $searchData, $option);
+            $cacheKey = $this->generateCacheKey($offset, $limit, $searchData, $searchFields, $option);
             $countCacheKey = $cacheKey . '_count';
 
-            list($result, $totalCount, $message) = $this->getCachedData($cacheKey, $countCacheKey, $offset, $limit, $searchData, $option);
+            list($result, $totalCount, $message) = $this->getCachedData($cacheKey, $countCacheKey, $offset, $limit, $searchData, $searchFields, $option);
         } else {
-            $result = $this->getDataFromDatabase($offset, $limit, $searchData, $option);
+            $result = $this->getDataFromDatabase($offset, $limit, $searchData, $searchFields, $option);
             $totalRecords = $this->model()::count(); 
             $totalCount = $limit > 0 ? floor($totalRecords / $limit) : 0;
             $message = 'Data fetched directly from the database in non-production environment.';
@@ -27,7 +28,7 @@ abstract class BaseRepository
         return ['result' => $result, 'count' => $totalCount, 'metadata' => $this->metadata($totalCount, $message)];
     }
 
-    private function getCachedData($cacheKey, $countCacheKey, $offset, $limit, $searchData, $option)
+    private function getCachedData($cacheKey, $countCacheKey, $offset, $limit, $searchData, $searchFields, $option)
     {
         $message = '';
 
@@ -35,7 +36,7 @@ abstract class BaseRepository
         $totalCount = Cache::get($countCacheKey);
 
         if (!$result || !$totalCount) {
-            $result = $this->getDataFromDatabase($offset, $limit, $searchData, $option);
+            $result = $this->getDataFromDatabase($offset, $limit, $searchData, $searchFields, $option);
             $totalRecords = $this->model()::count(); 
             $totalCount = $limit > 0 ? floor($totalRecords / $limit) : 0;
 
@@ -51,7 +52,7 @@ abstract class BaseRepository
         return [$result, $totalCount, $message];
     }
 
-    private function getDataFromDatabase($offset, $limit, $searchData, $option)
+    private function getDataFromDatabase($offset, $limit, $searchData, $searchFields, $option)
     {
         $query = $this->model()::query();
         $this->applyDefaultCriteria($query);
@@ -63,7 +64,7 @@ abstract class BaseRepository
 
             case 'search':
                 if ($searchData) {
-                    $this->applySearchCriteria($query, $searchData);
+                    $this->applySearchCriteria($query, $searchData ,$searchFields);
                 }
                 $result = $this->paginateResult($query, $offset, $limit);
                 break;
@@ -80,9 +81,9 @@ abstract class BaseRepository
         return $result;
     }
 
-    private function generateCacheKey($offset, $limit, $searchData, $option)
+    private function generateCacheKey($offset, $limit, $searchData, $searchFields, $option)
     {
-        return 'model_' . $offset . '_' . $limit . '_' . md5(json_encode($searchData)) . '_' . $option;
+        return 'model_' . $offset . '_' . $limit . '_' . md5(json_encode([$searchData, $searchFields])) . '_' . $option;
     }
 
     public function metadata($row, $responseType)
@@ -101,12 +102,14 @@ abstract class BaseRepository
         $query->orderBy('created_at', 'desc');
     }
 
-    protected function applySearchCriteria($query, $searchData)
+    protected function applySearchCriteria($query, $searchData, $searchFields)
     {
-        $searchFields = $this->getSearchFields();
-        $query->where(function ($query) use ($searchFields, $searchData) {
-            foreach ($searchFields as $field) {
+        $isValidSearchFields = explode(',', $searchFields);
+
+        $query->where(function ($query) use ($isValidSearchFields, $searchData) {
+            foreach ($isValidSearchFields as $field) {
                 $query->orWhere($field, 'like', '%' . $searchData . '%');
+                $query->orWhere($field, '==', $searchData);
             }
         });
     }

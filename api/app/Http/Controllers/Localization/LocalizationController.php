@@ -37,19 +37,6 @@ class LocalizationController extends Controller
     }
 
     /**
-     * Get all active languages
-     */
-    public function getLanguages(): JsonResponse
-    {
-        try {
-            $languages = $this->localizationRepo->getActiveLanguages();
-            return $this->successJsonResponse('Languages fetched successfully', $languages);
-        } catch (\Exception $e) {
-            return $this->errorJsonResponse('Failed to fetch languages');
-        }
-    }
-
-    /**
      * Update translation for specific key
      */
     public function updateTranslation(Request $request, $locale): JsonResponse

@@ -1,4 +1,4 @@
-export function useCommonOperation() {
+export function useCommonOperations() {
   const isLoading         = ref(false);
   const isSuccess         = ref(false);
   const isValidation      = ref(false);
@@ -16,8 +16,8 @@ export function useCommonOperation() {
       const response: any = await $http(endpoint, {
         method: "GET",
       });
-
-      list.value = response.data;
+      
+      list.value = response.data.data;
       isSuccess.value = true;
 
     } catch (error: any) {
