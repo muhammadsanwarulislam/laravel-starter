@@ -5,137 +5,95 @@ namespace Repository;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class BaseRepository
 {
     abstract function model();
 
-    public function getAll($offset, $limit, $searchData = null, $searchFields = null, $option = null)
-    {
-        if (app()->environment('production')) {
-            $cacheKey = $this->generateCacheKey($offset, $limit, $searchData, $searchFields, $option);
-            $countCacheKey = $cacheKey . '_count';
-
-            list($result, $totalCount, $message) = $this->getCachedData($cacheKey, $countCacheKey, $offset, $limit, $searchData, $searchFields, $option);
-        } else {
-            $result = $this->getDataFromDatabase($offset, $limit, $searchData, $searchFields, $option);
-            $totalRecords = $this->model()::count(); 
-            $totalCount = $limit > 0 ? floor($totalRecords / $limit) : 0;
-            $message = 'Data fetched directly from the database in non-production environment.';
-        }
-
-        return ['result' => $result, 'count' => $totalCount, 'metadata' => $this->metadata($totalCount, $message)];
-    }
-
-    private function getCachedData($cacheKey, $countCacheKey, $offset, $limit, $searchData, $searchFields, $option)
-    {
-        $message = '';
-
-        $result = Cache::get($cacheKey);
-        $totalCount = Cache::get($countCacheKey);
-
-        if (!$result || !$totalCount) {
-            $result = $this->getDataFromDatabase($offset, $limit, $searchData, $searchFields, $option);
-            $totalRecords = $this->model()::count(); 
-            $totalCount = $limit > 0 ? floor($totalRecords / $limit) : 0;
-
-            $cacheDuration = 60;
-            Cache::put($cacheKey, $result, $cacheDuration);
-            Cache::put($countCacheKey, $totalCount, $cacheDuration);
-
-            $message = 'Data loaded from the database and cached.';
-        } else {
-            $message = 'Data loaded from the cache.';
-        }
-
-        return [$result, $totalCount, $message];
-    }
-
-    private function getDataFromDatabase($offset, $limit, $searchData, $searchFields, $option)
+    public function getAll($offset, $limit, $searchData = null, $searchFields = null, $option = 'list')
     {
         $query = $this->model()::query();
         $this->applyDefaultCriteria($query);
 
         switch ($option) {
-            case 'list':
-                $result = $this->paginateResult($query, $offset, $limit);
-                break;
-
             case 'search':
-                if ($searchData) {
-                    $this->applySearchCriteria($query, $searchData ,$searchFields);
+                if ($searchData && $searchFields) {
+                    $this->applySearchCriteria($query, $searchData, $searchFields);
                 }
-                $result = $this->paginateResult($query, $offset, $limit);
                 break;
-
+            case 'list':
             default:
-                $result = $query->get();
                 break;
+        }
+
+        $totalCount = $query->count();
+
+        if ($limit > 0) {
+            $result = $query->offset(($offset - 1) * $limit)
+                          ->limit($limit)
+                          ->get();
+        } else {
+            $result = $query->get();
         }
 
         if ($result->isEmpty()) {
             throw new \RuntimeException('No records found.');
         }
 
-        return $result;
-    }
-
-    private function generateCacheKey($offset, $limit, $searchData, $searchFields, $option)
-    {
-        return 'model_' . $offset . '_' . $limit . '_' . md5(json_encode([$searchData, $searchFields])) . '_' . $option;
-    }
-
-    public function metadata($row, $responseType)
-    {
         return [
-            'API Version' => '1.0.1',
-            'Response Time' => date('Y-m-d H:i:s'),
-            'Data Response Type' => $responseType,
-            'Row Count' => $row,
-            'Content Type' => 'application/json',
+            'result'        => $result,
+            'total_count'   => $totalCount,
+            'current_page'  => $limit > 0 ? ceil($offset / $limit) + 1 : 1,
+            'per_page'      => $limit,
+            'last_page'     => $limit > 0 ? ceil($totalCount / $limit) : 1
         ];
     }
 
     protected function applyDefaultCriteria($query)
     {
-        $query->orderBy('created_at', 'desc');
+        $query->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc');
     }
 
     protected function applySearchCriteria($query, $searchData, $searchFields)
     {
-        $isValidSearchFields = explode(',', $searchFields);
-
-        $query->where(function ($query) use ($isValidSearchFields, $searchData) {
-            foreach ($isValidSearchFields as $field) {
-                $query->orWhere($field, 'like', '%' . $searchData . '%');
-                $query->orWhere($field, '==', $searchData);
+        $searchFieldsArray = explode(',', $searchFields);
+        
+        $query->where(function ($q) use ($searchFieldsArray, $searchData) {
+            foreach ($searchFieldsArray as $field) {
+                $field = trim($field);
+                
+                // Handle boolean fields specially
+                if (in_array($field, ['is_active', 'is_default'])) {
+                    if ($searchData === '1' || strtolower($searchData) === 'true' || strtolower($searchData) === 'active') {
+                        $q->orWhere($field, true);
+                    } elseif ($searchData === '0' || strtolower($searchData) === 'false' || strtolower($searchData) === 'inactive') {
+                        $q->orWhere($field, false);
+                    }
+                } else {
+                    $q->orWhere($field, 'like', '%' . $searchData . '%');
+                }
             }
         });
     }
 
-    protected function paginateResult($query, $offset, $limit)
+    public function metadata($totalCount, $responseType)
     {
-        return $query->offset(($offset - 1) * $limit)
-            ->limit($limit)
-            ->get();
-    }
-
-    protected function getTotalCount($query, $limit)
-    {
-        return $query->paginate($limit)->total();
-    }
-
-    protected function getSearchFields()
-    {
-        return [];
+        return [
+            'API Version'       => '1.0.1',
+            'Response Time'     => date('Y-m-d H:i:s'),
+            'Data Response Type'=> $responseType,
+            'Total Records'     => $totalCount,
+            'Content Type'      => 'application/json',
+        ];
     }
 
     public function findByID($id): Model
     {
         $record = $this->model()::find($id);
         if (!$record) {
-            throw new \Exception("Record with ID {$id} has no data in the database.");
+            throw new \Exception("Record with ID {$id} not found.");
         }
         return $record;
     }
@@ -143,16 +101,6 @@ abstract class BaseRepository
     public function findOrFailByID($id): Model
     {
         return $this->model()::findOrFail($id);
-    }
-
-    public function findOrFailByEmail($email): Model
-    {
-        return $this->model()::where('email',$email)->first();
-    }
-
-    public function findOrFailByPhone($phone): Model
-    {
-        return $this->model()::where('phone',(int)$phone)->first();
     }
 
     public function create(array $modelData)
@@ -164,56 +112,12 @@ abstract class BaseRepository
     {
         $model = $this->findOrFailByID($id);
         $model->update($modelData);
-        $model->refresh();
-        return $model;
+        return $model->fresh();
     }
 
     public function deletedByID($id)
     {
         $model = $this->findOrFailByID($id);
         return $model->delete();
-    }
-
-    public function updateByModelCondition($condition, $field, $value)
-    {
-        return $this->model()::where($condition)->update([$field => $value]);
-    }
-
-    public function setTranslatableData($model, $field, $value, $lang)
-    {
-        $model->setTranslation($field, $value, $lang);
-        $model->save();
-    }
-
-    public function makeCurlRequest(string $url, array $options = []): array
-    {
-        // Initialize cURL session
-        $ch = curl_init($url);
-
-        // Default cURL options
-        $defaultOptions = [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_SSL_VERIFYHOST => false,
-        ];
-
-        // Merge default options with user-defined options
-        curl_setopt_array($ch, $defaultOptions + $options);
-
-        // Execute the request
-        $responseBody = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
-
-        // Close cURL session
-        curl_close($ch);
-
-        // Return the response data as an array
-        return [
-            'status' => $httpCode,
-            'body' => $responseBody,
-            'error' => $curlError,
-        ];
     }
 }

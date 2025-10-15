@@ -16,8 +16,8 @@ export function useCommonOperations() {
       const response: any = await $http(endpoint, {
         method: "GET",
       });
-      
-      list.value = response.data.data;
+
+      list.value = response.data;
       isSuccess.value = true;
 
     } catch (error: any) {

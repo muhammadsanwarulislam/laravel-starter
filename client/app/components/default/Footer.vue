@@ -1,5 +1,5 @@
 <template>
-  <footer class="p-4 fixed  bottom-0 w-full bg-white border-t dark:bg-gray-800 dark:border-gray-600">
+  <footer class="p-4 fixed bottom-0 w-full bg-white border-t dark:bg-gray-800 dark:border-gray-600">
     <div :class="[
       'mx-auto max-w-screen-xl text-center',
       darkMode ? 'text-gray-400' : 'text-gray-500',

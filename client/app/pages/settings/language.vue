@@ -8,7 +8,7 @@
             </div>
             <div class="flex items-center space-x-4 mt-4 sm:mt-0">
                 <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full border">
-                    Total: {{ totalItems }} languages
+                    Total: {{ pagination.total || 0 }} languages
                 </span>
                 <button
                     @click="openCreateModal"
@@ -42,7 +42,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-gray-600">Total Languages</p>
-                            <p class="text-2xl font-bold text-gray-900">{{ totalItems }}</p>
+                            <p class="text-2xl font-bold text-gray-900">{{ pagination.total || 0 }}</p>
                         </div>
                         <div class="text-blue-500 bg-blue-50 p-3 rounded-lg">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,14 +102,14 @@
                             v-model="searchQuery"
                             @input="handleSearch"
                             type="text"
-                            placeholder="Search languages..."
+                            placeholder="Search languages by code, name, native name..."
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                     </div>
                     <div class="flex gap-2">
                         <select
                             v-model="statusFilter"
-                            @change="loadLanguages"
+                            @change="handleFilterChange"
                             class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option value="all">All Status</option>
@@ -118,7 +118,7 @@
                         </select>
                         <select
                             v-model="directionFilter"
-                            @change="loadLanguages"
+                            @change="handleFilterChange"
                             class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option value="all">All Directions</option>
@@ -253,11 +253,18 @@
                     </table>
                 </div>
 
+                <!-- Empty State -->
+                <div v-if="languages.length === 0 && !isLoading" class="text-center py-12">
+                    <div class="text-gray-400 text-6xl mb-4">🌐</div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">No languages found</h3>
+                    <p class="text-gray-600">Try adjusting your search or filters</p>
+                </div>
+
                 <!-- Pagination -->
-                <div class="px-6 py-4 border-t border-gray-200">
+                <div v-if="languages.length > 0" class="px-6 py-4 border-t border-gray-200">
                     <div class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
                         <div class="text-sm text-gray-700">
-                            Showing {{ showingFrom }} to {{ showingTo }} of {{ totalItems }} results
+                            Showing {{ pagination.from || 0 }} to {{ pagination.to || 0 }} of {{ pagination.total || 0 }} results
                         </div>
                         <div class="flex items-center space-x-2">
                             <button
@@ -319,6 +326,7 @@
                                 v-model="form.code"
                                 type="text"
                                 required
+                                maxlength="5"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="en, fr, es, etc."
                             >
@@ -383,8 +391,14 @@
                                 type="checkbox"
                                 id="is_default"
                                 class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                :disabled="isEditing && currentLanguage?.is_default"
                             >
-                            <label for="is_default" class="text-sm font-medium text-gray-700">Set as default language</label>
+                            <label for="is_default" class="text-sm font-medium text-gray-700">
+                                Set as default language
+                                <span v-if="isEditing && currentLanguage?.is_default" class="text-orange-600 text-xs ml-1">
+                                    (Current default)
+                                </span>
+                            </label>
                         </div>
 
                         <div class="flex justify-end space-x-3 pt-4">
@@ -408,20 +422,22 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useCommonOperations } from '~/composables/useCommonOperations';
+import { useNotification } from '~/composables/useNotification';
 
 definePageMeta({
     middleware: 'auth'
 });
 
 const languages = ref([]);
-const { fetchData, isLoading, isSuccess, deleteOperation, createItem, updateItem } = useCommonOperations();
+const { isLoading, isSuccess, deleteOperation, createItem, updateItem } = useCommonOperations();
+
+const { add: notify } = useNotification()
 
 // Pagination and search
 const currentPage = ref(1);
 const itemsPerPage = ref(5);
-const totalItems = ref(0);
 const searchQuery = ref('');
 const statusFilter = ref('all');
 const directionFilter = ref('all');
@@ -432,6 +448,17 @@ const showModal = ref(false);
 const isEditing = ref(false);
 const isSubmitting = ref(false);
 const editingId = ref(null);
+const currentLanguage = ref(null);
+
+// Pagination data
+const pagination = ref({
+    total: 0,
+    per_page: 5,
+    current_page: 1,
+    last_page: 1,
+    from: 0,
+    to: 0
+});
 
 // Form data
 const form = ref({
@@ -457,14 +484,19 @@ const rtlLanguagesCount = computed(() =>
     languages.value.filter(lang => lang.direction === 'rtl').length
 );
 
-const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage.value));
-const showingFrom = computed(() => (currentPage.value - 1) * itemsPerPage.value + 1);
-const showingTo = computed(() => Math.min(currentPage.value * itemsPerPage.value, totalItems.value));
+const totalPages = computed(() => pagination.value.last_page || 1);
 
 const visiblePages = computed(() => {
     const pages = [];
-    const start = Math.max(1, currentPage.value - 2);
-    const end = Math.min(totalPages.value, start + 4);
+    const current = pagination.value.current_page || 1;
+    const last = pagination.value.last_page || 1;
+    
+    let start = Math.max(1, current - 2);
+    let end = Math.min(last, start + 4);
+    
+    if (end - start < 4) {
+        start = Math.max(1, end - 4);
+    }
     
     for (let i = start; i <= end; i++) {
         pages.push(i);
@@ -474,30 +506,32 @@ const visiblePages = computed(() => {
 
 // Methods
 const buildApiParams = () => {
-    const params = {
+    const params: any = {
         limit: itemsPerPage.value,
-        offset: (currentPage.value - 1) * itemsPerPage.value
+        offset: currentPage.value,
+        option: 'list'
     };
 
-    // Determine the option based on search and filters
+    // Handle search
     if (searchQuery.value.trim() !== '') {
         params.option = 'search';
         params.searchData = searchQuery.value;
-        params.searchFields = 'code,name,native_name,direction,is_active'; 
-    } else if (statusFilter.value !== 'all' || directionFilter.value !== 'all') {
+        params.searchFields = 'code,name,native_name';
+    } 
+    // Handle filters
+    else if (statusFilter.value !== 'all' || directionFilter.value !== 'all') {
         params.option = 'search';
         
-        // Build search data for filters
-        const searchData = {};
-        if (statusFilter.value !== 'all') {
-            searchData.value = statusFilter.value === 'active' ? 1 : 0;
+        if (statusFilter.value !== 'all' && directionFilter.value !== 'all') {
+            params.searchData = `${statusFilter.value === 'active' ? 'true' : 'false'},${directionFilter.value}`;
+            params.searchFields = 'is_active,direction';
+        } else if (statusFilter.value !== 'all') {
+            params.searchData = statusFilter.value === 'active' ? 'true' : 'false';
+            params.searchFields = 'is_active';
+        } else if (directionFilter.value !== 'all') {
+            params.searchData = directionFilter.value;
+            params.searchFields = 'direction';
         }
-        if (directionFilter.value !== 'all') {
-            searchData.value = directionFilter.value;
-        }
-        params.searchData = JSON.stringify(searchData);
-    } else {
-        params.option = 'list';
     }
 
     return params;
@@ -505,7 +539,7 @@ const buildApiParams = () => {
 
 const loadLanguages = async () => {
     const params = buildApiParams();
-    console.log('API Params:', params);
+    
     const queryString = new URLSearchParams();
     Object.keys(params).forEach(key => {
         if (params[key] !== undefined && params[key] !== null && params[key] !== '') {
@@ -514,12 +548,23 @@ const loadLanguages = async () => {
     });
 
     const url = `languages?${queryString.toString()}`;
-    
+
     try {
-        await fetchData(languages, url);
-        totalItems.value = languages.value.length;
+        const response: any = await $http(url, { method: 'GET' });
+        
+        if (response?.data) {
+            languages.value = response.data.data.languages;
+            pagination.value = response.data.data.pagination;
+            currentPage.value = response.data.data.pagination.current_page;
+        } else {
+            languages.value = response;
+        }
+        isSuccess.value = true;
     } catch (error) {
         console.error('Error loading languages:', error);
+        isSuccess.value = false;
+    } finally {
+        isLoading.value = false;
     }
 };
 
@@ -529,6 +574,11 @@ const handleSearch = () => {
         currentPage.value = 1;
         loadLanguages();
     }, 500);
+};
+
+const handleFilterChange = () => {
+    currentPage.value = 1;
+    loadLanguages();
 };
 
 const handleItemsPerPageChange = () => {
@@ -558,6 +608,7 @@ const goToPage = (page) => {
 const openCreateModal = () => {
     isEditing.value = false;
     editingId.value = null;
+    currentLanguage.value = null;
     resetForm();
     showModal.value = true;
 };
@@ -565,6 +616,7 @@ const openCreateModal = () => {
 const editLanguage = (language) => {
     isEditing.value = true;
     editingId.value = language.id;
+    currentLanguage.value = language;
     form.value = { ...language };
     showModal.value = true;
 };
@@ -582,7 +634,7 @@ const resetForm = () => {
         direction: 'ltr',
         is_active: true,
         is_default: false,
-        sort_order: languages.value.length + 1
+        sort_order: (pagination.value.total || 0) + 1
     };
 };
 
@@ -595,11 +647,13 @@ const submitForm = async () => {
         } else {
             await createItem(form.value, languages, 'languages', 'language');
         }
+        notify(`Language ${isEditing.value ? 'updated' : 'created'} successfully`, 'success');
         
         closeModal();
         await loadLanguages();
     } catch (error) {
         console.error('Error saving language:', error);
+        alert(error.message || 'Error saving language');
     } finally {
         isSubmitting.value = false;
     }
@@ -613,8 +667,13 @@ const deleteLanguage = async (id) => {
     }
 
     if (confirm('Are you sure you want to delete this language?')) {
-        await deleteOperation('languages', id);
-        await loadLanguages();
+        try {
+            await deleteOperation('languages', id);
+            await loadLanguages();
+            notify('Language deleted successfully', 'success');
+        } catch (error) {
+            alert(error.message || 'Error deleting language');
+        }
     }
 };
 
