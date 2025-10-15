@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h1 class="text-2xl font-semibold leading-tight dark:text-gray-300">{{ pageTitle }}</h1>
-        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ pageDescription }}</p>
-        
+        <h1 class="text-2xl font-semibold leading-tight dark:text-gray-300">{{ t('page_title') }}</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ t('page_description') }}</p>
+
         <!-- Language Selector -->
         <div class="mt-6">
             <label for="language-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -20,6 +20,51 @@
                 <option value="ar">Arabic</option>
                 <option value="fa">Persian</option>
             </select>
+        </div>
+
+        <!-- Actions Bar -->
+        <div class="mt-6 flex flex-wrap gap-4 items-center justify-between">
+            <div class="flex flex-wrap gap-2">
+                <button 
+                    @click="openCreateModal"
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    {{ t('add') }}
+                </button>
+                <button 
+                    @click="openBulkCreateModal"
+                    class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    {{ t('bulk_add') }}
+                </button>
+            </div>
+            
+            <div class="flex flex-wrap gap-2">
+                <button 
+                    @click="copyTranslations"
+                    class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                    </svg>
+                    {{ t('copy_json') }}
+                </button>
+                <button 
+                    @click="downloadTranslations"
+                    class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    {{ t('download_json') }}
+                </button>
+            </div>
         </div>
 
         <!-- Translations Content -->
@@ -64,6 +109,9 @@
                                             <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                                                 {{ t('value') }}
                                             </th>
+                                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                {{ t('actions') }}
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
@@ -73,6 +121,28 @@
                                             </td>
                                             <td class="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                                 {{ value }}
+                                            </td>
+                                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                                <div class="flex space-x-2">
+                                                    <button 
+                                                        @click="editTranslation(key)"
+                                                        class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                                        :title="t('edit_translation')"
+                                                    >
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                        </svg>
+                                                    </button>
+                                                    <button 
+                                                        @click="deleteTranslation(key)"
+                                                        class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                                        :title="t('delete_translation')"
+                                                    >
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -139,28 +209,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Quick Actions -->
-                <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-200 dark:border-gray-600">
-                    <button 
-                        @click="copyTranslations"
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                        </svg>
-                        {{ t('copy_json') }}
-                    </button>
-                    <button 
-                        @click="downloadTranslations"
-                        class="inline-flex items-center px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                    >
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        {{ t('download_json') }}
-                    </button>
-                </div>
             </div>
 
             <!-- Empty State -->
@@ -170,11 +218,120 @@
                 <p class="text-gray-600 dark:text-gray-400">{{ t('select_language_prompt') }}</p>
             </div>
         </div>
+
+        <!-- Create/Edit Translation Modal -->
+        <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                        {{ isEditing ? t('edit_translation') : t('add_translation') }}
+                    </h2>
+                    
+                    <form @submit.prevent="submitTranslation" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {{ t('translation_key') }} *
+                            </label>
+                            <input
+                                v-model="form.key"
+                                type="text"
+                                required
+                                :disabled="isEditing"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                placeholder="e.g., welcome_message"
+                            >
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                {{ t('key_hint') }}
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {{ t('translation_value') }} *
+                            </label>
+                            <textarea
+                                v-model="form.value"
+                                required
+                                rows="3"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                :placeholder="t('value_placeholder')"
+                            ></textarea>
+                        </div>
+
+                        <div class="flex justify-end space-x-3 pt-4">
+                            <button
+                                type="button"
+                                @click="closeModal"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600"
+                            >
+                                {{ t('cancel') }}
+                            </button>
+                            <button
+                                type="submit"
+                                :disabled="isSubmitting"
+                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {{ isSubmitting ? t('saving') : (isEditing ? t('update') : t('create')) }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bulk Create Modal -->
+        <div v-if="showBulkModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">
+                        {{ t('bulk_add_translations') }}
+                    </h2>
+                    
+                    <form @submit.prevent="submitBulkTranslations" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                {{ t('json_data') }} *
+                            </label>
+                            <textarea
+                                v-model="bulkForm.jsonData"
+                                required
+                                rows="10"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white font-mono text-sm"
+                                :placeholder="t('json_placeholder')"
+                            ></textarea>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                {{ t('json_hint') }}
+                            </p>
+                        </div>
+
+                        <div class="flex justify-end space-x-3 pt-4">
+                            <button
+                                type="button"
+                                @click="closeBulkModal"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600"
+                            >
+                                {{ t('cancel') }}
+                            </button>
+                            <button
+                                type="submit"
+                                :disabled="isSubmitting"
+                                class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {{ isSubmitting ? t('saving') : t('import') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
 import { useNotification } from '~/composables/useNotification';
+import { useLocale } from '~/composables/useLocale';
+
+const { locale, t } = useLocale();
 
 const isLoading = ref(false);
 const error = ref(null);
@@ -182,68 +339,24 @@ const translations = ref(null);
 const selectedLocale = ref('en');
 const currentLocale = ref('en');
 
-// Fallback translations (in case API fails)
-const fallbackTranslations = {
-    en: {
-        // UI translations
-        select_language: "Select Language",
-        current_translations: "Current Translations",
-        loading: "Loading translations...",
-        error: "Error loading translations",
-        translation_keys: "Translation Keys",
-        language_info: "Language Information",
-        current_locale: "Current Locale",
-        language_name: "Language Name",
-        translation_count: "Translation Count",
-        sample_usage: "Sample Usage in Templates",
-        key: "Key",
-        value: "Value",
-        copy_json: "Copy JSON",
-        download_json: "Download JSON",
-        no_translations: "No translations loaded",
-        select_language_prompt: "Select a language to load translations",
-        
-        // Sample content translations
-        welcome: "Welcome",
-        dashboard: "Dashboard",
-        profile: "Profile",
-        user: "Users",
-        username: "Username",
-        search: "Search",
-        name: "Name",
-        email: "Email",
-        action: "Action",
-        phone: "Phone",
-        role: "Role",
-        overview: "Overview",
-        decline: "Decline",
-        update: "Update",
-        submit: "Submit",
-        image: "Image",
-        status: "Status",
-        logo: "Logo",
-        mobile: "Mobile",
-        nid: "Nid",
-        home: "Home",
-        signin: "Signin",
-        signup: "Signup",
-        signout: "Signout",
-        password: "Password",
-        language: "Language",
-        change_password: "Change Password",
-        settings: "Settings"
-    }
-};
+// Modal states
+const showModal = ref(false);
+const showBulkModal = ref(false);
+const isEditing = ref(false);
+const isSubmitting = ref(false);
+const editingKey = ref('');
+
+// Form data
+const form = ref({
+    key: '',
+    value: ''
+});
+
+const bulkForm = ref({
+    jsonData: ''
+});
 
 const { add: notify } = useNotification()
-
-// Computed translation function
-const t = (key) => {
-    if (translations.value && translations.value[key]) {
-        return translations.value[key];
-    }
-    return fallbackTranslations.en[key] || key;
-};
 
 // Computed properties for dynamic page content
 const pageTitle = computed(() => t('current_translations'));
@@ -293,7 +406,7 @@ const loadTranslations = async (locale = null) => {
         if (res.data && res.data.data) {
             translations.value = res.data.data;
         } else {
-            notify('No translations found for the selected language', 'warning');
+            translations.value = {};
         }
         
         // Update current locale
@@ -315,11 +428,151 @@ const changeLanguage = async () => {
     await loadTranslations(selectedLocale.value);
 };
 
+// Creation functionality methods
+const openCreateModal = () => {
+    isEditing.value = false;
+    editingKey.value = '';
+    form.value = { key: '', value: '' };
+    showModal.value = true;
+};
+
+const openBulkCreateModal = () => {
+    bulkForm.value.jsonData = '';
+    showBulkModal.value = true;
+};
+
+const editTranslation = (key) => {
+    isEditing.value = true;
+    editingKey.value = key;
+    form.value = {
+        key: key,
+        value: translations.value[key]
+    };
+    showModal.value = true;
+};
+
+const closeModal = () => {
+    showModal.value = false;
+    form.value = { key: '', value: '' };
+};
+
+const closeBulkModal = () => {
+    showBulkModal.value = false;
+    bulkForm.value.jsonData = '';
+};
+
+const submitTranslation = async () => {
+    isSubmitting.value = true;
+
+    try {
+        if (isEditing.value) {
+            // Update existing translation
+            const response = await $http(`translations/${currentLocale.value}`, {
+                method: 'PUT',
+                body: {
+                    key: editingKey.value,
+                    value: form.value.value
+                }
+            });
+
+            if (response.data) {
+                // Update local state
+                if (translations.value) {
+                    translations.value[editingKey.value] = form.value.value;
+                }
+                notify('Translation updated successfully', 'success');
+            }
+        } else {
+            // Create new translation
+            const response = await $http(`translations/${currentLocale.value}`, {
+                method: 'POST',
+                body: {
+                    key: form.value.key,
+                    value: form.value.value
+                }
+            });
+
+            if (response.data) {
+                // Update local state
+                if (!translations.value) {
+                    translations.value = {};
+                }
+                translations.value[form.value.key] = form.value.value;
+                notify('Translation created successfully', 'success');
+            }
+        }
+
+        closeModal();
+    } catch (err) {
+        const errorMessage = err.data?.message || err.message || 'Failed to save translation';
+        notify(errorMessage, 'error');
+    } finally {
+        isSubmitting.value = false;
+    }
+};
+
+const submitBulkTranslations = async () => {
+    isSubmitting.value = true;
+
+    try {
+        // Parse JSON data
+        const translationsData = JSON.parse(bulkForm.value.jsonData);
+        
+        const response = await $http(`translations/${currentLocale.value}/bulk`, {
+            method: 'POST',
+            body: {
+                translations: translationsData
+            }
+        });
+
+        if (response.data) {
+            // Reload translations to get updated data
+            await loadTranslations();
+            notify('Translations imported successfully', 'success');
+            closeBulkModal();
+        }
+    } catch (err) {
+        if (err instanceof SyntaxError) {
+            notify('Invalid JSON format', 'error');
+        } else {
+            const errorMessage = err.data?.message || err.message || 'Failed to import translations';
+            notify(errorMessage, 'error');
+        }
+    } finally {
+        isSubmitting.value = false;
+    }
+};
+
+const deleteTranslation = async (key) => {
+    if (!confirm(`Are you sure you want to delete the translation "${key}"?`)) {
+        return;
+    }
+
+    try {
+        const response = await $http(`translations/${currentLocale.value}`, {
+            method: 'DELETE',
+            body: {
+                key: key
+            }
+        });
+
+        if (response.data) {
+            // Remove from local state
+            if (translations.value && translations.value[key]) {
+                delete translations.value[key];
+            }
+            notify('Translation deleted successfully', 'success');
+        }
+    } catch (err) {
+        const errorMessage = err.data?.message || err.message || 'Failed to delete translation';
+        notify(errorMessage, 'error');
+    }
+};
+
 const copyTranslations = async () => {
     try {
         const jsonString = JSON.stringify(translations.value, null, 2);
         await navigator.clipboard.writeText(jsonString);
-        
         notify('Translations copied to clipboard', 'success');
     } catch (err) {
         console.error('Failed to copy translations:', err);

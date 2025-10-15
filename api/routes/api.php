@@ -17,12 +17,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post(UserRepository::LOGOUT_API_ENDPOINT_NAME, [AuthController::class, 'signout']);
     Route::apiResource(UserRepository::RESOURCE_NAME, UserController::class);
     Route::apiResource(LanguageRepository::RESOURCE_NAME, LanguageController::class);
-
-    Route::post('/translations/{locale}', [LocalizationController::class, 'updateTranslation']);
-    Route::post('/translations/bulk/{locale}', [LocalizationController::class, 'bulkUpdateTranslations']);
-    Route::get('/translations/export/{locale}', [LocalizationController::class, 'exportTranslations']);
-    Route::post('/translations/import/{locale}', [LocalizationController::class, 'importTranslations']);
+    
+    // Translation routes with locale parameter
+    Route::post('translations/{locale}', [LocalizationController::class, 'store']);
+    Route::put('translations/{locale}', [LocalizationController::class, 'update']);
+    Route::delete('translations/{locale}', [LocalizationController::class, 'destroy']);
+    Route::post('translations/{locale}/bulk', [LocalizationController::class, 'bulkStore']);
 });
 
-Route::get(LocalizationRepository::TRANSLATION_API_ENDPOINT_NAME.'/{locale}', [LocalizationController::class, 'getTranslations']);
+// Public routes
+Route::get('translations/{locale}', [LocalizationController::class, 'index']);
 Route::apiResource(LanguageRepository::RESOURCE_NAME, LanguageController::class)->only(['index']);

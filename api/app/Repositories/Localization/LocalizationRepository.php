@@ -10,10 +10,12 @@ class LocalizationRepository extends BaseRepository
 {
     const TRANSLATION_API_ENDPOINT_NAME = 'translations';
     const LANGUAGES_API_ENDPOINT_NAME = 'languages';
+    
     public function model()
     {
         return Language::class;
     }
+    
     public function getActiveLanguages()
     {
         return $this->model()::where('is_active', true)->orderBy('sort_order')->get();
@@ -55,7 +57,15 @@ class LocalizationRepository extends BaseRepository
         );
     }
 
-    public function bulkUpdateTranslations($locale, $translations, $group = 'ui')
+    public function deleteTranslation($id)
+    {
+        return UiTranslation::destroy($id);
+    }
+
+    /**
+     * Delete translation by key and locale
+     */
+    public function deleteTranslationByKey($locale, $key, $group = 'ui')
     {
         $language = Language::where('code', $locale)->first();
         
@@ -63,43 +73,61 @@ class LocalizationRepository extends BaseRepository
             return false;
         }
 
-        foreach ($translations as $key => $value) {
-            UiTranslation::updateOrCreate(
+        return UiTranslation::where([
+            'language_id' => $language->id,
+            'key' => $key,
+            'group' => $group
+        ])->delete() > 0;
+    }
+
+    /**
+     * Bulk create or update translations
+     */
+    public function bulkCreateOrUpdateTranslations($locale, $translations, $group = 'ui')
+    {
+        $language = Language::where('code', $locale)->first();
+        
+        if (!$language) {
+            return 0;
+        }
+
+        $createdCount = 0;
+
+        foreach ($translations as $translation) {
+            $result = UiTranslation::updateOrCreate(
                 [
                     'language_id' => $language->id,
-                    'key' => $key,
+                    'key' => $translation['key'],
                     'group' => $group
                 ],
                 [
-                    'value' => $value
+                    'value' => $translation['value']
                 ]
             );
+
+            if ($result) {
+                $createdCount++;
+            }
         }
 
-        return true;
+        return $createdCount;
     }
 
-    public function getTranslationGroups()
+    /**
+     * Get translation by key and locale
+     */
+    public function getTranslationByKey($locale, $key, $group = 'ui')
     {
-        return UiTranslation::distinct()
-            ->pluck('group')
-            ->toArray();
-    }
-
-    public function exportTranslationsToJson($locale)
-    {
-        $translations = $this->getTranslationsByLocale($locale);
-        return json_encode($translations, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-    }
-
-    public function importTranslationsFromJson($locale, $jsonContent)
-    {
-        $translations = json_decode($jsonContent, true);
+        $language = Language::where('code', $locale)->first();
         
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            return false;
+        if (!$language) {
+            return null;
         }
 
-        return $this->bulkUpdateTranslations($locale, $translations);
+        return UiTranslation::where([
+            'language_id' => $language->id,
+            'key' => $key,
+            'group' => $group
+        ])->first();
     }
 }

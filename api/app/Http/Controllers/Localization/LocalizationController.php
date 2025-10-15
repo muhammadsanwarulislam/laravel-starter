@@ -21,116 +21,125 @@ class LocalizationController extends Controller
     /**
      * Get translations for specific locale
      */
-    public function getTranslations($locale): JsonResponse
+    public function index($locale): JsonResponse
     {
         try {
             $translations = $this->localizationRepo->getTranslationsByLocale($locale);
 
             if (empty($translations)) {
-                return $this->errorJsonResponse('No translations found for the specified locale');
+                return $this->successJsonResponse('No translations found for the specified locale', []);
             }
 
             return $this->successJsonResponse('Translations fetched successfully', $translations);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch translations'], 500);
+            return $this->errorJsonResponse($e->getMessage());
         }
     }
 
     /**
-     * Update translation for specific key
+     * Create a new translation
      */
-    public function updateTranslation(Request $request, $locale): JsonResponse
+    public function store(Request $request, $locale): JsonResponse
     {
-        $validated = $request->validate([
-            'key' => 'required|string',
-            'value' => 'required|string',
-            'group' => 'sometimes|string|max:50'
-        ]);
-
         try {
+            // Validate the request
+            $request->validate([
+                'key' => 'required|string|max:255',
+                'value' => 'required|string',
+            ]);
+
+            // Create a new translation
             $translation = $this->localizationRepo->createOrUpdateTranslation(
                 $locale,
-                $validated['key'],
-                $validated['value'],
-                $validated['group'] ?? 'ui'
+                $request->input('key'),
+                $request->input('value')
             );
 
             if (!$translation) {
-                return $this->errorJsonResponse('Language not found');
+                return $this->errorJsonResponse('Language not found or translation could not be created');
+            }
+
+            return $this->successJsonResponse('Translation created successfully', $translation);
+        } catch (\Exception $e) {
+            return $this->errorJsonResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * Update an existing translation
+     */
+    public function update(Request $request, $locale): JsonResponse
+    {
+        try {
+            // Validate the request
+            $request->validate([
+                'key' => 'required|string|max:255',
+                'value' => 'required|string',
+            ]);
+
+            // Update the translation
+            $translation = $this->localizationRepo->createOrUpdateTranslation(
+                $locale,
+                $request->input('key'),
+                $request->input('value')
+            );
+
+            if (!$translation) {
+                return $this->errorJsonResponse('Translation not found or could not be updated');
             }
 
             return $this->successJsonResponse('Translation updated successfully', $translation);
         } catch (\Exception $e) {
-            return $this->errorJsonResponse('Failed to update translation');
+            return $this->errorJsonResponse($e->getMessage());
         }
     }
 
     /**
-     * Bulk update translations
+     * Delete a translation by key
      */
-    public function bulkUpdateTranslations(Request $request, $locale): JsonResponse
-    {
-        $validated = $request->validate([
-            'translations' => 'required|array',
-            'group' => 'sometimes|string|max:50'
-        ]);
-
-        try {
-            $success = $this->localizationRepo->bulkUpdateTranslations(
-                $locale,
-                $validated['translations'],
-                $validated['group'] ?? 'ui'
-            );
-
-            if (!$success) {
-                return $this->errorJsonResponse('Language not found or invalid translations data');
-            }
-
-            return $this->successJsonResponse('Translations updated successfully');
-        } catch (\Exception $e) {
-            return $this->errorJsonResponse('Failed to bulk update translations');
-        }
-    }
-
-    /**
-     * Export translations as JSON file
-     */
-    public function exportTranslations($locale): JsonResponse
+    public function destroy(Request $request, $locale): JsonResponse
     {
         try {
-            $jsonContent = $this->localizationRepo->exportTranslationsToJson($locale);
-
-            return response()->json([
-                'locale' => $locale,
-                'translations' => json_decode($jsonContent, true)
+            $request->validate([
+                'key' => 'required|string|max:255',
             ]);
+
+            $deleted = $this->localizationRepo->deleteTranslationByKey(
+                $locale,
+                $request->input('key')
+            );
+
+            if (!$deleted) {
+                return $this->errorJsonResponse('Translation not found or could not be deleted');
+            }
+
+            return $this->successJsonResponse('Translation deleted successfully');
         } catch (\Exception $e) {
-            return $this->errorJsonResponse('Failed to export translations');
+            return $this->errorJsonResponse($e->getMessage());
         }
     }
 
     /**
-     * Import translations from JSON
+     * Bulk create/update translations
      */
-    public function importTranslations(Request $request, $locale): JsonResponse
+    public function bulkStore(Request $request, $locale): JsonResponse
     {
-        $validated = $request->validate([
-            'json_content' => 'required|string'
-        ]);
-
         try {
-            $success = $this->localizationRepo->importTranslationsFromJson(
+            // Validate the request
+            $request->validate([
+                'translations' => 'required|array',
+                'translations.*.key' => 'required|string|max:255',
+                'translations.*.value' => 'required|string',
+            ]);
+
+            $createdCount = $this->localizationRepo->bulkCreateOrUpdateTranslations(
                 $locale,
-                $validated['json_content']
+                $request->input('translations')
             );
 
-            if (!$success) {
-                return $this->errorJsonResponse('Invalid JSON or language not found');
-            }
-
-            return $this->successJsonResponse('Translations imported successfully');
+            return $this->successJsonResponse("{$createdCount} translations created/updated successfully");
         } catch (\Exception $e) {
-            return $this->errorJsonResponse('Failed to import translations');
+            return $this->errorJsonResponse($e->getMessage());
         }
     }
 }
