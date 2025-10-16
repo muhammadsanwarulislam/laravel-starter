@@ -14,12 +14,13 @@
                 @change="changeLanguage"
                 class="block w-48 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
             >
-                <option value="en">English</option>
-                <option value="bn">Bengali</option>
-                <option value="hi">Hindi</option>
-                <option value="ar">Arabic</option>
-                <option value="fa">Persian</option>
+                <option disabled value="">{{ t('select_language') }}</option>
+                <option v-for="language in languages" :key="language" :value="language">{{ language.name }} ({{ language.code }})</option>
             </select>
+
+            <div v-if="languages.length === 0" class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                Loading languages...
+            </div>
         </div>
 
         <!-- Actions Bar -->
@@ -345,6 +346,7 @@ const showBulkModal = ref(false);
 const isEditing = ref(false);
 const isSubmitting = ref(false);
 const editingKey = ref('');
+const languages = ref([]);
 
 // Form data
 const form = ref({
@@ -364,14 +366,8 @@ const pageDescription = computed(() => `Managing translations for ${getLanguageN
 
 // Methods
 const getLanguageName = (code) => {
-    const languages = {
-        en: 'English',
-        bn: 'Bengali',
-        hi: 'Hindi',
-        ar: 'Arabic',
-        fa: 'Persian'
-    };
-    return languages[code] || code;
+    const lang = languages.value.find(lang => lang.code === code);
+    return lang ? lang.name : code;
 };
 
 const getCookie = (name) => {
@@ -393,7 +389,14 @@ const setCookie = (name, value, days = 365) => {
 };
 
 const loadTranslations = async (locale = null) => {
-    const targetLocale = locale || currentLocale.value;
+    const targetLocale = locale.code || currentLocale.value;
+
+    const languageExists = languages.value.some(lang => lang.code === targetLocale);
+    if (!languageExists && languages.value.length > 0) {
+        error.value = `Language ${targetLocale} not found in available languages`;
+        notify(error.value, 'error');
+        return;
+    }
     
     isLoading.value = true;
     error.value = null;
@@ -593,6 +596,22 @@ const downloadTranslations = () => {
     URL.revokeObjectURL(url);
 };
 
+const loadLanguages = async () => {
+    try {
+        const res = await $http('languages', { method: 'GET' });
+        languages.value = res.data?.data.languages || [];
+    } catch (err) {
+        languages.value = [
+            { code: 'en', name: 'English' },
+            { code: 'bn', name: 'Bengali' },
+            { code: 'hi', name: 'Hindi' },
+            { code: 'ar', name: 'Arabic' },
+            { code: 'fa', name: 'Persian' }
+        ];
+    }
+    return [];
+}
+
 // Initialize
 onMounted(() => {
     // Get locale from cookie or default to 'en'
@@ -603,11 +622,12 @@ onMounted(() => {
     selectedLocale.value = initialLocale;
     
     loadTranslations(initialLocale);
+    loadLanguages();
 });
 
 // Watch for locale changes
 watch(currentLocale, (newLocale) => {
-    console.log('Locale changed to:', newLocale);
+    locale.value = newLocale;
 });
 
 definePageMeta({

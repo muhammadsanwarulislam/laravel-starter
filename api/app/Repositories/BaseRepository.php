@@ -115,6 +115,11 @@ abstract class BaseRepository
         return $model->fresh();
     }
 
+    public function updateByModelCondition($condition, $field, $value)
+    {
+        return $this->model()::where($condition)->update([$field => $value]);
+    }
+
     public function deletedByID($id)
     {
         $model = $this->findOrFailByID($id);
