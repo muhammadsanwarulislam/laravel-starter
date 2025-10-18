@@ -15,21 +15,25 @@ class UserService
 
     public function getUsers($requestData)
     {
-        $offset         = $requestData['offset'];
-        $limit          = $requestData['limit'];
-        $option         = $requestData['option'];
-        $searchData     = $requestData['searchData'];
+        $offset         = $requestData['offset'] ?? 1;
+        $limit          = $requestData['limit'] ?? 10;
+        $option         = $requestData['option'] ?? 'list';
+        $searchData     = $requestData['searchData'] ?? null;
+        $searchFields   = $requestData['searchFields'] ?? null;
 
-        $users = $this->userRepository->getAll($offset, $limit, $searchData, $option);
-        $totalCount = $users['count'];
-
+        $result = $this->userRepository->getAll($offset, $limit, $searchData, $searchFields, $option);
+        
         return [
-            'option'    =>  $option, 
-            'offset'    =>  $offset, 
-            'limit'     =>  $limit, 
-            'totalCount'=>  $totalCount, 
-            'users'     =>  $users,
-            'metaData'  =>  $users['metadata']
+            'users'      => $result['result'],
+            'pagination' => [
+                'total'         => $result['total_count'],
+                'per_page'      => $result['per_page'],
+                'current_page'  => $result['current_page'],
+                'last_page'     => $result['last_page'],
+                'from'          => (($offset - 1) * $limit) + 1,
+                'to'            => min($offset * $limit, $result['total_count'])
+            ],
+            'metadata'          => $this->userRepository->metadata($result['total_count'], 'success')
         ];
     }
 

@@ -53,7 +53,8 @@ abstract class BaseRepository
 
     protected function applyDefaultCriteria($query)
     {
-        $query->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc');
+        // $query->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc') ?? $query->orderBy('id', 'desc');
+        $query->orderBy('id', 'desc');
     }
 
     protected function applySearchCriteria($query, $searchData, $searchFields)

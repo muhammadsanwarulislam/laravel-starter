@@ -52,7 +52,8 @@ class UserCreateOrUpdateRequest extends FormRequest
         if ($this->isMethod('post') || $this->isMethod('put')) {
             $rules = array_merge($rules, [
                 'name'     => ['required', Rule::unique('users', 'name')->ignore($userId ?? 0)],
-                'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId ?? 0)]
+                'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId ?? 0)],
+                'phone'    => 'required',
             ]);
         }
         return $rules;

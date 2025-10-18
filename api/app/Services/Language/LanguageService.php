@@ -13,11 +13,11 @@ class LanguageService
     
     public function getLanguages($requestData)
     {
-        $offset = $requestData['offset'] ?? 1;
-        $limit = $requestData['limit'] ?? 10;
-        $option = $requestData['option'] ?? 'list';
-        $searchData = $requestData['searchData'] ?? null;
-        $searchFields = $requestData['searchFields'] ?? null;
+        $offset         = $requestData['offset'] ?? 1;
+        $limit          = $requestData['limit'] ?? 10;
+        $option         = $requestData['option'] ?? 'list';
+        $searchData     = $requestData['searchData'] ?? null;
+        $searchFields   = $requestData['searchFields'] ?? null;
 
         $result = $this->languageRepository->getAll($offset, $limit, $searchData, $searchFields, $option);
         
