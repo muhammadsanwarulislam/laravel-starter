@@ -346,6 +346,10 @@
 </template>
 
 <script setup lang="ts">
+import { useNotification } from '~/composables/useNotification';
+
+const { add: notify } = useNotification();
+
 definePageMeta({
     middleware: 'auth'
 });
@@ -633,6 +637,7 @@ const confirmDelete = async () => {
         
         closeDeleteModal();
         loadUsers(); // Refresh the list
+        notify('User deleted successfully', 'success');
     } catch (error) {
         console.error('Error deleting user:', error);
         alert('Error deleting user. Please try again.');

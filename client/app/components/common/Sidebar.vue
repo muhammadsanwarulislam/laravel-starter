@@ -10,7 +10,7 @@
       <div v-for="(menuGroup, groupIndex) in menuGroups" :key="groupIndex" class="">
         <h2 v-if="menuGroup.title && (isExpanded || isMobileOpen)"
           class="text-xs uppercase text-gray-500 dark:text-gray-400 mb-1 p-2 flex items-center">
-          <span>{{t(menuGroup.title) }}</span>
+          <span>{{ t(menuGroup.title) }}</span>
         </h2>
         <ul class="space-y-2 px-2">
           <li v-for="(item, itemIndex) in menuGroup.items" :key="item.name" class="relative has-submenu mb-1">

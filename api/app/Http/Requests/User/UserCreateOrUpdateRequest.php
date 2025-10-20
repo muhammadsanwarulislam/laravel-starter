@@ -66,6 +66,7 @@ class UserCreateOrUpdateRequest extends FormRequest
             'name.unique'    => 'The name must be unique',
             'email.required' => 'The email field is required',
             'email.unique'   => 'The email must be unique',
+            'phone.required' => 'The phone field is required',
         ];
     }
 }

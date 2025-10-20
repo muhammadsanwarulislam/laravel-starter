@@ -123,9 +123,17 @@
           <!-- More Details & Edit Button -->
           <div v-if="showMoreDetails"
             class="space-y-3 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg transition-all duration-300">
-            <p class="text-xs text-gray-600 dark:text-gray-400"><span class="font-bold">Joined:</span> {{ user.joinDate }}</p>
-            <p class="text-xs text-gray-600 dark:text-gray-400"><span class="font-bold">Last Login:</span> {{ user.lastLogin }}</p>
-            <p class="text-xs text-gray-600 dark:text-gray-400"><span class="font-bold">Status:</span> {{ user.status }}
+            <p class="text-xs text-gray-600 dark:text-gray-400">
+              <span class="font-bold">Joined:</span> 
+              {{ user.joinDate }}
+            </p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">
+              <span class="font-bold">Last Login:</span>
+              {{ user.lastLogin }}
+            </p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">
+              <span class="font-bold">Status:</span> 
+              {{ user.status }}
             </p>
           </div>
           <button @click="showMoreDetails = !showMoreDetails"
@@ -152,11 +160,9 @@
             </h4>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input v-model="form.phone" label="Phone" type="tel" icon="phone" placeholder="+1 (555) 123-4567" />
-              <input v-model="form.location" label="Location" type="text" icon="map-pin"
-                placeholder="City, Country" />
+              <input v-model="form.location" label="Location" type="text" icon="map-pin" placeholder="City, Country" />
             </div>
-            <input v-model="form.website" label="Website" type="url" icon="globe"
-              placeholder="https://example.com" />
+            <input v-model="form.website" label="Website" type="url" icon="globe" placeholder="https://example.com" />
           </div>
 
           <!-- Avatar Upload -->
