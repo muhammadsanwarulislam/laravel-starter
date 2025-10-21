@@ -11,7 +11,7 @@
               class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               :class="column.class"
             >
-              {{ column.label }}
+              {{ t(toLowerCase(column.label)) }}
             </th>
             <th v-if="$slots.actions" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
@@ -58,6 +58,10 @@
 </template>
 
 <script setup lang="ts">
+
+import { useLocale } from '~/composables/useLocale';
+
+const { t } = useLocale();
 interface Column {
   key: string;
   label: string;
@@ -98,4 +102,7 @@ const formatValue = (value: any, column: Column) => {
       return value || '-';
   }
 };
+
+const toLowerCase = (str: string) => str.toLowerCase();
+
 </script>
