@@ -83,6 +83,10 @@
     <CommonBaseModal
       :show="showModal"
       :title="editingUser ? 'Edit User' : 'Create User'"
+      variant="default"
+      icon="👤"
+      icon-color="blue"
+      size="md"
       @close="closeModal"
     >
       <FormsUserForm
@@ -97,6 +101,9 @@
     <CommonBaseModal
       :show="showDeleteModal"
       title="Confirm Delete"
+      variant="colored"
+      icon="🗑️"
+      icon-color="red"
       size="sm"
       @close="closeDeleteModal"
     >

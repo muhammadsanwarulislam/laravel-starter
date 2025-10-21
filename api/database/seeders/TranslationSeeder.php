@@ -11,16 +11,13 @@ class TranslationSeeder extends Seeder
 {
     public function run(): void
     {
-        // Get language IDs  
         $banglaId   = Language::where('code', 'bn')->value('id');
 
-        // Get user IDs
-        $adminId    = User::where('email', 'admin@gmail.com')->value('id');
+        $adminId    = User::where('email', 'super@gmail.com')->value('id');
         $johnId     = User::where('email', 'john@example.com')->value('id');
         $janeId     = User::where('email', 'jane@example.com')->value('id');
 
         $translations = [
-            // User name translations - Bengali
             [
                 'translatable_type' => User::class,
                 'translatable_id'   => $adminId,

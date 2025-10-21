@@ -57,6 +57,22 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the profile associated with the user.
+     */
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+    
+    /**
+     * Get the files associated with the user.
+     */
+    public function files()
+    {
+        return $this->hasMany(FileManager::class);
+    }
+
+    /**
      * Override toArray to include translated name
      */
     public function toArray()

@@ -15,8 +15,8 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name'              => 'Admin User',
-                'email'             => 'admin@gmail.com',
+                'name'              => 'Super Admin',
+                'email'             => 'super@gmail.com',
                 'phone'             => '1774445555',
                 'email_verified_at' => now(),
                 'password'          => 'password',
@@ -44,6 +44,16 @@ class UserSeeder extends Seeder
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ],
+            [
+                'name'              => 'Mark Johnson',
+                'email'             => 'mark@example.com',
+                'phone'             => '2007778888',
+                'email_verified_at' => now(),
+                'password'          => 'password',
+                'remember_token'    => null,
+                'created_at'        => now(),
+                'updated_at'        => now(),
+            ],
         ];
 
         foreach ($users as $user) {
@@ -60,5 +70,8 @@ class UserSeeder extends Seeder
                 ]
             );
         }
+
+        $this->command->info('User table seeded!');
+        $this->command->info('Total users: ' . count($users));
     }
 }
