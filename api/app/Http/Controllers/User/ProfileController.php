@@ -1,18 +1,23 @@
 <?php
-
 declare(strict_types=1);
 
 namespace App\Http\Controllers\User;
 
 use App\Models\Profile;
 use Illuminate\Http\Request;
+use App\Traits\JsonResponseTrait;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
+use App\Services\User\ProfileService;
 use App\Http\Requests\User\ProfileRequest;
 use App\Http\Resources\User\ProfileResource;
 
 class ProfileController extends Controller
 {
+    use JsonResponseTrait;
+
+    public function __construct(protected ProfileService $profileService){}
+
     /**
      * Display a listing of the resource.
      */
@@ -82,28 +87,16 @@ class ProfileController extends Controller
     public function store(ProfileRequest $request): JsonResponse
     {
         try {
-            // Check if user already has a profile
-            $existingProfile = Profile::where('user_id', $request->user_id)->first();
+            $existingProfile = $this->profileService->getProfileByUserId($request->user_id);
             if ($existingProfile) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'User already has a profile'
-                ], 422);
+                return $this->errorJsonResponse('User already has a profile', 422);
             }
 
             $profile = Profile::create($request->validated());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Profile created successfully',
-                'data' => new ProfileResource($profile->load('user'))
-            ], 201);
+            return $this->createdJsonResponse('Profile created successfully', new ProfileResource($profile->load('user')), 201);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create profile',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return $this->errorJsonResponse('Failed to create profile', 500);
         }
     }
 

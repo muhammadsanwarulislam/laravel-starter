@@ -1,4 +1,3 @@
-<!-- components/common/SummaryCard.vue -->
 <template>
   <div class="bg-white rounded-xl shadow-sm p-6 border-l-4" :class="borderColorClass">
     <div class="flex items-center justify-between">

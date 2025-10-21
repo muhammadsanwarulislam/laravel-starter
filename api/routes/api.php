@@ -6,10 +6,10 @@ use Repository\Language\LanguageRepository;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\ProfileController;
-use Repository\Localization\LocalizationRepository;
 use App\Http\Controllers\Language\LanguageController;
 use App\Http\Controllers\FileManager\FileManagerController;
 use App\Http\Controllers\Localization\LocalizationController;
+use Repository\User\ProfileRepository;
 
 Route::post(UserRepository::REGISTER_API_ENDPOINT_NAME, [AuthController::class, 'signup']);
 Route::post(UserRepository::LOGIN_API_ENDPOINT_NAME, [AuthController::class, 'signin']);
@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource(LanguageRepository::RESOURCE_NAME, LanguageController::class);
 
     // Profile routes
-    Route::apiResource('profiles', ProfileController::class);
+    Route::apiResource(ProfileRepository::RESOURCE_NAME, ProfileController::class);
     Route::get('profiles/user/{userId}', [ProfileController::class, 'getByUser']);
     
     // File manager routes
