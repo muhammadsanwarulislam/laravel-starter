@@ -10,7 +10,7 @@
       <div v-for="(menuGroup, groupIndex) in menuGroups" :key="groupIndex" class="">
         <h2 v-if="menuGroup.title && (isExpanded || isMobileOpen)"
           class="text-xs uppercase text-gray-500 dark:text-gray-400 mb-1 p-2 flex items-center">
-          <span>{{ t(menuGroup.title) }}</span>
+          <span>{{ t(toLowerCase(menuGroup.title)) }}</span>
         </h2>
         <ul class="space-y-2 px-2">
           <li v-for="(item, itemIndex) in menuGroup.items" :key="item.name" class="relative has-submenu mb-1">
@@ -52,7 +52,7 @@
                   </span>
 
                   <span v-if="isExpanded || isMobileOpen" class="ml-3 text-sm font-medium">
-                    {{ item.name }}
+                    {{ t(toLowerCase(item.name)) }}
                   </span>
                   <svg v-if="isExpanded || isMobileOpen" class="w-4 h-4 ml-auto transition-transform"
                     :class="{ 'rotate-180': isSubmenuOpen(`${groupIndex}-${itemIndex}`) }" fill="none"
@@ -70,7 +70,7 @@
                     :class="isActive(subItem.path)
                       ? 'text-theme-600 dark:text-theme-400'
                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'">
-                    {{ subItem.name }}
+                    {{ t(toLowerCase(subItem.name)) }}
                   </router-link>
                 </div>
 
@@ -103,7 +103,7 @@ import { ref } from "vue";
 import { useRoute } from "vue-router";
 import { useLocale } from '~/composables/useLocale';
 
-const { locale, t } = useLocale();
+const { t } = useLocale();
 
 const sidebarReady = ref(false)
 onMounted(() => {
@@ -144,4 +144,12 @@ function handleFloatingEnter(key) {
 
 function openFloatingPanel(key) { floatingPanelOpen.value = key }
 function closeFloatingPanel(key) { if (floatingPanelOpen.value === key) floatingPanelOpen.value = null }
+
+const setActiveItem = (path) => {
+  if (isMobile.value) {
+    isMobileOpen.value = false;
+  }
+};
+
+const toLowerCase = (str) => str.toLowerCase();
 </script>
