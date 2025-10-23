@@ -2,9 +2,8 @@
   <header class="flex items-center justify-between bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 p-3 shadow-sm">
     <div class="flex items-center gap-4">
       <div>
-        <commonSideBarToggle />
+        <CommonSideBarToggle />
       </div>
-      
       <div class="flex items-center gap-3">
         <div class="h-10 w-10">
           <div v-if="headerReady" class="bg-theme-600 dark:bg-theme-500 p-2 rounded-lg">
@@ -15,17 +14,16 @@
         </div>
         <span class="font-bold text-xl text-gray-800 dark:text-white hidden md:block">Admin</span>
       </div>
-      
-      <commonSearchBar />
+      <CommonSearchBar />
     </div>
     
     <!-- Right: Actions -->
     <div class="flex items-center gap-3">
       <div class="hidden md:block relative">
-        <commonDigitalClock />
+        <CommonDigitalClock />
       </div>
       <div class="relative">
-        <commonThemeToggle />
+        <CommonThemeToggle />
       </div>
       
       <!-- Notifications Dropdown -->
@@ -42,10 +40,10 @@
       
       <!-- Profile Dropdown -->
       <div class="relative">
-        <commonProfile @toggleProfileFull="toggleProfileFull" @toggleSettings="toggleSettings" @toggleLanguageSwitcher="toggleLanguageSwitcher" />
-        <commonProfileFull :showProfileFull="showProfileFull" @close="showProfileFull = false" />
-        <commonSetting :showSettings="showSettings" @close="showSettings = false" />
-        <commonLanguageSwitcher :showLanguageSwitcher="showLanguageSwitcher" @close="showLanguageSwitcher = false" />
+        <CommonProfile @toggleProfileDetails="toggleProfileDetails" @toggleSettings="toggleSettings" @toggleLanguageSwitcher="toggleLanguageSwitcher" />
+        <CommonProfileDetails :showProfileDetails="showProfileDetails" @close="showProfileDetails = false" />
+        <CommonSetting :showSettings="showSettings" @close="showSettings = false" />
+        <CommonLanguageSwitcher :showLanguageSwitcher="showLanguageSwitcher" @close="showLanguageSwitcher = false" />
       </div>
     </div>
   </header>
@@ -71,10 +69,10 @@ function toggleLanguageSwitcher() {
   showLanguageSwitcher.value = true
 }
 
-const showProfileFull = ref(false)
+const showProfileDetails = ref(false)
 
-function toggleProfileFull() {
-  showProfileFull.value = true
+function toggleProfileDetails() {
+  showProfileDetails.value = true
 }
 
 const showNotifications = ref(false)

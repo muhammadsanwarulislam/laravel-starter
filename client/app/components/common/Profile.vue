@@ -38,7 +38,7 @@
         <li>
           <NuxtLink
             class="flex items-center px-4 py-2.5 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-150"
-            @click="toggleProfileFull">
+            @click="toggleProfileDetails">
             <svg class="h-4 w-4 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -101,7 +101,7 @@ function logout() {
   navigateTo('/', { replace: true })
 }
 
-const emit = defineEmits(['toggleProfileFull', 'toggleLanguageSwitcher', 'toggleSettings', 'toggleLoginInfo'])
+const emit = defineEmits(['toggleProfileDetails', 'toggleLanguageSwitcher', 'toggleSettings', 'toggleLoginInfo'])
 
 function toggleSettings() {
   emit('toggleSettings')
@@ -113,8 +113,8 @@ function toggleLanguageSwitcher() {
   closeProfileMenu()
 }
 
-function toggleProfileFull() {
-  emit('toggleProfileFull')
+function toggleProfileDetails() {
+  emit('toggleProfileDetails')
   closeProfileMenu()
 }
 
