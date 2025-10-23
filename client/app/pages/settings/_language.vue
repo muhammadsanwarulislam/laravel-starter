@@ -229,7 +229,7 @@
 
 <script setup lang="ts">
 // Components
-import BaseModal from '~/components/common/BaseModal.vue';
+import BaseModal from '~/components/modals/BaseModal.vue';
 import DataTable from '~/components/common/DataTable.vue';
 import Pagination from '~/components/common/Pagination.vue';
 import SearchFilter from '~/components/common/SearchFilter.vue';

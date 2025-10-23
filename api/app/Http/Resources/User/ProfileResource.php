@@ -27,6 +27,7 @@ class ProfileResource extends JsonResource
                 return [
                     'id' => $this->user->id,
                     'name' => $this->user->name,
+                    'phone' => $this->user->phone,
                     'email' => $this->user->email,
                     'email_verified_at' => $this->user->email_verified_at?->toISOString(),
                     'created_at' => $this->user->created_at?->toISOString(),

@@ -103,19 +103,18 @@ class ProfileController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Profile $profile): JsonResponse
+    public function show($id): JsonResponse
     {
         try {
-            return response()->json([
-                'success' => true,
-                'data' => new ProfileResource($profile->load('user'))
-            ]);
+            $profile = Profile::with('user')->find($id);
+
+            if (!$profile) {
+                return $this->errorJsonResponse('Profile not found', 404);
+            }
+
+            return $this->successJsonResponse('Profile fetched successfully', new ProfileResource($profile));
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch profile',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return $this->errorJsonResponse('Failed to fetch profile', 500);
         }
     }
 
@@ -149,16 +148,9 @@ class ProfileController extends Controller
         try {
             $profile->delete();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Profile deleted successfully'
-            ]);
+            return $this->successJsonResponse('Profile deleted successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete profile',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return $this->errorJsonResponse('Failed to delete profile', 500);
         }
     }
 
@@ -171,22 +163,12 @@ class ProfileController extends Controller
             $profile = Profile::with('user')->where('user_id', $userId)->first();
 
             if (!$profile) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Profile not found for this user'
-                ], 404);
+                return $this->errorJsonResponse('Profile not found', 404);
             }
 
-            return response()->json([
-                'success' => true,
-                'data' => new ProfileResource($profile)
-            ]);
+            return $this->successJsonResponse('Profile fetched successfully', new ProfileResource($profile));
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch profile',
-                'error' => config('app.debug') ? $e->getMessage() : null
-            ], 500);
+            return $this->errorJsonResponse('Failed to fetch profile', 500);
         }
     }
 }

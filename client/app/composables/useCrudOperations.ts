@@ -36,7 +36,7 @@ export function useCrudOperations<T extends { id: number | string }>(options: Cr
     if (searchQuery.value.trim() !== '') {
       params.option = 'search';
       params.searchData = searchQuery.value;
-      params.searchFields = 'name,email,phone'; // Default fields, can be customized
+      params.searchFields = 'name,email,phone';
     }
     // Handle filters
     else if (Object.keys(filters.value).length > 0) {

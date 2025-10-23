@@ -22,6 +22,7 @@ const menuGroups = [
         subItems: [
           { name: "Language", path: "/settings/language", description: "Manage languages" },
           { name: "UI Translations", path: "/settings/translations", description: "Manage UI translations" },
+          { name: "Profile", path: "/settings/profile", description: "Manage profile" }
         ],
       },
     ],

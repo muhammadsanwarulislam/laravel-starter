@@ -113,6 +113,10 @@ export const useAuth = () => {
     }
   };
 
+  const getCurrentUserId = (): number | null => {
+    return user.value?.data?.user?.id || null;
+  };
+
   return {
     user,
     token: readonly(token),
@@ -120,6 +124,7 @@ export const useAuth = () => {
     signup,
     logout,
     fetchCurrentUser,
-    isAuthenticated: computed(() => !!token.value && !!user.value)
+    isAuthenticated: computed(() => !!token.value && !!user.value),
+    getCurrentUserId
   };
 };

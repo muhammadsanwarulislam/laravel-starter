@@ -80,7 +80,7 @@
     />
 
     <!-- Create/Edit Modal -->
-    <CommonBaseModal
+    <ModalsBaseModal
       :show="showModal"
       :title="editingUser ? 'Edit User' : 'Create User'"
       variant="default"
@@ -95,10 +95,10 @@
         @submit="submitForm"
         @cancel="closeModal"
       />
-    </CommonBaseModal>
+    </ModalsBaseModal>
 
     <!-- Delete Confirmation Modal -->
-    <CommonBaseModal
+    <ModalsBaseModal
       :show="showDeleteModal"
       title="Confirm Delete"
       variant="colored"
@@ -127,7 +127,7 @@
           </button>
         </div>
       </div>
-    </CommonBaseModal>
+    </ModalsBaseModal>
   </div>
 </template>
 
@@ -143,10 +143,8 @@ definePageMeta({
 const {
   data,
   isLoading,
-  isSuccess,
   pagination,
   searchQuery,
-  currentPage,
   itemsPerPage,
   filters,
   loadData,

@@ -33,7 +33,6 @@ class UserCreateOrUpdateRequest extends FormRequest
             $userId = $this->route(rtrim($this->userRepository::RESOURCE_NAME,'s'));
             $currentUser = $this->userRepository->findByID($userId);
             $incomingData = $this->all();
-    
             // Compare incoming data with current user data
             if(empty($currentUser)) {
                 $changedFields = [];
@@ -47,13 +46,14 @@ class UserCreateOrUpdateRequest extends FormRequest
 
         $rules = [
             'status'  => 'nullable|in:0,1',
+            'phone'   => 'required|unique:users,phone',
+            'password' => 'nullable|min:8',
         ];
 
         if ($this->isMethod('post') || $this->isMethod('put')) {
             $rules = array_merge($rules, [
                 'name'     => ['required', Rule::unique('users', 'name')->ignore($userId ?? 0)],
-                'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId ?? 0)],
-                'phone'    => 'required',
+                'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId ?? 0)]
             ]);
         }
         return $rules;
@@ -67,6 +67,9 @@ class UserCreateOrUpdateRequest extends FormRequest
             'email.required' => 'The email field is required',
             'email.unique'   => 'The email must be unique',
             'phone.required' => 'The phone field is required',
+            'phone.unique'   => 'The phone must be unique',
+            'password.required' => 'The password field is required',
+            'password.min' => 'The password must be at least 8 characters',
         ];
     }
 }

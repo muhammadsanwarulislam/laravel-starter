@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -67,6 +68,19 @@ class UserSeeder extends Seeder
                     'remember_token'    => $user['remember_token'],
                     'created_at'        => $user['created_at'],
                     'updated_at'        => $user['updated_at'],
+                ]
+            );
+
+            Profile::updateOrCreate(
+                ['user_id' => User::where('email', $user['email'])->value('id')],
+                [
+                    'user_id' => User::where('email', $user['email'])->value('id'),
+                    'gender' => 'male',
+                    'type' => 'student',
+                    'nid' => '1234567890',
+                    'address' => '123 Main St, Anytown, USA',
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]
             );
         }

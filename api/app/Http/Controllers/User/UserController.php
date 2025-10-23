@@ -36,7 +36,7 @@ class UserController extends Controller
     public function store(UserCreateOrUpdateRequest $request)
     {
         try {
-            $user = $this->userService->createUser($request->all());
+            $user = $this->userService->createUser($request->validated());
 
             return $this->createdJsonResponse('User created successfully', ['user' => new UserResource($user)]);
         } catch (\Exception $e) {
