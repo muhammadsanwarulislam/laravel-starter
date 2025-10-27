@@ -11,6 +11,7 @@ export default defineNuxtConfig({
       tailwindcss()
     ]
   },
+  modules: [],
   runtimeConfig: {
     public: {
       appMode: process.env.NUXT_PUBLIC_APP_MODE,

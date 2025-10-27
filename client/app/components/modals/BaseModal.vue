@@ -19,7 +19,7 @@
             class="relative transform overflow-hidden rounded-2xl text-left shadow-2xl transition-all w-full border border-white/20"
             :class="[modalClasses, sizeClasses]">
             <!-- Glass background effect -->
-            <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md"></div>
+            <div class="absolute inset-0 bg-linear-to-br from-white/10 to-white/5 backdrop-blur-md"></div>
             <div class="absolute inset-0 bg-white/5"></div>
 
             <!-- Content Container -->
@@ -30,7 +30,7 @@
                   <div class="flex items-center space-x-3">
                     <!-- Icon -->
                     <div v-if="icon"
-                      class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-lg"
+                      class="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/20 shadow-lg"
                       :class="iconBackgroundClass">
                       <component :is="icon" v-if="typeof icon === 'object'" class="w-6 h-6" />
                       <span v-else class="text-xl">{{ icon }}</span>
@@ -39,7 +39,7 @@
                     <!-- Title & Description -->
                     <div>
                       <h2 id="modal-title"
-                        class="text-2xl font-bold bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent">
+                        class="text-2xl font-bold bg-linear-to-r from-white to-gray-200 bg-clip-text text-transparent">
                         {{ title }}
                       </h2>
                       <p v-if="description" id="modal-description" class="text-gray-300 mt-1 text-sm">
