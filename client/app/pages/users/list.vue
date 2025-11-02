@@ -21,7 +21,6 @@
       @filter-change="handleFilterChange"
       @items-per-page-change="handleItemsPerPageChange"
     />
-
     <!-- Data Table -->
     <CommonDataTable
       :data="data"
@@ -172,7 +171,7 @@ const userColumns = [
   { key: 'name', label: 'Name' },
   { key: 'email', label: 'Email' },
   { key: 'phone', label: 'Phone' },
-  { key: 'is_active', label: 'Status', type: 'status' },
+  { key: 'status', label: 'Status', type: 'status' },
   { key: 'created_at', label: 'Created At', type: 'date' }
 ];
 

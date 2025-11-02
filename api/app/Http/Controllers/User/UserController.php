@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Http\Controllers\User;
 
 use Illuminate\Http\Request;
@@ -14,18 +16,17 @@ class UserController extends Controller
     use JsonResponseTrait;
 
     public function __construct(protected UserService $userService) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
         try {
-
             $data = $this->userService->getUsers($request);
-            
+
             return $this->successJsonResponse('User list', UserResource::collection($data['users']));
         } catch (\Exception $e) {
-
             return $this->errorJsonResponse($e->getMessage());
         }
     }
@@ -36,11 +37,14 @@ class UserController extends Controller
     public function store(UserCreateOrUpdateRequest $request)
     {
         try {
-            $user = $this->userService->createUser($request->validated());
+            $validatedData = $request->validated();
+            $user = $this->userService->createUser($validatedData);
 
-            return $this->createdJsonResponse('User created successfully', ['user' => new UserResource($user)]);
+            return $this->createdJsonResponse(
+                'User created successfully',
+                ['user' => new UserResource($user)]
+            );
         } catch (\Exception $e) {
-
             return $this->errorJsonResponse($e->getMessage());
         }
     }
@@ -53,9 +57,11 @@ class UserController extends Controller
         try {
             $user = $this->userService->getUserById($id);
 
-            return $this->successJsonResponse("The user id is: $id", new UserResource($user));
+            return $this->successJsonResponse(
+                "User details retrieved successfully",
+                new UserResource($user)
+            );
         } catch (\Exception $e) {
-
             return $this->errorJsonResponse($e->getMessage());
         }
     }
@@ -67,13 +73,17 @@ class UserController extends Controller
     {
         try {
             $isPatch = $request->isMethod('patch');
-            $user = $this->userService->updateUser($request->all(), $id, $isPatch);
+            $validatedData = $request->validated();
+
+            $user = $this->userService->updateUser($validatedData, $id, $isPatch);
 
             $successMessage = $isPatch ? 'User status updated successfully' : 'User updated successfully';
 
-            return $this->createdJsonResponse($successMessage, ['user' => new UserResource($user)]);
+            return $this->successJsonResponse(
+                $successMessage,
+                ['user' => new UserResource($user)]
+            );
         } catch (\Exception $e) {
-
             return $this->errorJsonResponse($e->getMessage());
         }
     }
@@ -86,9 +96,8 @@ class UserController extends Controller
         try {
             $this->userService->deleteUserById($id);
 
-            return $this->successJsonResponse('User delete successfully');
+            return $this->successJsonResponse('User deleted successfully');
         } catch (\Exception $e) {
-
             return $this->errorJsonResponse($e->getMessage());
         }
     }

@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -8,68 +10,63 @@ use Repository\User\UserRepository;
 
 class UserCreateOrUpdateRequest extends FormRequest
 {
-    public function __construct(protected UserRepository $userRepository)
-    {
-    }
+    public function __construct(protected UserRepository $userRepository) {}
 
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
     public function authorize()
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, mixed>
-     */
     public function rules(): array
     {
-        if($this->isMethod('put')) {
-            $userId = $this->route(rtrim($this->userRepository::RESOURCE_NAME,'s'));
-            $currentUser = $this->userRepository->findByID($userId);
-            $incomingData = $this->all();
-            // Compare incoming data with current user data
-            if(empty($currentUser)) {
-                $changedFields = [];
-                foreach ($incomingData as $key => $value) {
-                    if (isset($currentUser->$key) && $currentUser->$key != $value) {
-                        $changedFields[$key] = $value;
-                    }
-                }
-            }
-        }
+        $userId = $this->route('user') ?? $this->route('id');
+        $isUpdate = $this->isMethod('put') || $this->isMethod('patch');
 
         $rules = [
-            'status'  => 'nullable|in:0,1',
-            'phone'   => 'required|unique:users,phone',
-            'password' => 'nullable|min:8',
+            'name'              => ['required', Rule::unique('users', 'name')->ignore($userId ?? 0)],
+            'email'             => ['required', 'email', Rule::unique('users', 'email')->ignore($userId ?? 0)],
+            'phone'             => ['required', Rule::unique('users', 'phone')->ignore($userId ?? 0)],
+            'password'          => [$isUpdate ? 'nullable' : 'required', 'min:8'],
+            'status'            => 'nullable|boolean',
+            'translations'      => 'sometimes|array',
+            'translations.*'    => 'sometimes|array',
+            'translations.*.*'  => 'sometimes|string',
         ];
 
-        if ($this->isMethod('post') || $this->isMethod('put')) {
-            $rules = array_merge($rules, [
-                'name'     => ['required', Rule::unique('users', 'name')->ignore($userId ?? 0)],
-                'email'    => ['required', 'email', Rule::unique('users', 'email')->ignore($userId ?? 0)]
-            ]);
-        }
         return $rules;
     }
 
     public function messages()
     {
         return [
-            'name.required'  => 'The name field is required',
-            'name.unique'    => 'The name must be unique',
-            'email.required' => 'The email field is required',
-            'email.unique'   => 'The email must be unique',
-            'phone.required' => 'The phone field is required',
-            'phone.unique'   => 'The phone must be unique',
+            'name.required'     => 'The name field is required',
+            'name.unique'       => 'The name must be unique',
+            'email.required'    => 'The email field is required',
+            'email.unique'      => 'The email must be unique',
+            'phone.required'    => 'The phone field is required',
+            'phone.unique'      => 'The phone must be unique',
             'password.required' => 'The password field is required',
-            'password.min' => 'The password must be at least 8 characters',
+            'password.min'      => 'The password must be at least 8 characters',
         ];
+    }
+
+    protected function prepareForValidation()
+    {
+        $translations = $this->input('translations', []);
+
+        if ($this->has('name_en') || $this->has('name_bn')) {
+            if ($this->has('name_en')) {
+                $translations['name']['en'] = $this->input('name_en');
+            }
+            if ($this->has('name_bn')) {
+                $translations['name']['bn'] = $this->input('name_bn');
+            }
+        }
+
+        if (!$this->has('name') && isset($translations['name']['en'])) {
+            $this->merge(['name' => $translations['name']['en']]);
+        }
+
+        $this->merge(['translations' => $translations]);
     }
 }

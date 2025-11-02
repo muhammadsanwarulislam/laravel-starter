@@ -93,31 +93,58 @@ export function useCrudOperations<T extends { id: number | string }>(options: Cr
     }
   };
 
-  const createItem = async (formData: any) => {
-    try {
-      await $http(endpoint, {
-        method: 'POST',
-        body: formData
-      });
-      await loadData();
-    } catch (error) {
-      console.error(`Error creating ${endpoint}:`, error);
-      throw error;
-    }
-  };
+const createItem = async (formData: any) => {
+  try {
+    const apiData = {
+      ...formData,
+      ...(formData.translations ? transformTranslations(formData.translations) : {})
+    };
+    
+    await $http(endpoint, {
+      method: 'POST',
+      body: apiData
+    });
+    await loadData();
+  } catch (error) {
+    console.error(`Error creating ${endpoint}:`, error);
+    throw error;
+  }
+};
 
-  const updateItem = async (id: number | string, formData: any) => {
-    try {
-      await $http(`${endpoint}/${id}`, {
-        method: 'PUT',
-        body: formData
-      });
-      await loadData();
-    } catch (error) {
-      console.error(`Error updating ${endpoint}:`, error);
-      throw error;
-    }
-  };
+const updateItem = async (id: number | string, formData: any) => {
+  try {
+    const apiData = {
+      ...formData,
+      ...(formData.translations ? transformTranslations(formData.translations) : {})
+    };
+    
+    await $http(`${endpoint}/${id}`, {
+      method: 'PUT',
+      body: apiData
+    });
+    await loadData();
+  } catch (error) {
+    console.error(`Error updating ${endpoint}:`, error);
+    throw error;
+  }
+};
+
+// Helper function to transform translations
+const transformTranslations = (translations: Record<string, Record<string, string>>) => {
+  const result: any = {};
+  
+  Object.keys(translations).forEach(field => {
+    const fieldTranslations = translations[field] || {};
+    Object.keys(fieldTranslations).forEach(lang => {
+      const value = fieldTranslations[lang];
+      if (value !== undefined && value !== null) {
+        result[`${field}_${lang}`] = value;
+      }
+    });
+  });
+  
+  return result;
+};
 
   const deleteItem = async (id: number | string) => {
     try {

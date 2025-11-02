@@ -1,17 +1,18 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services\User;
 
 use Repository\User\UserRepository;
+use App\Models\Language;
+use App\Models\Translation;
 
 class UserService
 {
     public function __construct(
         protected UserRepository $userRepository
-    ) {
-    
-    }
+    ) {}
 
     public function getUsers($requestData)
     {
@@ -22,7 +23,7 @@ class UserService
         $searchFields   = $requestData['searchFields'] ?? null;
 
         $result = $this->userRepository->getAll($offset, $limit, $searchData, $searchFields, $option);
-        
+
         return [
             'users'      => $result['result'],
             'pagination' => [
@@ -39,12 +40,71 @@ class UserService
 
     public function createUser(array $data)
     {
-        return $this->userRepository->create($data);
+        // Extract translations from the data
+        $translations = $data['translations'] ?? [];
+        unset($data['translations']);
+
+        // Ensure name is set from English translation if available
+        if (!isset($data['name']) && isset($translations['name']['en'])) {
+            $data['name'] = $translations['name']['en'];
+        }
+
+        // Create the user
+        $user = $this->userRepository->create($data);
+
+        // Save translations
+        if (!empty($translations)) {
+            $this->saveTranslations($user, $translations);
+        }
+
+        return $user;
     }
 
     public function updateUser(array $data, string $id, bool $isPatch = false)
     {
-        return $this->userRepository->updateByID($id, $data);
+        // Extract translations from the data
+        $translations = $data['translations'] ?? [];
+        unset($data['translations']);
+
+        // Ensure name is set from English translation if available
+        if (!isset($data['name']) && isset($translations['name']['en'])) {
+            $data['name'] = $translations['name']['en'];
+        }
+
+        // Update the user
+        $user = $this->userRepository->updateByID($id, $data);
+
+        // Save translations
+        if (!empty($translations)) {
+            $this->saveTranslations($user, $translations);
+        }
+
+        return $user;
+    }
+
+    protected function saveTranslations($user, $translations)
+    {
+        foreach ($translations as $attribute => $langValues) {
+            foreach ($langValues as $langCode => $value) {
+                $language = Language::where('code', $langCode)->first();
+
+                if (!$language) {
+                    continue;
+                }
+
+                Translation::updateOrCreate(
+                    [
+                        'translatable_type' => get_class($user),
+                        'translatable_id'   => $user->id,
+                        'language_id'       => $language->id,
+                        'attribute'         => $attribute,
+                    ],
+                    [
+                        'value' => $value,
+                    ]
+                );
+            }
+        }
     }
 
     public function getUserById($userId)
@@ -54,6 +114,6 @@ class UserService
 
     public function deleteUserById($userId)
     {
-        return$this->userRepository->deletedByID($userId);
+        return $this->userRepository->deletedByID($userId);
     }
 }

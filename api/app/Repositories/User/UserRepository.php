@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Repository\User;
@@ -45,5 +46,23 @@ class UserRepository extends BaseRepository
         } else {
             $this->model()::create(array_merge(['email' => $email], $modelData));
         }
+    }
+
+    public function create(array $modelData)
+    {
+        if (!isset($modelData['name']) && isset($modelData['translations']['name']['en'])) {
+            $modelData['name'] = $modelData['translations']['name']['en'];
+        }
+
+        return parent::create($modelData);
+    }
+
+    public function updateByID($id, array $modelData)
+    {
+        if (!isset($modelData['name']) && isset($modelData['translations']['name']['en'])) {
+            $modelData['name'] = $modelData['translations']['name']['en'];
+        }
+
+        return parent::updateByID($id, $modelData);
     }
 }
