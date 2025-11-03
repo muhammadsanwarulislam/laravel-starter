@@ -33,6 +33,7 @@ export const userFormConfig = {
       label: 'Status',
       type: 'select',
       required: false,
+      defaultOption: 'Select Status',
       options: [
         { value: true, label: 'Active' },
         { value: false, label: 'Inactive' }

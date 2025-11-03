@@ -72,6 +72,7 @@
             :required="field.required"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
+            <option value="" disabled selected>{{ field.defaultOption || `Select ${field.label}` }}</option>
             <option v-for="option in field.options" :key="option.value" :value="option.value">
               {{ option.label }}
             </option>
@@ -137,7 +138,8 @@ interface FormField {
   rows?: number;
   hint?: string;
   translatable?: boolean;
-  showOnEdit?: boolean; 
+  showOnEdit?: boolean;
+  defaultOption?: string; 
 }
 
 interface TranslatableField {
@@ -214,7 +216,8 @@ onMounted(() => {
     if (!field.translatable) {
       // Initialize with empty string if not already present
       if (formData[field.key] === undefined) {
-        formData[field.key] = '';
+        // For select fields, initialize with empty string to show default option
+        formData[field.key] = field.type === 'select' ? '' : '';
       }
     }
   });
