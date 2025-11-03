@@ -21,8 +21,9 @@
       @filter-change="handleFilterChange"
       @items-per-page-change="handleItemsPerPageChange"
     />
+
     <!-- Data Table -->
-    <CommonDataTable
+    <DataTable
       :data="data"
       :columns="userColumns"
       :loading="isLoading"
@@ -69,7 +70,7 @@
           </svg>
         </button>
       </template>
-    </CommonDataTable>
+    </DataTable>
 
     <!-- Pagination -->
     <CommonPagination
@@ -82,23 +83,22 @@
       @items-per-page-change="handleItemsPerPageChange"
     />
 
-    <!-- Create/Edit Modal -->
-    <ModalsBaseModal
+    <!-- Form Modal -->
+    <ModalsFormModal
       :show="showModal"
       :title="editingUser ? 'Edit User' : 'Create User'"
-      variant="default"
+      :form-title="userFormConfig.title"
+      :fields="userFormConfig.fields"
+      :initial-data="editingUser || {}"
+      :loading="isSubmitting"
+      :is-edit="!!editingUser"
+      :variant="'default'"
       icon="👤"
       icon-color="blue"
-      size="md"
+      size="lg"
       @close="closeModal"
-    >
-      <FormsUserForm
-        :user="editingUser"
-        :loading="isSubmitting"
-        @submit="submitForm"
-        @cancel="closeModal"
-      />
-    </ModalsBaseModal>
+      @submit="submitForm"
+    />
 
     <!-- Delete Confirmation Modal -->
     <ModalsBaseModal
@@ -117,7 +117,7 @@
         <div class="flex justify-end space-x-3">
           <button
             @click="closeDeleteModal"
-            class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+            class="px-4 py-2 bg-white text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
           >
             Cancel
           </button>
@@ -135,8 +135,8 @@
 </template>
 
 <script setup lang="ts">
-// Composables
 import { useCrudOperations } from '~/composables/useCrudOperations';
+import { userFormConfig } from '~/config/forms/user';
 
 definePageMeta({
   middleware: 'auth'
