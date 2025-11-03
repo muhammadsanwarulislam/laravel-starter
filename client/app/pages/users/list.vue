@@ -95,7 +95,7 @@
       :variant="'default'"
       icon="👤"
       icon-color="blue"
-      size="md"
+      size="lg"
       @close="closeModal"
       @submit="submitForm"
     />
