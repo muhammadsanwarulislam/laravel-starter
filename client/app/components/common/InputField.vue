@@ -1,120 +1,56 @@
-<!-- components/common/InputField.vue -->
 <template>
-  <div :class="containerClass">
-    <label class="block text-sm font-medium text-gray-700 mb-1">
-      {{ field.label }}
-      <span v-if="field.required" class="text-red-500">*</span>
+  <div class="mb-2">
+    <label v-if="label" :for="id" class="block text-md font-medium text-white">
+      {{ label }} <span v-if="required" class="text-red-500">*</span>
     </label>
-    
+
     <!-- Text Input -->
-    <input
-      v-if="field.type === 'text' || field.type === 'email' || field.type === 'tel' || field.type === 'password'"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
-      :type="field.type"
-      :required="field.required"
-      :placeholder="field.placeholder"
-      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-    />
-    
+    <input v-if="!isSelect && type !== 'radio'" :id="id" :type="type" :placeholder="placeholder" :value="modelValue"
+      @input="updateValue($event.target.value)"
+      class="w-full px-4 py-2 text-white text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-900 focus:border-transparent"
+      :required="required" />
+
     <!-- Select Dropdown -->
-    <select
-      v-else-if="field.type === 'select'"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
-      :required="field.required"
-      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-    >
-      <option value="" disabled selected>{{ field.defaultOption || `Select ${field.label}` }}</option>
-      <option v-for="option in field.options" :key="option.value" :value="option.value">
+    <select v-else-if="isSelect" :id="id" :value="modelValue" @change="updateValue($event.target.value)"
+      class="w-full px-4 py-2 text-white text-lg border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-fuchsia-900 focus:border-transparent"
+      :required="required">
+      <option selected disabled value="">{{ placeholder }}</option>
+      <option v-for="(option, index) in options" :key="index" :value="option.value">
         {{ option.label }}
       </option>
     </select>
-    
-    <!-- Textarea -->
-    <textarea
-      v-else-if="field.type === 'textarea'"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
-      :required="field.required"
-      :placeholder="field.placeholder"
-      :rows="field.rows || 3"
-      class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-    ></textarea>
-    
-    <!-- Checkbox -->
-    <div v-else-if="field.type === 'checkbox'" class="flex items-center">
-      <input
-        type="checkbox"
-        :id="field.key"
-        :checked="modelValue"
-        @change="$emit('update:modelValue', $event.target.checked)"
-        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-      />
-      <label :for="field.key" class="ml-2 block text-sm text-gray-700">
-        {{ field.label }}
+
+    <!-- Radio Button Group -->
+    <div v-else-if="type === 'radio'" class="flex space-x-4 mt-2">
+      <label v-for="(option, index) in options" :key="index" class="flex items-center">
+        <input :id="`${id}-${index}`" type="radio" :name="id" :value="option.value"
+          :checked="modelValue === option.value" @change="updateValue(option.value)"
+          class="w-4 h-4 text-fuchsia-900 bg-wihite border-gray-300 focus:ring-2 focus:ring-fuchsia-900" />
+        <span class="ml-2 text-white">{{ option.label }}</span>
       </label>
     </div>
-    
-    <!-- Field hint -->
-    <p v-if="field.hint" class="text-xs text-gray-500 mt-1">{{ field.hint }}</p>
+
+    <!-- Error Message Display -->
+    <p v-if="errorMessage" class="text-red-500 text-sm mt-1">{{ errorMessage }}</p>
   </div>
 </template>
 
-<script setup lang="ts">
-interface FormField {
-  key: string;
-  label: string;
-  type: 'text' | 'email' | 'tel' | 'password' | 'select' | 'textarea' | 'checkbox';
-  required?: boolean;
-  placeholder?: string;
-  options?: { value: any; label: string }[];
-  rows?: number;
-  hint?: string;
-  translatable?: boolean;
-  showOnEdit?: boolean;
-  defaultOption?: string;
-  layout?: 'full' | 'half' | 'third';
-}
-
-interface Props {
-  field: FormField;
-  modelValue: any;
-  containerClass?: string;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  containerClass: ''
+<script setup>
+const props = defineProps({
+  id: { type: String, required: true },
+  label: { type: String, required: true },
+  type: { type: String, default: "text" },
+  placeholder: { type: String, default: "" },
+  modelValue: { type: String, default: "" },
+  required: { type: Boolean, default: false },
+  isSelect: { type: Boolean, default: false },
+  options: { type: Array, default: () => [] },
+  errorMessage: { type: String, default: "" },
 });
 
-const emit = defineEmits<{
-  'update:modelValue': [value: any];
-}>();
+const emit = defineEmits(["update:modelValue"]);
+
+const updateValue = (value) => {
+  emit("update:modelValue", value);
+};
 </script>
-
-<style scoped>
-input[type="text"],
-input[type="email"],
-input[type="tel"],
-input[type="password"],
-select,
-textarea {
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-input[type="checkbox"] {
-  transition: all 0.2s ease-in-out;
-}
-
-input[type="checkbox"]:checked {
-  background-color: #3b82f6;
-  border-color: #3b82f6;
-}
-</style>
