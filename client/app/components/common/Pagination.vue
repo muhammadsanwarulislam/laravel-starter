@@ -3,7 +3,8 @@
     <div class="flex flex-col sm:flex-row items-center justify-between w-full gap-4">
       <!-- Pagination Info -->
       <div class="text-sm text-gray-700">
-        Showing <span class="font-medium">{{ pagination.from || 0 }}</span> to 
+        Showing 
+        <span class="font-medium">{{ pagination.from || 0 }}</span> to 
         <span class="font-medium">{{ pagination.to || 0 }}</span> of 
         <span class="font-medium">{{ pagination.total || 0 }}</span> results
       </div>

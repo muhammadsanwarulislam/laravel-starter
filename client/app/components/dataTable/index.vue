@@ -77,7 +77,7 @@ interface Props {
   emptyMessage?: string;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   loading: false,
   emptyMessage: 'No records available.'
 });

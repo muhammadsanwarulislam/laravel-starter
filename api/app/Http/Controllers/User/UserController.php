@@ -24,7 +24,6 @@ class UserController extends Controller
     {
         try {
             $data = $this->userService->getUsers($request);
-
             return $this->successJsonResponse('User list', UserResource::collection($data['users']));
         } catch (\Exception $e) {
             return $this->errorJsonResponse($e->getMessage());

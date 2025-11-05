@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Http\Controllers\Language;
 
 use Illuminate\Http\Request;
@@ -13,20 +15,13 @@ class LanguageController extends Controller
 {
     use JsonResponseTrait;
 
-    public function __construct(protected LanguageService $languageService)
-    {
-    }
+    public function __construct(protected LanguageService $languageService) {}
 
     public function index(Request $request)
     {
         try {
             $data = $this->languageService->getLanguages($request->all());
-
-            return $this->successJsonResponse('Language list', [
-                'languages'     => LanguageResource::collection($data['languages']),
-                'pagination'    => $data['pagination'],
-                'metadata'      => $data['metadata']
-            ]);
+            return $this->successJsonResponse('Language list', LanguageResource::collection($data['languages']));
         } catch (\Exception $e) {
             return $this->errorJsonResponse($e->getMessage());
         }
