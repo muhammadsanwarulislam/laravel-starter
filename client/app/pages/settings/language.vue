@@ -61,7 +61,7 @@
             @items-per-page-change="handleItemsPerPageChange" />
 
         <!-- Form Modal -->
-        <ModalsFormModal :show="showModal" :title="editingLanguage ? 'Edit User' : 'Create User'"
+        <ModalsFormModal :show="showModal" :title="editingLanguage ? 'Edit Language' : 'Create Language'"
             :form-title="languageFormConfig.title" :fields="languageFormConfig.fields" :initial-data="editingLanguage || {}"
             :loading="isSubmitting" :is-edit="!!editingLanguage" :variant="'default'" icon="👤" icon-color="blue" size="lg"
             @close="closeModal" @submit="submitForm" />

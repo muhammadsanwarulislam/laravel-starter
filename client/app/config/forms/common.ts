@@ -59,10 +59,27 @@ export const languageFormConfig = {
       required: true
     },
     {
-      key: 'locale',
+      key: 'native_name',
       label: 'Locale',
       type: 'text',
       required: true
+    },
+    {
+      key: 'direction',
+      label: 'Direction',
+      type: 'select',
+      required: true,
+      defaultOption: 'Select Direction',
+      options: [
+        { value: 'ltr', label: 'Left to Right' },
+        { value: 'rtl', label: 'Right to Left' }
+      ]
+    },
+    {
+      key: 'is_active',
+      label: 'Active',
+      type: 'checkbox',
+      required: false
     },
     {
       key: 'is_default',

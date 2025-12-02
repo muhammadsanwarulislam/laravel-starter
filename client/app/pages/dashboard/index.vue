@@ -11,7 +11,7 @@
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div
-                    class="p-6 rounded-2xl shadow-xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900 border border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-200 card-hover-effect">
+                    class="p-6 rounded-2xl shadow-xl bg-linear-to-br from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900 border border-blue-200 dark:border-blue-700 text-blue-900 dark:text-blue-200 card-hover-effect">
                     <div class="flex justify-between items-start">
                         <div>
                             <h3 class="text-sm font-semibold uppercase tracking-wider opacity-80">Articles Published
@@ -40,7 +40,7 @@
                 </div>
 
                 <div
-                    class="p-6 rounded-2xl shadow-xl bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-900 border border-green-200 dark:border-green-700 text-green-900 dark:text-green-200 card-hover-effect">
+                    class="p-6 rounded-2xl shadow-xl bg-linear-to-br from-green-50 to-green-100 dark:from-gray-800 dark:to-gray-900 border border-green-200 dark:border-green-700 text-green-900 dark:text-green-200 card-hover-effect">
                     <div class="flex justify-between items-start">
                         <div>
                             <h3 class="text-sm font-semibold uppercase tracking-wider opacity-80">Active Subscribers
@@ -69,7 +69,7 @@
                 </div>
 
                 <div
-                    class="p-6 rounded-2xl shadow-xl bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-800 dark:to-gray-900 border border-purple-200 dark:border-purple-700 text-purple-900 dark:text-purple-200 card-hover-effect">
+                    class="p-6 rounded-2xl shadow-xl bg-linear-to-br from-purple-50 to-purple-100 dark:from-gray-800 dark:to-gray-900 border border-purple-200 dark:border-purple-700 text-purple-900 dark:text-purple-200 card-hover-effect">
                     <div class="flex justify-between items-start">
                         <div>
                             <h3 class="text-sm font-semibold uppercase tracking-wider opacity-80">Page Views</h3>
@@ -100,7 +100,7 @@
                 </div>
 
                 <div
-                    class="p-6 rounded-2xl shadow-xl bg-gradient-to-br from-red-50 to-red-100 dark:from-gray-800 dark:to-gray-900 border border-red-200 dark:border-red-700 text-red-900 dark:text-red-200 card-hover-effect">
+                    class="p-6 rounded-2xl shadow-xl bg-linear-to-br from-red-50 to-red-100 dark:from-gray-800 dark:to-gray-900 border border-red-200 dark:border-red-700 text-red-900 dark:text-red-200 card-hover-effect">
                     <div class="flex justify-between items-start">
                         <div>
                             <h3 class="text-sm font-semibold uppercase tracking-wider opacity-80">Pending Articles</h3>

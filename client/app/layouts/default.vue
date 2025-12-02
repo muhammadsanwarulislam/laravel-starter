@@ -14,9 +14,7 @@
     </div>
 
     <template #footer>
-      <div class="flex justify-center sticky bottom-0 w-full">
         <DefaultFooter />
-      </div>
     </template>
   </BaseLayout>
 </template>
