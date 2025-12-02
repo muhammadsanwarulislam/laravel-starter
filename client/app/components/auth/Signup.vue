@@ -20,8 +20,6 @@
             </div>
 
             <div class="mb-4">
-                <CommonInputField id="countryCode" label="Country Code" :isSelect="true" v-model="selectedCountryCode"
-                    :options="countryCodeOptions" placeholder="Select Code" required />
                 <CommonInputField id="phone" label="Mobile Number" v-model="phone" type="text" placeholder="i.e. 177XXXXX"
                     :errorMessage="errors.phone ? errors.phone[0] : ''" :isSelect="false" required />
             </div>

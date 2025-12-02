@@ -24,7 +24,7 @@
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
                   isExpanded || isMobileOpen ? 'p-2' : 'p-0 justify-center'
                 ]">
-                <span class="flex-shrink-0" :class="[!isExpanded && !isMobile ? 'p-2' : '']">
+                <span class="shrink-0" :class="[!isExpanded && !isMobile ? 'p-2' : '']">
                   <span v-html="item.icon"></span>
                 </span>
                 <span v-if="isExpanded || isMobileOpen" class="ml-3 text-sm font-medium">
@@ -44,14 +44,14 @@
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800',
                     isExpanded || isMobileOpen ? 'p-2' : 'p-0 justify-center'
                   ]">
-                  <span class="flex-shrink-0" :class="[!isExpanded && !isMobile ? 'p-2' : '']">
+                  <span class="shrink-0" :class="[!isExpanded && !isMobile ? 'p-2' : '']">
                     <span v-html="item.icon"></span>
                   </span>
 
                   <span v-if="isExpanded || isMobileOpen" class="ml-3 text-sm font-medium flex-1 text-left">
                     {{ t(toLowerCase(item.name)) }}
                   </span>
-                  <svg v-if="isExpanded || isMobileOpen" class="w-4 h-4 ml-auto transition-transform flex-shrink-0"
+                  <svg v-if="isExpanded || isMobileOpen" class="w-4 h-4 ml-auto transition-transform shrink-0"
                     :class="{ 'rotate-180': isSubmenuOpen(`${groupIndex}-${itemIndex}`) }" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -104,7 +104,7 @@
           :class="{ 'bg-gray-100 dark:bg-gray-800': userMenuOpen }"
         >
           <!-- User Avatar -->
-          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-theme-500 flex items-center justify-center text-white text-sm font-medium">
+          <div class="shrink-0 w-8 h-8 rounded-full bg-theme-500 flex items-center justify-center text-white text-sm font-medium">
             {{ getUserInitials }}
           </div>
           
@@ -116,7 +116,7 @@
 
           <!-- Dropdown Arrow (visible when expanded) -->
           <svg v-if="isExpanded || isMobileOpen" 
-            class="w-4 h-4 ml-2 transition-transform flex-shrink-0"
+            class="w-4 h-4 ml-2 transition-transform shrink-0"
             :class="{ 'rotate-180': userMenuOpen }" 
             fill="none" 
             stroke="currentColor" 

@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+  <div class="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
     <!-- Hero Section -->
     <section class="relative overflow-hidden">
       <!-- Background decoration -->
-      <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-gray-800 [mask-image:linear-gradient(0deg,white,rgba(255,255,255,0.6))]"></div>
+      <div class="absolute inset-0 bg-grid-slate-100 dark:bg-grid-gray-800 mask-[linear-gradient(0deg,white,rgba(255,255,255,0.6))]"></div>
 
       <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 lg:py-32">
         <div class="flex flex-col lg:flex-row items-center justify-between">
@@ -15,7 +15,7 @@
 
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
               Build with
-              <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Nuxt.js & Laravel</span>
+              <span class="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Nuxt.js & Laravel</span>
             </h1>
 
             <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
@@ -24,7 +24,7 @@
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 mb-8">
-              <button @click="$emit('openSignUp')" class="group relative px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
+              <button @click="$emit('openSignUp')" class="group relative px-8 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
                 <span class="relative z-10 flex items-center justify-center">
                   Get Started
                   <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,7 +66,7 @@
               <!-- Tech stack card -->
               <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden transform hover:scale-105 transition-transform duration-300">
                 <!-- Tech stack header -->
-                <div class="bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-4 flex items-center justify-between">
+                <div class="bg-linear-to-r from-gray-900 to-gray-800 px-6 py-4 flex items-center justify-between">
                   <div class="flex items-center space-x-3">
                     <div class="flex space-x-1">
                       <div class="w-3 h-3 rounded-full bg-red-400"></div>
@@ -82,7 +82,7 @@
                 <div class="p-6">
                   <!-- Frameworks -->
                   <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 flex items-center">
+                    <div class="bg-linear-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 flex items-center">
                       <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
@@ -93,7 +93,7 @@
                         <div class="text-xs text-red-600 dark:text-red-400 font-medium">API Backend</div>
                       </div>
                     </div>
-                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 flex items-center">
+                    <div class="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 flex items-center">
                       <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
@@ -165,7 +165,7 @@
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Everything You Need to
-            <span class="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Build Modern Apps</span>
+            <span class="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Build Modern Apps</span>
           </h2>
           <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Our starter kit includes all the essential features to jumpstart your development process with best practices and clean architecture.
@@ -174,9 +174,9 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div v-for="(feature, index) in features" :key="index" class="group relative bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl p-8 border border-gray-100 dark:border-gray-700 hover:border-indigo-200 dark:hover:border-indigo-500 transition-all duration-300 hover:shadow-xl">
-            <div class="absolute inset-0 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="absolute inset-0 bg-linear-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/10 dark:to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div class="relative z-10">
-              <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+              <div class="w-14 h-14 bg-linear-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                 <component :is="feature.icon" class="w-6 h-6 text-white" />
               </div>
               <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">{{ feature.title }}</h3>
@@ -196,7 +196,7 @@
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Built with
-            <span class="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Latest Technologies</span>
+            <span class="bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Latest Technologies</span>
           </h2>
           <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
             Our starter kit leverages the latest versions of industry-leading frameworks to ensure your project is modern, scalable, and maintainable.
@@ -290,7 +290,7 @@
     <!-- CTA Section -->
     <section class="relative py-20 lg:py-28">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-3xl p-12 lg:p-16 relative overflow-hidden">
+        <div class="bg-linear-to-r from-indigo-600 to-purple-600 rounded-3xl p-12 lg:p-16 relative overflow-hidden">
           <div class="absolute inset-0 bg-black/10"></div>
           <div class="relative z-10">
             <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
