@@ -1,14 +1,14 @@
 <template>
   <div class="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
     <!-- Header Slot -->
-    <div v-if="$slots.header" class="flex-shrink-0 z-40">
+    <div v-if="$slots.header" class="shrink-0 z-40">
       <slot name="header"></slot>
     </div>
 
     <!-- Main Content Area -->
     <div class="flex-1 flex">
       <!-- Sidebar Slot (only when provided) -->
-      <aside v-if="$slots.sidebar" class="flex-shrink-0 z-30">
+      <aside v-if="$slots.sidebar" class="shrink-0 z-30">
         <slot name="sidebar"></slot>
       </aside>
       
