@@ -1,9 +1,9 @@
 <template>
-  <commonLoading ref="loader" />
+  <CommonLoading ref="loader" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <commonNotification />
+  <CommonNotification />
 </template>
 
 <script setup>

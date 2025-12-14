@@ -1,19 +1,12 @@
 <template>
-  <div class="fixed bottom-4 right-4 space-y-2 z-[9999]">
+  <div class="fixed bottom-4 right-4 space-y-2 z-9999">
     <TransitionGroup name="notification">
-      <div
-        v-for="notification in notifications"
-        :key="notification.id"
-        :class="[
-          'p-4 rounded-lg shadow-lg text-white max-w-xs flex items-start',
-          notificationClasses[notification.type]
-        ]"
-      >
+      <div v-for="notification in notifications" :key="notification.id" :class="[
+        'p-4 rounded-lg shadow-lg text-white max-w-xs flex items-start',
+        notificationClasses[notification.type]
+      ]">
         <span>{{ notification.message }}</span>
-        <button 
-          @click="remove(notification.id)" 
-          class="ml-2 text-white hover:text-gray-200"
-        >
+        <button @click="remove(notification.id)" class="ml-2 text-white hover:text-gray-200">
           &times;
         </button>
       </div>
