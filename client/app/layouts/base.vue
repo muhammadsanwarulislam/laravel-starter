@@ -25,7 +25,7 @@
         </div>
         
         <!-- Footer Slot -->
-        <div v-if="$slots.footer" class="flex-shrink-0 mt-auto">
+        <div v-if="$slots.footer" class="shrink-0 mt-auto">
           <slot name="footer"></slot>
         </div>
       </main>
@@ -34,5 +34,5 @@
 </template>
 
 <script setup>
-// No script needed for basic layout component
+
 </script>

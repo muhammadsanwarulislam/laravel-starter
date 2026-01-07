@@ -1,90 +1,79 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\HasPermissions;
 use App\Traits\Translatable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens, Translatable;
+    use HasApiTokens, Notifiable, HasPermissions, Translatable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
         'phone',
-        'status',
+        'status'
     ];
+    protected $hidden = ['password', 'remember_token'];
+    protected $translatable = ['name', 'bio'];
+    protected $with = ['roles'];
 
-    protected $translatable = ['name'];
-
-    public function setPasswordAttribute($value)
-    {
-        $this->attributes['password'] = Hash::make($value);
-    }
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => 'boolean',
         ];
     }
 
-    /**
-     * Get the profile associated with the user.
-     */
     public function profile()
     {
         return $this->hasOne(Profile::class);
     }
-    
-    /**
-     * Get the files associated with the user.
-     */
+
     public function files()
     {
         return $this->hasMany(FileManager::class);
     }
 
-    /**
-     * Override toArray to include translated name
-     */
-    public function toArray()
+    public function roles()
     {
-        $array = parent::toArray();
-        
-        if (in_array('name', $this->translatable ?? [])) {
-            $array['name'] = $this->name; 
-        }
-        
-        return $array;
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($roleSlug)
+    {
+        $cacheKey = "user_{$this->id}_has_role_{$roleSlug}";
+
+        return cache()->remember($cacheKey, 300, function () use ($roleSlug) {
+            return $this->roles()->where('slug', $roleSlug)->exists();
+        });
+    }
+
+    public function isSuperAdmin()
+    {
+        return $this->hasRole('super_admin');
+    }
+
+    public function isActive()
+    {
+        return $this->status;
+    }
+
+    public function cachedRoles()
+    {
+        $cacheKey = "user_{$this->id}_roles";
+
+        return cache()->remember($cacheKey, 300, function () {
+            return $this->roles()->with('permissions')->get();
+        });
     }
 }

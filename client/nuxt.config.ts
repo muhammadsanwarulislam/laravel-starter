@@ -1,50 +1,46 @@
+// https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
 
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  css: ['@/assets/css/main.css'],
-  ssr: false,
+  css: ['/assets/css/main.css'],
   vite: {
     plugins: [
-      tailwindcss()
-    ]
+      tailwindcss(),
+    ],
   },
-  modules: [],
   runtimeConfig: {
     public: {
-      appMode: process.env.NUXT_PUBLIC_APP_MODE,
-      apiURL: process.env.NUXT_PUBLIC_API_URL,
-      frontendURL: process.env.FRONTEND_URL,
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1',
+    },
+  },
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000/api/v1',
+        changeOrigin: true,
+        prependPath: true,
+      }
     }
   },
   app: {
     head: {
-      charset: 'utf-8',
-      viewport: 'width=device-width, initial-scale=1',
-      title: 'Admin Panel',
+      title: 'Admin Dashboard',
       meta: [
-        { name: 'description', content: 'Admin Panel' }
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        { charset: 'utf-8' },
+        { name: 'description', content: 'Admin Dashboard Application' },
       ],
       link: [
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
-      ],
-      script: [
-        {
-          innerHTML: `
-            try {
-              const theme = localStorage.getItem('themeMode');
-              if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-              }
-            } catch (e) {}
-          `,
-          tagPosition: 'head',
-          type: 'text/javascript',
-          id: 'inline-darkmode'
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        { 
+          rel: 'stylesheet', 
+          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap' 
         }
       ],
-    }
+    },
   }
 })

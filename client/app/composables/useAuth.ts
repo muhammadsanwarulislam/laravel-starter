@@ -1,130 +1,122 @@
-import { useCookie } from "#app";
-import { API_ENDPOINTS } from "~/config/api";
-import { useNotification } from './useNotification';
+import { services } from '~/services'
 
 export const useAuth = () => {
-  const user = useState("user", () => null);
+  const auth = services.auth
+  
+  const user = ref(auth.getStoredUser())
+  const isAuthenticated = ref(auth.isAuthenticated())
+  const loading = ref(false)
 
-  // Enhanced cookie configuration - make it consistent
-  const token = useCookie("auth_token", {
-    maxAge: 60 * 60 * 24 * 7,
-    path: '/',
-    secure: import.meta.env.MODE === 'production',
-    sameSite: 'lax'
-  });
-
-  const { add: notify } = useNotification()
-
-  const signin = async (credentials: { email: string; password: string }) => {
+  const login = async (credentials: any) => {
+    loading.value = true
     try {
-      const response = await $http<{
-        access_token: string,
-        message: string,
-        data: {
-          access_token: string,
-          user: any
-        }
-      }>(`${API_ENDPOINTS.LOGIN}`, {
-        method: "POST",
-        body: credentials,
-      });
-
-      if (response.error) {
-        notify(response.error.message, 'error');
-        return { error: response.error };
+      const result = await auth.login(credentials)
+      if (result.success) {
+        user.value = auth.getStoredUser()
+        isAuthenticated.value = true
       }
+      return result
+    } finally {
+      loading.value = false
+    }
+  }
 
-      const accessToken = response.data?.access_token || response.data?.data?.access_token;
-      if (accessToken) {
-        // Set token value - this should persist the cookie
-        token.value = accessToken;
-
-        // Set user data
-        if (response.data?.data?.user) {
-          user.value = response.data.data.user;
-        } else if (response.data?.user) {
-          user.value = response.data.user;
-        }
-
-        notify(response.data?.message || 'Login successful', 'success');
-        return { data: response.data, success: true, code: 200 };
+  const register = async (data: any) => {
+    loading.value = true
+    try {
+      const result = await auth.register(data)
+      if (result.success) {
+        user.value = auth.getStoredUser()
+        isAuthenticated.value = true
       }
-
-      notify('No access token received', 'error');
-      return { error: { message: "No access token received" } };
-
-    } catch (error) {
-      console.error('Login error:', error);
-      notify('Login failed', 'error');
-      return { error: { message: "Login failed" } };
+      return result
+    } finally {
+      loading.value = false
     }
-  };
-
-
-  const signup = async (credentials: { name: string; email: string; phone: string }) => {
-    const response = await $http<{ access_token: string }>(`${API_ENDPOINTS.REGISTER}`, {
-      method: "POST",
-      body: credentials,
-    });
-
-    if (response.error) {
-      notify('Signup failed', 'error');
-      return { error: response.error };
-    }
-
-    if (response.data) {
-      notify('Signup successful', 'success');
-      return { data: response };
-    }
-    return { error: { message: "Invalid response from server" } };
   }
 
   const logout = async () => {
-    try {
-      await $http(`${API_ENDPOINTS.LOGOUT}`, { method: "POST" });
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      token.value = null;
-      user.value = null;
+    const result = await auth.logout()
+    if (result.success) {
+      user.value = null
+      isAuthenticated.value = false
 
-      window.location.href = '/';
+      if(process.client) {
+        await nextTick()
+        navigateTo('/')
+      }
     }
-  };
+    return result
+  }
+
+  const resetPassword = async (data: any) => {
+    const result = await auth.resetPassword(data)
+    return result
+  }
+
+  const forgetPassword = async (data: any) => {
+    const result = await auth.forgetPassword(data)
+    return result
+  }
 
   const fetchCurrentUser = async () => {
-    if (!token.value) {
-      user.value = null;
-      return;
+    const result = await auth.getCurrentUser()
+    if (result.success && result.data) {
+      user.value = result.data.user
     }
+    return result
+  }
 
-    try {
-      const response = await $http(`${API_ENDPOINTS.CURRENT_USER}`);
-      if (response.error) {
-        user.value = null;
-        token.value = null;
-      } else {
-        user.value = response.data as typeof user.value;
+  const clearAuth = () => {
+    auth.clearAuth()
+    user.value = null
+    isAuthenticated.value = false
+  }
+
+  const hasPermission = (permission: string): boolean => {
+    if (!user.value) return false
+    
+    // Super admin check
+    if (user.value.roles?.some((role: any) => role.slug === 'super-admin')) {
+      return true
+    }
+    
+    // Check stored permissions
+    if (process.client) {
+      const permissionsStr = localStorage.getItem('user_permissions')
+      if (permissionsStr) {
+        const permissions = JSON.parse(permissionsStr)
+        return permissions.includes(permission)
       }
-    } catch (error) {
-      console.error('Fetch user error:', error);
-      user.value = null;
-      token.value = null;
     }
-  };
+    
+    return false
+  }
 
-  const getCurrentUserId = (): number | null => {
-    return user.value?.data?.user?.id || null;
-  };
+  const hasRole = (role: string): boolean => {
+    return user.value?.roles?.some((r: any) => r.slug === role) || false
+  }
+
+  const initialize = () => {
+    if (process.client) {
+      user.value = auth.getStoredUser()
+      isAuthenticated.value = auth.isAuthenticated()
+    }
+  }
 
   return {
     user,
-    token: readonly(token),
-    signin,
-    signup,
+    isAuthenticated,
+    loading,
+    login,
+    register,
+    resetPassword,
+    forgetPassword,
     logout,
     fetchCurrentUser,
-    isAuthenticated: computed(() => !!token.value && !!user.value),
-    getCurrentUserId
-  };
-};
+    clearAuth,
+    hasPermission,
+    hasRole,
+    initialize
+  }
+}

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Schema;
+use App\Services\AuthService;
+use App\Repositories\UserRepository;
+use App\Services\LocalizationService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -12,7 +14,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Repositories
+        $this->app->singleton(UserRepository::class, function ($app) {
+            return new UserRepository();
+        });
+
+        // Services
+        $this->app->singleton(AuthService::class, function ($app) {
+            return new AuthService(
+                $app->make(UserRepository::class),
+                $app->make(LocalizationService::class)
+            );
+        });
     }
 
     /**
@@ -20,6 +33,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Schema::defaultStringLength(191);
+        //
     }
 }

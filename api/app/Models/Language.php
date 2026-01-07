@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Models;
 
@@ -26,11 +27,33 @@ class Language extends Model
         return $this->hasMany(UiTranslation::class);
     }
 
-    public function getUiTranslationsArray()
+    // Get all UI translations for this language with caching
+    public function getCachedUiTranslations()
     {
-        return $this->uiTranslations()
-            ->get()
-            ->pluck('value', 'key')
-            ->toArray();
+        $cacheKey = "language_{$this->id}_ui_translations";
+
+        return cache()->remember($cacheKey, 3600, function () {
+            return $this->uiTranslations()
+                ->where('group', 'ui')
+                ->pluck('value', 'key')
+                ->toArray();
+        });
+    }
+
+    // Get specific translation with fallback
+    public function getTranslation($key, $default = null)
+    {
+        $translations = $this->getCachedUiTranslations();
+        return $translations[$key] ?? $default ?? $key;
+    }
+
+    // Clear translation cache
+    public static function clearTranslationCache()
+    {
+        $languages = self::where('is_active', true)->get();
+        foreach ($languages as $language) {
+            cache()->forget("language_{$language->id}_ui_translations");
+        }
+        cache()->forget('active_languages');
     }
 }

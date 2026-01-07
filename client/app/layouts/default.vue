@@ -1,20 +1,22 @@
 <template>
   <BaseLayout>
     <template #header>
-      <CommonHeader />
+      <LayoutHeader />
     </template>
 
     <template #sidebar>
-      <CommonSidebar />
+      <LayoutSidebar />
     </template>
 
-    <!-- Main content goes in default slot -->
     <div class="p-6 flex-1">
       <slot></slot>
+      
+      <!-- Language Selector -->
+      <LayoutLanguageSelector />
     </div>
 
     <template #footer>
-        <DefaultFooter />
+      <LayoutFooter />
     </template>
   </BaseLayout>
 </template>

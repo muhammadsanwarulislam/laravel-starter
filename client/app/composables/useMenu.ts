@@ -1,87 +1,154 @@
-import { ref, readonly } from 'vue';
+import type { MenuItem, MenuSection } from '~/api/types/api.types'
 
-export interface MenuItem {
-  icon: string;
-  name: string;
-  path?: string;
-  description?: string;
-  subItems?: MenuItem[];
-}
+export const useMenu = () => {
+  const auth = useAuth()
+  const route = useRoute()
 
-export interface MenuGroup {
-  title: string;
-  items: MenuItem[];
-}
+  const hasAnyPermission = (permissions: string[]): boolean => {
+    return permissions.some(permission => auth.hasPermission(permission))
+  }
 
-const menuGroups: MenuGroup[] = [
-  {
-    title: "User Management",
-    items: [
+  const hasAnyRole = (roles: string[]): boolean => {
+    return roles.some(role => auth.hasRole(role))
+  }
+
+  const getMenuItems = (): MenuSection[] => {
+    const items: MenuSection[] = [
       {
-        icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-theme dark:text-gray" viewBox="0 0 640 640" fill="currentColor"><path d="M320 80C377.4 80 424 126.6 424 184C424 241.4 377.4 288 320 288C262.6 288 216 241.4 216 184C216 126.6 262.6 80 320 80zM96 152C135.8 152 168 184.2 168 224C168 263.8 135.8 296 96 296C56.2 296 24 263.8 24 224C24 184.2 56.2 152 96 152zM0 480C0 409.3 57.3 352 128 352C140.8 352 153.2 353.9 164.9 357.4C132 394.2 112 442.8 112 496L112 512C112 523.4 114.4 534.2 118.7 544L32 544C14.3 544 0 529.7 0 512L0 480zM521.3 544C525.6 534.2 528 523.4 528 512L528 496C528 442.8 508 394.2 475.1 357.4C486.8 353.9 499.2 352 512 352C582.7 352 640 409.3 640 480L640 512C640 529.7 625.7 544 608 544L521.3 544zM472 224C472 184.2 504.2 152 544 152C583.8 152 616 184.2 616 224C616 263.8 583.8 296 544 296C504.2 296 472 263.8 472 224zM160 496C160 407.6 231.6 336 320 336C408.4 336 480 407.6 480 496L480 512C480 529.7 465.7 544 448 544L192 544C174.3 544 160 529.7 160 512L160 496z"/></svg>',
-        name: "User Manager",
-        subItems: [
+        title: '',
+        items: [
           {
-            name: "User", path: "/users/list", description: "Manage registered users",
-            icon: ''
+            id: 'dashboard',
+            title: 'Dashboard',
+            icon: 'Dashboard',
+            to: '/dashboard',
+            permissions: [], 
+            roles: [], 
+            isActive: route.path === '/dashboard',
+            badge: null
+          }
+        ]
+      },
+      {
+        title: 'Management',
+        items: [
+          {
+            id: 'users',
+            title: 'Users',
+            icon: 'Users',
+            to: '/users',
+            permissions: [
+              'view-users', 'create-users', 'edit-users', 
+              'delete-users', 'export-users'
+            ],
+            roles: [], 
+            isActive: route.path.startsWith('/users'),
+            badge: 42 
+          },
+          {
+            id: 'roles',
+            title: 'Roles & Permissions',
+            icon: 'RolePermissions',
+            to: '/roles',
+            permissions: [
+              'view-roles', 'create-roles', 'edit-roles',
+              'delete-roles', 'assign-roles',
+              'view-permissions', 'manage-permissions'
+            ],
+            roles: [],
+            isActive: route.path.startsWith('/roles')
+          },
+          {
+            id: 'settings',
+            title: 'Settings',
+            icon: 'Settings',
+            to: '/settings',
+            permissions: ['view-settings', 'edit-settings'],
+            roles: [],
+            isActive: route.path.startsWith('/settings')
+          },
+          {
+            id: 'localization',
+            title: 'Localization',
+            icon: 'Localization',
+            to: '/localization',
+            permissions: [
+              'view-languages', 'create-languages', 'edit-languages',
+              'delete-languages', 'view-translations', 'create-translations',
+              'edit-translations', 'delete-translations', 'import-translations'
+            ],
+            roles: [],
+            isActive: route.path.startsWith('/localization')
+          }
+        ]
+      },
+      {
+        title: 'Account',
+        items: [
+          {
+            id: 'profile',
+            title: 'My Profile',
+            icon: 'Profile',
+            to: '/auth/profile',
+            permissions: ['view-profile', 'edit-profile'],
+            roles: [],
+            isActive: route.path.startsWith('/auth/profile')
           }
         ]
       }
     ]
-  },
-  {
-    title: "System Settings",
-    items: [
-      {
-        icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-theme dark:text-gray" viewBox="0 0 640 640" fill="currentColor"><path d="M320 112C264.6 112 216 160.6 216 216C216 271.4 264.6 320 320 320C375.4 320 424 271.4 424 216C424 160.6 375.4 112 320 112zM96 184C135.8 184 168 216.2 168 256C168 295.8 135.8 328 96 328C56.2 328 24 295.8 24 256C24 216.2 56.2 184 96 184zM0 512C0 441.3 57.3 384 128 384C140.8 384 153.2 385.9 164.9 389.4C132 426.2 112 474.8 112 528L112 544C112 555.4 114.4 566.2 118.7 576L32 576C14.3 576 0 561.7 0 544L0 512zM521.3 576C525.6 566.2 528 555.4 528 544L528 528C528 474.8 508 426.2 475.1 389.4C486.8 385.9 499.2 384 512 384C582.7 384 640 441.3 640 512L640 544C640 561.7 625.7 576 608 576L521.3 576zM472 256C472 216.2 504.2 184 544 184C583.8 184 616 216.2 616 256C616 295.8 583.8 328 544 328C504.2 328 472 295.8 472 256zM160 528C160 439.6 231.6 368 320 368C408.4 368 480 439.6 480 528L480 544C480 561.7 465.7 576 448,576L192,576C174.3,576,160,561.7,160,544L160,528z"/></svg>',
-        name: "Settings",
-        subItems: [
-          {
-            name: "Language", path: "/settings/language", description: "Manage languages",
-            icon: ''
-          },
-          {
-            name: "UI Translations", path: "/settings/translations", description: "Manage UI translations",
-            icon: ''
-          },
-          {
-            name: "Profile", path: "/settings/profile", description: "Manage profile",
-            icon: ''
-          }
-        ],
-      },
-    ],
-  },
-];
 
-// User profile menu items
-const userMenuItems: MenuItem[] = [
-  {
-    name: "Profile",
-    path: "/settings/profile",
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>',
-    description: "View and edit your profile"
-  },
-  {
-    name: "Change Password",
-    path: "/change-password",
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>',
-    description: "Change your password"
-  },
-  {
-    name: "Logout",
-    path: "/logout",
-    icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>',
-    description: "Sign out of your account"
+    return items.map(section => ({
+      ...section,
+      items: section.items.filter(item => {
+        if (item.roles.length > 0 && hasAnyRole(item.roles)) {
+          return true
+        }
+        if (item.permissions.length > 0 && hasAnyPermission(item.permissions)) {
+          return true
+        }
+        return item.permissions.length === 0 && item.roles.length === 0
+      })
+    })).filter(section => section.items.length > 0)
   }
-];
 
-export function getMenu() {
-  const getMenuData = ref(menuGroups);
-  const getUserMenu = ref(userMenuItems);
-  
+  const menuItems = computed(() => getMenuItems())
+
+  const getAllRequiredPermissions = (): string[] => {
+    const allItems = menuItems.value.flatMap(section => section.items)
+    return [...new Set(allItems.flatMap(item => item.permissions))]
+  }
+
+  const canAccessRoute = (routePath: string): boolean => {
+    const allItems = menuItems.value.flatMap(section => section.items)
+    const item = allItems.find(item => item.to === routePath || routePath.startsWith(item.to))
+    
+    if (!item) return false
+    
+    if (item.roles.length > 0 && hasAnyRole(item.roles)) {
+      return true
+    }
+    
+    if (item.permissions.length > 0 && hasAnyPermission(item.permissions)) {
+      return true
+    }
+    
+    return item.permissions.length === 0 && item.roles.length === 0
+  }
+
+
+  const getMenuItem = (id: string): MenuItem | undefined => {
+    return menuItems.value
+      .flatMap(section => section.items)
+      .find(item => item.id === id)
+  }
+
   return {
-    menuGroups: readonly(getMenuData),
-    userMenu: readonly(getUserMenu),
-  };
+    menuItems,
+    canAccessRoute,
+    getMenuItem,
+    getAllRequiredPermissions,
+    hasAnyPermission,
+    hasAnyRole
+  }
 }

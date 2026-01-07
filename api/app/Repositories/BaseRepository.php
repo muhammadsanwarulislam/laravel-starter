@@ -1,129 +1,94 @@
 <?php
-declare(strict_types=1);
 
-namespace Repository;
+namespace App\Repositories;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class BaseRepository
 {
-    abstract function model();
+    protected Model $model;
 
-    public function getAll($offset, $limit, $searchData = null, $searchFields = null, $option = 'list')
+    public function __construct(Model $model)
     {
-        $query = $this->model()::query();
-        $this->applyDefaultCriteria($query);
-
-        switch ($option) {
-            case 'search':
-                if ($searchData && $searchFields) {
-                    $this->applySearchCriteria($query, $searchData, $searchFields);
-                }
-                break;
-            case 'list':
-            default:
-                break;
-        }
-
-        $totalCount = $query->count();
-
-        if ($limit > 0) {
-            $result = $query->offset(($offset - 1) * $limit)
-                          ->limit($limit)
-                          ->get();
-        } else {
-            $result = $query->get();
-        }
-
-        if ($result->isEmpty()) {
-            throw new \RuntimeException('No records found.');
-        }
-
-        return [
-            'result'        => $result,
-            'total_count'   => $totalCount,
-            'current_page'  => $limit > 0 ? ceil($offset / $limit) + 1 : 1,
-            'per_page'      => $limit,
-            'last_page'     => $limit > 0 ? ceil($totalCount / $limit) : 1
-        ];
+        $this->model = $model;
     }
 
-    protected function applyDefaultCriteria($query)
+    public function all(array $columns = ['*'], array $relations = []): Collection
     {
-        // $query->orderBy('sort_order', 'asc')->orderBy('created_at', 'desc') ?? $query->orderBy('id', 'desc');
-        $query->orderBy('id', 'desc');
+        return $this->model->with($relations)->get($columns);
     }
 
-    protected function applySearchCriteria($query, $searchData, $searchFields)
+    public function find(int $id, array $relations = []): ?Model
     {
-        $searchFieldsArray = explode(',', $searchFields);
-        
-        $query->where(function ($q) use ($searchFieldsArray, $searchData) {
-            foreach ($searchFieldsArray as $field) {
-                $field = trim($field);
-                
-                // Handle boolean fields specially
-                if (in_array($field, ['is_active', 'is_default'])) {
-                    if ($searchData === '1' || strtolower($searchData) === 'true' || strtolower($searchData) === 'active') {
-                        $q->orWhere($field, true);
-                    } elseif ($searchData === '0' || strtolower($searchData) === 'false' || strtolower($searchData) === 'inactive') {
-                        $q->orWhere($field, false);
-                    }
-                } else {
-                    $q->orWhere($field, 'like', '%' . $searchData . '%');
-                }
-            }
-        });
+        return $this->model->with($relations)->find($id);
     }
 
-    public function metadata($totalCount, $responseType)
+    public function findOrFail(int $id, array $relations = []): Model
     {
-        return [
-            'API Version'       => '1.0.1',
-            'Response Time'     => date('Y-m-d H:i:s'),
-            'Data Response Type'=> $responseType,
-            'Total Records'     => $totalCount,
-            'Content Type'      => 'application/json',
-        ];
+        return $this->model->with($relations)->findOrFail($id);
     }
 
-    public function findByID($id): Model
+    public function findBy(array $criteria, array $relations = []): Collection
     {
-        $record = $this->model()::find($id);
-        if (!$record) {
-            throw new \Exception("Record with ID {$id} not found.");
-        }
-        return $record;
+        return $this->model->with($relations)->where($criteria)->get();
     }
 
-    public function findOrFailByID($id): Model
+    public function findOneBy(array $criteria, array $relations = []): ?Model
     {
-        return $this->model()::findOrFail($id);
+        return $this->model->with($relations)->where($criteria)->first();
     }
 
-    public function create(array $modelData)
+    public function create(array $data): Model
     {
-        return $this->model()::create($modelData);
+        return $this->model->create($data);
     }
 
-    public function updateByID($id, array $modelData)
+    public function update(int $id, array $data): bool
     {
-        $model = $this->findOrFailByID($id);
-        $model->update($modelData);
-        return $model->fresh();
+        return $this->model->find($id)->update($data);
     }
 
-    public function updateByModelCondition($condition, $field, $value)
+    public function updateBy(array $criteria, array $data): bool
     {
-        return $this->model()::where($condition)->update([$field => $value]);
+        return $this->model->where($criteria)->update($data);
     }
 
-    public function deletedByID($id)
+    public function delete(int $id): bool
     {
-        $model = $this->findOrFailByID($id);
-        return $model->delete();
+        return $this->model->find($id)->delete();
+    }
+
+    public function deleteBy(array $criteria): bool
+    {
+        return $this->model->where($criteria)->delete();
+    }
+
+    public function paginate(int $perPage = 15, array $relations = []): LengthAwarePaginator
+    {
+        return $this->model->with($relations)->paginate($perPage);
+    }
+
+    public function count(array $criteria = []): int
+    {
+        return $this->model->where($criteria)->count();
+    }
+
+    public function exists(array $criteria): bool
+    {
+        return $this->model->where($criteria)->exists();
+    }
+
+    public function withTrashed(): self
+    {
+        $this->model = $this->model->withTrashed();
+        return $this;
+    }
+
+    public function onlyTrashed(): self
+    {
+        $this->model = $this->model->onlyTrashed();
+        return $this;
     }
 }

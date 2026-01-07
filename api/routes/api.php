@@ -1,41 +1,63 @@
 <?php
 
-use Repository\User\UserRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Repository\Language\LanguageRepository;
-use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\User\UserController;
-use App\Http\Controllers\User\ProfileController;
-use App\Http\Controllers\Language\LanguageController;
-use App\Http\Controllers\FileManager\FileManagerController;
-use App\Http\Controllers\Localization\LocalizationController;
-use Repository\User\ProfileRepository;
 
-Route::post(UserRepository::REGISTER_API_ENDPOINT_NAME, [AuthController::class, 'signup']);
-Route::post(UserRepository::LOGIN_API_ENDPOINT_NAME, [AuthController::class, 'signin']);
+// Authentication Routes
+Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
+Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
+Route::post('/password/forgot', [App\Http\Controllers\Api\AuthController::class, 'forgotPassword']);
+Route::post('/password/reset', [App\Http\Controllers\Api\AuthController::class, 'resetPassword']);
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get(UserRepository::CURRENT_API_ENDPOINT_NAME, [AuthController::class, 'authorizedUserInformation']);
-    Route::post(UserRepository::LOGOUT_API_ENDPOINT_NAME, [AuthController::class, 'signout']);
-    Route::apiResource(UserRepository::RESOURCE_NAME, UserController::class);
-    Route::apiResource(LanguageRepository::RESOURCE_NAME, LanguageController::class);
+//Localization Routes
+Route::get('/languages', [App\Http\Controllers\Api\LocalizationController::class, 'getLanguages']);
+Route::get('/locale/current', [App\Http\Controllers\Api\LocalizationController::class, 'getCurrentLocale']);
+Route::get('/translations/ui', [App\Http\Controllers\Api\LocalizationController::class, 'getUiTranslations']);
+Route::get('/translations/ui/{key}', [App\Http\Controllers\Api\LocalizationController::class, 'getUiTranslation']);
 
-    // Profile routes
-    Route::apiResource(ProfileRepository::RESOURCE_NAME, ProfileController::class);
-    Route::get('profiles/user/{userId}', [ProfileController::class, 'getByUser']);
-    
-    // File manager routes
-    Route::apiResource('files', FileManagerController::class);
-    Route::get('files/user/{userId}', [FileManagerController::class, 'getByUser']);
-    Route::get('files/{fileManager}/download', [FileManagerController::class, 'download']);
-    
-    // Translation routes with locale parameter
-    Route::post('translations/{locale}', [LocalizationController::class, 'store']);
-    Route::put('translations/{locale}', [LocalizationController::class, 'update']);
-    Route::delete('translations/{locale}', [LocalizationController::class, 'destroy']);
-    Route::post('translations/{locale}/bulk', [LocalizationController::class, 'bulkStore']);
+// Protected routes (require authentication)
+Route::middleware(['auth:sanctum'])->group(function () {
+    // Auth routes
+    Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
+    Route::get('/me', [App\Http\Controllers\Api\AuthController::class, 'me']);
+    Route::put('/change-password', [App\Http\Controllers\Api\AuthController::class, 'changePassword']);
+
+    // Profile
+    Route::get('/profile', [App\Http\Controllers\Api\UserController::class, 'profile']);
+    Route::put('/profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile']);
+
+    // User Management (requires permissions)
+    Route::prefix('users')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\UserController::class, 'index'])->middleware('permission:view-users');
+        Route::post('/', [App\Http\Controllers\Api\UserController::class, 'store'])->middleware('permission:create-users');
+        Route::get('/{user}', [App\Http\Controllers\Api\UserController::class, 'show'])->middleware('permission:view-users');
+        Route::put('/{user}', [App\Http\Controllers\Api\UserController::class, 'update'])->middleware('permission:edit-users');
+        Route::delete('/{user}', [App\Http\Controllers\Api\UserController::class, 'destroy'])->middleware('permission:delete-users');
+        Route::put('/{user}/status', [App\Http\Controllers\Api\UserController::class, 'updateStatus'])->middleware('permission:edit-users');
+        Route::post('/{user}/roles', [App\Http\Controllers\Api\UserController::class, 'assignRoles'])->middleware('permission:edit-users');
+    });
+
+    // Role Management
+    Route::apiResource('roles', App\Http\Controllers\Api\RoleController::class)->middleware('permission:view-roles');
+    Route::post('/roles/{role}/permissions', [App\Http\Controllers\Api\RoleController::class, 'assignPermissions'])->middleware('permission:edit-roles');
+
+    // Permission Management
+    Route::prefix('permissions')->middleware('permission:view-permissions')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\PermissionController::class, 'index']);
+        Route::get('/modules', [App\Http\Controllers\Api\PermissionController::class, 'getModules']);
+        Route::get('/module/{module}', [App\Http\Controllers\Api\PermissionController::class, 'getByModule']);
+        Route::post('/sync', [App\Http\Controllers\Api\PermissionController::class, 'sync'])->middleware('permission:manage-permissions');
+    });
+
+    // Localization Management (admin only)
+    Route::prefix('localization')->middleware('permission:view-translations')->group(function () {
+        Route::post('/locale/set', [App\Http\Controllers\Api\LocalizationController::class, 'setLocale']);
+        Route::post('/translations/ui', [App\Http\Controllers\Api\LocalizationController::class, 'storeUiTranslation'])->middleware('permission:edit-translations');
+        Route::get('/translations/content/{model}/{id}', [App\Http\Controllers\Api\LocalizationController::class, 'getContentTranslations']);
+    });
+
+    // File Management 
+    Route::prefix('files')->middleware('permission:view-files')->group(function () {
+        // File routes would go here
+    });
 });
-
-// Public routes
-Route::get('translations/{locale}', [LocalizationController::class, 'index']);
-Route::apiResource(LanguageRepository::RESOURCE_NAME, LanguageController::class)->only(['index']);

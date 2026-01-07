@@ -1,51 +1,75 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Traits;
-use Illuminate\Http\Response;
+
 use Illuminate\Http\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 trait JsonResponseTrait
 {
-    public function successJsonResponse($message, $data = [], $statusCode = Response::HTTP_OK): JsonResponse
+    /**
+     * Success response
+     */
+    protected function success($data = null, ?string $message = null, int $code = Response::HTTP_OK): JsonResponse
     {
         return response()->json([
-            'code'      => $statusCode,
-            'message'   => $message,
-            'data'      => $data,
-        ], $statusCode);
+            'success' => true,
+            'message' => $message,
+            'data' => $data
+        ], $code);
     }
 
-    public function errorJsonResponse($message, $statusCode = Response::HTTP_NOT_FOUND): JsonResponse
+    /**
+     * Error response
+     */
+    protected function error(?string $message = null, $errors = null, int $code = Response::HTTP_UNPROCESSABLE_ENTITY): JsonResponse
     {
         return response()->json([
-            'code'      => $statusCode,
-            'message'   => $message
-        ], $statusCode);
+            'success' => false,
+            'message' => $message,
+            'errors' => $errors
+        ], $code);
     }
 
-    public function unAuthenticatedJsonResponse($message, $statusCode = Response::HTTP_FORBIDDEN): JsonResponse
+    /**
+     * Validation error response
+     */
+    protected function validationError($errors, string $message = 'Validation failed'): JsonResponse
     {
-        return response()->json([
-            'code'      => $statusCode,
-            'message'   => $message
-        ], $statusCode);
+        return $this->error($message, $errors, 422);
     }
 
-    public function createdJsonResponse($message, $data = [], $statusCode = Response::HTTP_CREATED): JsonResponse
+    /**
+     * Not found response
+     */
+    protected function notFound(string $message = 'Resource not found'): JsonResponse
     {
-        return response()->json([
-            'code'      => $statusCode,
-            'message'   => $message,
-            'data'      => $data,
-        ], $statusCode);
+        return $this->error($message, null, Response::HTTP_NOT_FOUND);
     }
 
-    public function badJsonResponse($message, $statusCode = Response::HTTP_BAD_REQUEST): JsonResponse
+    /**
+     * Unauthorized response
+     */
+    protected function unauthorized(string $message = 'Unauthorized'): JsonResponse
     {
-        return response()->json([
-            'code'      => $statusCode,
-            'message'   => $message
-        ], $statusCode);
+        return $this->error($message, null, Response::HTTP_UNAUTHORIZED);
+    }
+
+    /**
+     * Forbidden response
+     */
+    protected function forbidden(string $message = 'Forbidden'): JsonResponse
+    {
+        return $this->error($message, null, Response::HTTP_FORBIDDEN);
+    }
+
+    /**
+     * Server error response
+     */
+    protected function serverError(string $message = 'Server error', $errors = null): JsonResponse
+    {
+        return $this->error($message, $errors, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

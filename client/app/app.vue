@@ -1,19 +1,18 @@
 <template>
-  <CommonLoading ref="loader" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
-  <CommonNotification />
 </template>
 
-<script setup>
-const loader = ref(null);
+<script setup lang="ts">
+import { useAuth } from '~/composables/useAuth'
+import { useLocalization } from '~/composables/useLocalization'
+
+const auth = useAuth()
+const locale = useLocalization()
 
 onMounted(() => {
-  loader.value?.show();
-});
-
-onNuxtReady(() => {
-  loader.value?.hide();
-});
+  auth.initialize()
+  locale.initialize()
+})
 </script>
