@@ -29,7 +29,7 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Super Admin',
-                'email' => 'superadmin@example.com',
+                'email' => 'super@gmail.com',
                 'password' => 'password123',
                 'phone' => '+8801711111111',
                 'status' => true,
@@ -144,7 +144,7 @@ class UserSeeder extends Seeder
                 'email' => 'michael@example.com',
                 'password' => 'password123',
                 'phone' => '+8801799999999',
-                'status' => false, // Inactive user
+                'status' => false, 
                 'email_verified_at' => now(),
                 'roles' => [$userRole->id],
                 'profile' => [
