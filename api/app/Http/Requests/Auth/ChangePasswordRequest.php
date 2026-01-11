@@ -2,29 +2,33 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ChangePasswordRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            'current_password' => 'required',
-            'password' => ['required', 'confirmed', Password::min(8), 'different:current_password'],
+            'current_password' => 'required|current_password:api',
+            'password' => [
+                'required',
+                'confirmed',
+                'different:current_password',
+                'min:12',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$/',
+            ],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'password.regex' => 'Password must be at least 12 characters and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).',
         ];
     }
 }
