@@ -10,7 +10,7 @@ use App\Models\UiTranslation;
 use App\Http\Controllers\Controller;
 use App\Services\LocalizationService;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Cache;
 class LocalizationController extends Controller
 {
     protected $localizationService;
@@ -113,20 +113,59 @@ class LocalizationController extends Controller
 
     public function getContentTranslations($model, $id, Request $request)
     {
-        $modelClass = "App\\Models\\{$model}";
-        if (!class_exists($modelClass)) {
-            return $this->error('Model not found', null, 404);
-        }
+        try {
+            // Sanitize model name
+            $modelName = ucfirst(strtolower($model));
+            $modelClass = "App\\Models\\{$modelName}";
+            
+            if (!class_exists($modelClass)) {
+                return $this->error("Model '{$modelName}' not found", null, 404);
+            }
 
-        $modelInstance = $modelClass::find($id);
-        if (!$modelInstance) {
-            return $this->notFound('Resource not found');
-        }
+            // Check if model uses translations
+            if (!method_exists($modelClass, 'translations')) {
+                return $this->error("Model '{$modelName}' does not support translations", null, 400);
+            }
 
-        $locale = $request->get('locale') ?: $this->localizationService->getCurrentLocale();
+            $modelInstance = $modelClass::find($id);
+            
+            if (!$modelInstance) {
+                return $this->error("{$modelName} with ID {$id} not found", null, 404);
+            }
+
+            $locale = $request->get('locale') ?: $this->localizationService->getCurrentLocale();
+            
+            // Validate locale
+            if (!$this->localizationService->isLocaleSupported($locale)) {
+                return $this->error("Locale '{$locale}' is not supported", null, 400);
+            }
+            
+            // Get translations with caching - USING CORRECT Cache FACADE
+            $cacheKey = "translations_{$model}_{$id}_{$locale}";
+            $translations = Cache::remember($cacheKey, 3600, function () use ($modelInstance, $locale) {
+                return \App\Models\Translation::getForModel($modelInstance, $locale);
+            });
+            
+            // Include default values for untranslated attributes
+            $translations = $this->enrichWithDefaults($modelInstance, $translations);
+            
+            return $this->success($translations, 'Content translations retrieved successfully');
+            
+        } catch (\Exception $e) {
+            return $this->error('Failed to retrieve translations', null, 500);
+        }
+    }
+
+    private function enrichWithDefaults($model, $translations)
+    {
+        $defaultAttributes = $model->getTranslatableAttributes() ?? [];
         
-        $translations = \App\Models\Translation::getForModel($modelInstance, $locale);
+        foreach ($defaultAttributes as $attribute) {
+            if (!isset($translations[$attribute])) {
+                $translations[$attribute] = $model->getAttribute($attribute);
+            }
+        }
         
-        return $this->success($translations, 'Content translations retrieved successfully');
+        return $translations;
     }
 }

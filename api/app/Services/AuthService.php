@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Models\User;
@@ -28,9 +30,9 @@ class AuthService
     {
         $user = $this->userRepository->createUser($data);
         $this->userRepository->assignDefaultRole($user);
-        
+
         event(new Registered($user));
-        
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
@@ -46,7 +48,7 @@ class AuthService
         }
 
         $user = $this->userRepository->findByEmail($credentials['email']);
-        
+
         if (!$user || !$user->isActive()) {
             return ['error' => 'Your account is inactive', 'code' => 403];
         }
@@ -73,7 +75,7 @@ class AuthService
     public function getCurrentUser(User $user): array
     {
         $user->load(['roles.permissions', 'profile']);
-        
+
         return [
             'user' => $user,
             'permissions' => $user->cachedPermissions(),

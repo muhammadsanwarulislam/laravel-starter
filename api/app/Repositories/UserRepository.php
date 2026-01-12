@@ -6,12 +6,50 @@ namespace App\Repositories;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserRepository extends BaseRepository
 {
     public function __construct()
     {
         parent::__construct(new User());
+    }
+
+    public function getFilteredUsers(
+        ?string $search = null,
+        ?string $role = null,
+        ?string $status = null,
+        string $sortField = 'created_at',
+        string $sortOrder = 'desc',
+        int $perPage = 5
+    ): LengthAwarePaginator {
+        $query = $this->model->with(['roles', 'profile']);
+
+        // Search
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by role
+        if ($role) {
+            $query->whereHas('roles', function ($q) use ($role) {
+                $q->where('slug', $role);
+            });
+        }
+
+        // Filter by status
+        if ($status !== null && $status !== '') {
+            $query->where('status', $status);
+        }
+
+        // Sort
+        $query->orderBy($sortField, $sortOrder);
+
+        return $query->paginate($perPage);
     }
 
     public function createUser(array $data)

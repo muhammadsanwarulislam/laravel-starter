@@ -115,4 +115,11 @@ class LocalizationService
         Cache::forget('active_languages');
         $this->loadLanguages();
     }
+
+    public function isLocaleSupported(string $locale): bool
+    {
+        return Language::where('code', $locale)
+            ->where('is_active', true)
+            ->exists();
+    }
 }
