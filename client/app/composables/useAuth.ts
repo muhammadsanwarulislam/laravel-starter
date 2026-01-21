@@ -24,7 +24,7 @@ export const useAuth = () => {
           token: result.data.token
         }
         // Store OTP data temporarily
-        auth.storeOTPData(result.data.identifier, result.data.token)
+        auth.storeOTPData(result.data.token)
       }
       return result
     } finally {
@@ -32,15 +32,15 @@ export const useAuth = () => {
     }
   }
 
-  const verifyOTP = async (otp: string) => {
+  const verifyOTP = async (otp: any) => {
     loading.value = true
     try {
       const data = otpData.value
-      if (!data.identifier || !data.token) {
+      if (!data.token) {
         return { success: false, message: 'OTP session expired. Please login again.' }
       }
 
-      const result = await auth.verifyOTP(otp, 'login', data.token)
+      const result = await auth.verifyOTP(otp, 'login')
       if (result.success) {
         user.value = auth.getStoredUser()
         isAuthenticated.value = true

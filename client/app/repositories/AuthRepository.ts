@@ -23,7 +23,7 @@ export class AuthRepository extends BaseRepository {
     return this.post<LoginResponse>('/auth/login/otp', payload)
   }
 
-  async verifyOTP(otp: string, type: string, token: string): Promise<ApiResponse<LoginResponse>> {
+  async verifyOTP(otp: string, type: string): Promise<ApiResponse<LoginResponse>> {
     return this.post<LoginResponse>('/otp/verify', { 
       otp, 
       type

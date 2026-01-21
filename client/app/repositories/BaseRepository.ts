@@ -35,7 +35,7 @@ export abstract class BaseRepository {
 
     // Add auth token
     if (process.client) {
-      const token = localStorage.getItem('auth_token')
+      const token = localStorage.getItem('auth_token') ?? localStorage.getItem('otp_token')
       if (token) {
         headers['Authorization'] = `Bearer ${token}`
       }

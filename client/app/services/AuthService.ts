@@ -49,9 +49,9 @@ export class AuthService {
     }
   }
 
-  async verifyOTP(otp: string, type: string, token: string): Promise<{ success: boolean; message?: string; data?: any }> {
+  async verifyOTP(otp: string, type: string): Promise<{ success: boolean; message?: string; data?: any }> {
     try {
-      const response = await this.repository.verifyOTP(otp, type, token)
+      const response = await this.repository.verifyOTP(otp, type)
 
       if (response.success && response.data) {
         // Store token and user
@@ -169,13 +169,6 @@ export class AuthService {
     return [...new Set(permissions)]
   }
 
-  private setLocale(locale: string) {
-    if (process.client) {
-      localStorage.setItem('locale', locale)
-      useCookie('locale').value = locale
-    }
-  }
-
   getStoredUser(): any {
     if (process.client) {
       const userStr = localStorage.getItem('auth_user')
@@ -195,17 +188,15 @@ export class AuthService {
     return !!this.getStoredToken()
   }
 
-  storeOTPData(identifier: string, token: string) {
+  storeOTPData(token: string) {
     if (process.client) {
-      localStorage.setItem('otp_identifier', identifier)
       localStorage.setItem('otp_token', token)
     }
   }
 
-  getOTPData(): { identifier: string | null; token: string | null } {
+  getOTPData(): {token: string | null } {
     if (process.client) {
       return {
-        identifier: localStorage.getItem('otp_identifier'),
         token: localStorage.getItem('otp_token')
       }
     }

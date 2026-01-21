@@ -253,7 +253,7 @@ const verifyOTP = async () => {
   error.value = ''
   
   try {
-    const result = await auth.verifyOTP(otpCode.value)
+    const result = await auth.verifyOTP(parseInt(otpCode.value))
     
     if (result.success) {
       notification.success('Login successful!')
@@ -283,8 +283,6 @@ const resendOTP = async () => {
   error.value = ''
   
   try {
-    // Call your resend OTP API here
-    // For now, simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000))
     
     // Reset timer and start cooldown
