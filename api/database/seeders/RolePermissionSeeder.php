@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Role;
@@ -14,7 +16,7 @@ class RolePermissionSeeder extends Seeder
         // Clear existing data
         Role::query()->delete();
         Permission::query()->delete();
-        
+
         // Detach all pivot relationships first
         DB::table('role_user')->truncate();
         DB::table('permission_role')->truncate();
@@ -93,7 +95,7 @@ class RolePermissionSeeder extends Seeder
                 'description' => 'Has full access to all system features',
                 'is_system' => true,
                 'level' => 100,
-                'permissions' => array_values($permissions), 
+                'permissions' => array_values($permissions),
             ],
             [
                 'name' => 'Administrator',
@@ -176,10 +178,10 @@ class RolePermissionSeeder extends Seeder
         foreach ($roles as $roleData) {
             $permissionIds = $roleData['permissions'];
             unset($roleData['permissions']);
-            
+
             $role = Role::create($roleData);
             $role->permissions()->attach($permissionIds, ['created_at' => now(), 'updated_at' => now()]);
-            
+
             $this->command->info("Role '{$role->name}' created with " . count($permissionIds) . " permissions");
         }
 

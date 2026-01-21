@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -10,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 class Localization
 {
     protected $localizationService;
-    
+
     public function __construct(LocalizationService  $localizationService)
     {
         $this->localizationService = $localizationService;
@@ -22,7 +24,7 @@ class Localization
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->hasHeader('X-Locale')){
+        if ($request->hasHeader('X-Locale')) {
             $locale = $request->header('X-Locale');
             $this->localizationService->setLocale($locale);
         }

@@ -88,20 +88,16 @@ class Translation extends Model
     public static function getForModel($model, $locale = null)
     {
         $locale = $locale ?: app()->getLocale();
-        $modelClass = get_class($model);
-        $modelId = $model->id;
-        
-        $cacheKey = "translations_{$modelClass}_{$modelId}_{$locale}";
-        
-        return Cache::remember($cacheKey, 3600, function () use ($modelClass, $modelId, $locale) {
-            return self::where('translatable_type', $modelClass)
-                ->where('translatable_id', $modelId)
-                ->whereHas('language', function ($q) use ($locale) {
-                    $q->where('code', $locale);
-                })
-                ->pluck('value', 'attribute')
-                ->toArray();
-        });
+
+        return self::where('translatable_type', get_class($model))
+            ->where('translatable_id', $model->id)
+            ->with('language')
+            ->get()
+            ->filter(function ($translation) use ($locale) {
+                return $translation->language->code === $locale;
+            })
+            ->pluck('value', 'attribute')
+            ->toArray();
     }
 
     /**
@@ -109,6 +105,7 @@ class Translation extends Model
      */
     public static function clearModelTranslationCache($model, $locale = null)
     {
+        // Clear cache if needed
         Cache::flush();
     }
 }

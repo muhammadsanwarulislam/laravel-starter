@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Services\UserService;
 use Illuminate\Http\Request;
+use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\CreateOrUpdateRequest;
 
 class UserController extends Controller
 {
@@ -28,33 +30,28 @@ class UserController extends Controller
         return $this->success($users, 'Users retrieved successfully');
     }
 
-    public function store(Request $request)
+    public function store(CreateOrUpdateRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'phone' => 'nullable|string|max:20',
-            'status' => 'boolean',
-            'roles' => 'array',
-            'roles.*' => 'exists:roles,id'
-        ]);
-
-        $user = $this->userService->createUser($validated);
-
-        return $this->success($user->load('roles'), 'User created successfully');
+        try {
+            $user = $this->userService->createUser($request->validated());
+            return $this->success($user->load('roles'), 'User created successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
+        }
     }
 
-    public function show($id)
+    public function show($id): JsonResponse
     {
-        $user = $this->userService->getUserWithDetails($id);
-
-        return $this->success($user, 'User retrieved successfully');
+        try {
+            $user = $this->userService->getUserWithDetails($id);
+            return $this->success($user, 'User retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
+        }
     }
 
     public function update(Request $request, $id)
     {
-        // Prevent self-update
         if ($request->user()->id == $id) {
             return $this->error('You cannot update your own account through this endpoint', null, 403);
         }
@@ -75,19 +72,21 @@ class UserController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        // Prevent self-deletion
-        if ($request->user()->id == $id) {
-            return $this->error('You cannot delete your own account', null, 403);
+        try {
+            if ($request->user()->id == $id) {
+                return $this->error('You cannot delete your own account', null, 403);
+            }
+
+            $this->userService->deleteUser($id);
+
+            return $this->success(null, 'User deleted successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
         }
-
-        $this->userService->deleteUser($id);
-
-        return $this->success(null, 'User deleted successfully');
     }
 
     public function updateStatus(Request $request, $id)
     {
-        // Prevent self-status change
         if ($request->user()->id == $id) {
             return $this->error('You cannot change your own status', null, 403);
         }

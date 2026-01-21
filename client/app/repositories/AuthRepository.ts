@@ -7,8 +7,27 @@ export class AuthRepository extends BaseRepository {
     super()
   }
 
-  async login(credentials: LoginCredentials): Promise<ApiResponse<LoginResponse>> {
-    return this.post<LoginResponse>('/login', credentials)
+  async loginWithOTP(identifierType: 'email' | 'phone', identifier: string, password?: string): Promise<ApiResponse<LoginResponse>> {
+    const payload: any = {}
+    
+    if (identifierType === 'email') {
+      payload.email = identifier
+    } else {
+      payload.phone = identifier
+    }
+    
+    if (password) {
+      payload.password = password
+    }
+    
+    return this.post<LoginResponse>('/auth/login/otp', payload)
+  }
+
+  async verifyOTP(otp: string, type: string, token: string): Promise<ApiResponse<LoginResponse>> {
+    return this.post<LoginResponse>('/otp/verify', { 
+      otp, 
+      type
+    })
   }
 
   async register(data: RegisterData): Promise<ApiResponse<RegisterResponse>> {

@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 
 class UserService
 {
@@ -35,20 +36,20 @@ class UserService
         );
     }
 
-    public function createUser(array $data): User
+    public function createUser(array $data)
     {
         $user = $this->userRepository->createUser($data);
         
         if (isset($data['roles'])) {
-            $user->roles()->sync($data['roles']);
+            $user->roles()->sync($data['roles'], true);
         }
 
-        return $user->load('roles');
+        return $user;
     }
 
-    public function getUserWithDetails(int $userId): ?User
+    public function getUserWithDetails($userId): Model
     {
-        return User::with(['roles', 'profile', 'files'])->find($userId);
+        return $this->userRepository->findOrFail($userId, ['roles', 'profile', 'files']);
     }
 
     public function updateUser(int $userId, array $data): User
@@ -75,14 +76,14 @@ class UserService
         return $user;
     }
 
-    public function deleteUser(int $userId): bool
+    public function deleteUser($userId): bool
     {
-        return $this->userRepository->delete($userId);
+        return $this->userRepository->delete($this->userRepository->changeFieldType($userId));
     }
 
-    public function updateUserStatus(int $userId, bool $status): User
+    public function updateUserStatus($userId, bool $status): User
     {
-        $user = User::findOrFail($userId);
+        $user = User::findOrFail($this->userRepository->changeFieldType($userId));
         $user->update(['status' => $status]);
         
         return $user;

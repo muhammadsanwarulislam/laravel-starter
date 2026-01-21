@@ -4,10 +4,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Authentication Routes
-Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
-Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
-Route::post('/password/forgot', [App\Http\Controllers\Api\AuthController::class, 'forgotPassword']);
-Route::post('/password/reset', [App\Http\Controllers\Api\AuthController::class, 'resetPassword']);
+Route::prefix('auth')->group(function () {
+    Route::post('/login/otp', [App\Http\Controllers\Api\AuthController::class, 'requestLoginOtp']);
+    Route::post('/register', [App\Http\Controllers\Api\AuthController::class, 'register']);
+    Route::post('/password/forgot', [App\Http\Controllers\Api\AuthController::class, 'forgotPassword']);
+    Route::post('/password/reset', [App\Http\Controllers\Api\AuthController::class, 'resetPassword']);
+});
+
+Route::prefix('otp')->group(function () {
+    Route::post('/resend', [App\Http\Controllers\Api\AuthController::class, 'resendOtp']);
+});
 
 //Localization Routes
 Route::get('/languages', [App\Http\Controllers\Api\LocalizationController::class, 'getLanguages']);
@@ -17,6 +23,11 @@ Route::get('/translations/ui/{key}', [App\Http\Controllers\Api\LocalizationContr
 
 // Protected routes (require authentication)
 Route::middleware(['auth:sanctum'])->group(function () {
+    // OTP Verification Route
+    Route::prefix('otp')->group(function () {
+        Route::post('/verify', [App\Http\Controllers\Api\AuthController::class, 'verifyOtpAndResponse']);
+    });
+
     // Auth routes
     Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
     Route::get('/me', [App\Http\Controllers\Api\AuthController::class, 'me']);

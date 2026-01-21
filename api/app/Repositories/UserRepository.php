@@ -51,7 +51,6 @@ class UserRepository extends BaseRepository
 
         return $query->paginate($perPage);
     }
-
     public function createUser(array $data)
     {
         $data['password'] = Hash::make($data['password']);
@@ -74,6 +73,11 @@ class UserRepository extends BaseRepository
         return $this->findOneBy(['email' => $email]);
     }
 
+    public function findByPhone(string $phone): ?User
+    {
+        return $this->findOneBy(['phone' => $phone]);
+    }
+    
     public function findActiveUserByEmail(string $email): ?User
     {
         return $this->findOneBy(['email' => $email, 'status' => true]);

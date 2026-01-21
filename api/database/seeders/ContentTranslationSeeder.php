@@ -17,7 +17,7 @@ class ContentTranslationSeeder extends Seeder
 
         // Only translate these users
         $users = User::whereIn('email', [
-            'super@gmail.com',
+            'superadmin@example.com',
             'admin@example.com',
             'john@example.com',
             'jane@example.com'

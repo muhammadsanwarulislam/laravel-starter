@@ -4,13 +4,17 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Services\AuthService;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\ChangePasswordRequest;
+use App\Http\Requests\Auth\ResendOtpRequest;
+use App\Http\Resources\Auth\AuthResource;
 use Illuminate\Http\Request;
+use App\Services\AuthService;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\VerifyOtpRequest;
+use App\Http\Requests\Auth\ChangePasswordRequest;
 
 class AuthController extends Controller
 {
@@ -21,7 +25,7 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
         $result = $this->authService->register($request->validated());
 
@@ -29,43 +33,64 @@ class AuthController extends Controller
             'user' => $result['user'],
             'token' => $result['token'],
             'token_type' => 'Bearer',
-        ], 'Registration successful', 201);
+        ], 'Registration successful');
     }
 
-    public function login(LoginRequest $request)
+    public function requestLoginOtp(LoginRequest $request): JsonResponse
     {
-        $credentials = $request->only(['email', 'password']);
-        $locale = $request->input('locale');
+        try {
+            $validatedData = $request->validated();
+            $credentials = [
+                'phone'     => $validatedData['phone'] ?? null,
+                'email'     => $validatedData['email'] ?? null,
+                'password'  => $validatedData['password'],
+            ];
 
-        $result = $this->authService->login($credentials, $locale);
+            $result = $this->authService->initiateLoginWithOtp($credentials);
 
-        if (isset($result['error'])) {
-            return $this->error($result['error'], null, $result['code']);
+            return $this->success(new AuthResource($result), $result['message']);
+            
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
         }
-
-        return $this->success([
-            'user' => $result['user'],
-            'token' => $result['token'],
-            'token_type' => 'Bearer',
-            'locale' => $result['locale'],
-        ], 'Login successful');
     }
 
-    public function logout(Request $request)
+    public function verifyOtpAndResponse(VerifyOtpRequest $request): JsonResponse
+    {
+        try {
+            $result = $this->authService->verifyOtp($request->validated(), $request->validated()['type']);
+
+            if (isset($result['error'])) {
+                return $this->error($result['error'], null, $result['code']);
+            }
+
+            return $this->success([
+                'user'          => $result['user'],
+                'token'         => $result['token'],
+                'token_type'    => 'Bearer',
+                'locale'        => $result['locale'] ?? config('app.locale'),
+            ], 'Login successful');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null, 500);
+        }
+    }
+
+
+    public function logout(Request $request): JsonResponse
     {
         $this->authService->logout($request->user());
 
         return $this->success(null, 'Logout successful');
     }
 
-    public function me(Request $request)
+    public function me(Request $request): JsonResponse
     {
         $result = $this->authService->getCurrentUser($request->user());
 
         return $this->success($result);
     }
 
-    public function forgotPassword(Request $request)
+    public function forgotPassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email'
@@ -84,7 +109,7 @@ class AuthController extends Controller
         return $this->error($result['message'], null, 400);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'token' => 'required',
@@ -110,7 +135,7 @@ class AuthController extends Controller
         return $this->error($result['message'], null, 400);
     }
 
-    public function changePassword(ChangePasswordRequest $request)
+    public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
         $result = $this->authService->changePassword(
             $request->user(),
@@ -122,5 +147,21 @@ class AuthController extends Controller
         }
 
         return $this->success(null, $result['message']);
+    }
+
+    public function resendOtp(ResendOtpRequest $request): JsonResponse
+    {
+        try {
+            $type           = $request->validated()['type'];
+            $deliveryMethod = $request->validated()['delivery_method'];
+            $phone          = $request->validated()['phone'];
+            $email          = $request->validated()['email'];
+
+            $result = $this->authService->resendOtp($type, $deliveryMethod, $phone, $email);
+
+            return $this->success(['expires_at'     => $result['expires_at']], $result['message']);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
+        }
     }
 }

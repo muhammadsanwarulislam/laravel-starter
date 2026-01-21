@@ -25,7 +25,7 @@ abstract class BaseRepository
         return $this->model->with($relations)->find($id);
     }
 
-    public function findOrFail(int $id, array $relations = []): Model
+    public function findOrFail($id, array $relations = []): Model
     {
         return $this->model->with($relations)->findOrFail($id);
     }
@@ -55,7 +55,7 @@ abstract class BaseRepository
         return $this->model->where($criteria)->update($data);
     }
 
-    public function delete(int $id): bool
+    public function delete($id): bool
     {
         return $this->model->find($id)->delete();
     }
@@ -90,5 +90,21 @@ abstract class BaseRepository
     {
         $this->model = $this->model->onlyTrashed();
         return $this;
+    }
+
+    public function changeFieldType($value): bool
+    {
+        switch (gettype($value)) {
+            case 'boolean':
+                return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+            case 'integer':
+                return (int)$value;
+            case 'float':
+                return (float)$value;
+            case 'string':
+                return (int)$value;
+            default:
+                return $value;
+        }
     }
 }

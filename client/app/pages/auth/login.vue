@@ -15,9 +15,8 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-4 mt-8">
-                    <div v-for="n in 6" :key="n" 
-                         class="h-1 rounded-full bg-white/30"
-                         :class="{'bg-white/60': n % 2 === 0}">
+                    <div v-for="n in 6" :key="n" class="h-1 rounded-full bg-white/30"
+                        :class="{ 'bg-white/60': n % 2 === 0 }">
                     </div>
                 </div>
             </div>
@@ -26,7 +25,8 @@
         <!-- Right side - Login Form -->
         <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-md">
-                <div class="bg-white dark:bg-gray-800 py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-gray-200 dark:border-gray-700">
+                <div
+                    class="bg-white dark:bg-gray-800 py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-gray-200 dark:border-gray-700">
                     <div class="text-center">
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
                             Sign in
@@ -42,36 +42,55 @@
 
                     <form @submit.prevent="handleSubmit" class="mt-8 space-y-6">
                         <div class="space-y-5">
+                            <!-- Identifier Input (Email or Phone) -->
                             <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Email address
+                                <label for="identifier"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Email or Phone Number
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
+                                        <UIIconsEmail v-if="isEmail" class="h-5 w-5 text-gray-400" />
+                                        <UIIconsPhone v-else class="h-5 w-5 text-gray-400" />
                                     </div>
-                                    <input id="email" v-model="form.email" name="email" type="email" autocomplete="email" required
+                                    <input id="identifier" v-model="form.identifier" name="identifier" type="text"
+                                        autocomplete="email"
+                                        :placeholder="isEmail ? 'you@example.com' : '+880 1XXXXXXXXX'"
+                                        required
                                         class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-                                        placeholder="you@example.com" />
+                                        @input="detectIdentifierType" />
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                        <span class="text-xs text-gray-500 dark:text-gray-400">
+                                            {{ isEmail ? 'Email' : 'Phone' }}
+                                        </span>
+                                    </div>
                                 </div>
+                                <p v-if="form.identifier && !isEmail && !isValidPhone" class="mt-1 text-xs text-red-500">
+                                    Please enter a valid phone number
+                                </p>
                             </div>
 
+                            <!-- Password Input -->
                             <div>
-                                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="password"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Password
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
+                                        <UIIconsPassword class="h-5 w-5 text-gray-400" />
                                     </div>
-                                    <input id="password" v-model="form.password" name="password" type="password"
+                                    <input id="password" v-model="form.password" name="password" 
+                                        :type="showPassword ? 'text' : 'password'"
                                         autocomplete="current-password" required
                                         class="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
                                         placeholder="••••••••" />
+                                    <button type="button" 
+                                        @click="togglePassword"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500">
+                                        <UIIconsEye v-if="showPassword" class="h-5 w-5" />
+                                        <UIIconsEyeOff v-else class="h-5 w-5" />
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +103,7 @@
                         </div>
 
                         <div>
-                            <button type="submit" :disabled="loading"
+                            <button type="submit" :disabled="loading || (form.identifier && !isEmail && !isValidPhone)"
                                 class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200">
                                 <span v-if="loading" class="absolute left-0 inset-y-0 flex items-center pl-3">
                                     <UIIconsSpinner class="animate-spin h-5 w-5 text-white" />
@@ -92,17 +111,22 @@
                                 <span class="relative">
                                     {{ loading ? 'Signing in...' : 'Sign in' }}
                                 </span>
-                                <svg class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                <svg class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
                                 </svg>
                             </button>
                         </div>
 
-                        <div v-if="error" class="rounded-xl bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+                        <div v-if="error"
+                            class="rounded-xl bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
                             <div class="flex">
                                 <div class="shrink-0">
                                     <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                            clip-rule="evenodd" />
                                     </svg>
                                 </div>
                                 <div class="ml-3">
@@ -117,15 +141,19 @@
 
                 <!-- Back to home link -->
                 <div class="mt-6 text-center">
-                    <NuxtLink to="/" class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors duration-200 inline-flex items-center">
+                    <NuxtLink to="/"
+                        class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors duration-200 inline-flex items-center">
                         <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
                         Back to home
                     </NuxtLink>
                 </div>
             </div>
         </div>
+
+        <ModalOTPVerify v-if="showOTPModal" :is-open="showOTPModal" @update:is-open="showOTPModal = $event" @verified="onOTPVerified" />
     </div>
 </template>
 
@@ -136,15 +164,47 @@ import { notification } from '~/utils/notification'
 const auth = useAuth()
 const router = useRouter()
 
+// Form state
 const form = reactive({
-    email: '',
+    identifier: '',
     password: '',
-    remember: false
 })
 
+// UI state
 const loading = ref(false)
 const error = ref('')
 const showPassword = ref(false)
+const showOTPModal = ref(false)
+
+// Validation state
+const isEmail = ref(true)
+const isValidPhone = ref(true)
+
+// Detect if identifier is email or phone
+const detectIdentifierType = () => {
+    const identifier = form.identifier.trim()
+    
+    if (!identifier) {
+        isEmail.value = true
+        isValidPhone.value = true
+        return
+    }
+
+    // Check if it's an email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (emailRegex.test(identifier)) {
+        isEmail.value = true
+        return
+    }
+
+    // If not email, assume it's a phone number
+    isEmail.value = false
+    
+    // Validate phone number (basic validation - adjust as needed)
+    const phoneRegex = /^[\d\s\+\-\(\)]{10,15}$/
+    const digitsOnly = identifier.replace(/\D/g, '')
+    isValidPhone.value = phoneRegex.test(identifier) && digitsOnly.length >= 10 && digitsOnly.length <= 15
+}
 
 const togglePassword = () => {
     showPassword.value = !showPassword.value
@@ -152,17 +212,31 @@ const togglePassword = () => {
 
 const handleSubmit = async () => {
     if (loading.value) return
+    if (!isEmail.value && !isValidPhone.value) {
+        error.value = 'Please enter a valid phone number'
+        return
+    }
 
     loading.value = true
     error.value = ''
-
+    
     try {
-        const result = await auth.login({
-            email: form.email,
+        const credentials: any = {
             password: form.password
-        })
+        }
 
-        if (result.success) {
+        if (isEmail.value) {
+            credentials.email = form.identifier.trim()
+        } else {
+            const phoneNumber = form.identifier.replace(/\D/g, '')
+            credentials.phone = phoneNumber.replace(/^0+/, '')
+        }
+        
+        const result = await auth.login(credentials)
+        
+        if (result.success && result.otpRequired) {
+            showOTPModal.value = true
+        } else if (result.success) {
             notification.success('Login successful!')
             router.push('/dashboard')
         } else {
@@ -176,4 +250,9 @@ const handleSubmit = async () => {
         loading.value = false
     }
 }
+
+watch(() => form.identifier, () => {
+    detectIdentifierType()
+    error.value = '' 
+})
 </script>

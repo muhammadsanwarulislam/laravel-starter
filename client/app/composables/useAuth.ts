@@ -2,18 +2,49 @@ import { services } from '~/services'
 
 export const useAuth = () => {
   const auth = services.auth
-  
+
   const user = ref(auth.getStoredUser())
   const isAuthenticated = ref(auth.isAuthenticated())
   const loading = ref(false)
+  const otpRequired = ref(false)
+  const otpData = ref(auth.getOTPData())
 
   const login = async (credentials: any) => {
     loading.value = true
+    otpRequired.value = false
+
     try {
       const result = await auth.login(credentials)
+
+      if (result.success && result.otpRequired) {
+        otpRequired.value = true
+
+        otpData.value = {
+          identifier: result.data.identifier,
+          token: result.data.token
+        }
+        // Store OTP data temporarily
+        auth.storeOTPData(result.data.identifier, result.data.token)
+      }
+      return result
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const verifyOTP = async (otp: string) => {
+    loading.value = true
+    try {
+      const data = otpData.value
+      if (!data.identifier || !data.token) {
+        return { success: false, message: 'OTP session expired. Please login again.' }
+      }
+
+      const result = await auth.verifyOTP(otp, 'login', data.token)
       if (result.success) {
         user.value = auth.getStoredUser()
         isAuthenticated.value = true
+        otpRequired.value = false
       }
       return result
     } finally {
@@ -40,8 +71,9 @@ export const useAuth = () => {
     if (result.success) {
       user.value = null
       isAuthenticated.value = false
+      otpRequired.value = false
 
-      if(process.client) {
+      if (process.client) {
         await nextTick()
         navigateTo('/')
       }
@@ -71,16 +103,17 @@ export const useAuth = () => {
     auth.clearAuth()
     user.value = null
     isAuthenticated.value = false
+    otpRequired.value = false
   }
 
   const hasPermission = (permission: string): boolean => {
     if (!user.value) return false
-    
+
     // Super admin check
     if (user.value.roles?.some((role: any) => role.slug === 'super-admin')) {
       return true
     }
-    
+
     // Check stored permissions
     if (process.client) {
       const permissionsStr = localStorage.getItem('user_permissions')
@@ -89,7 +122,7 @@ export const useAuth = () => {
         return permissions.includes(permission)
       }
     }
-    
+
     return false
   }
 
@@ -101,6 +134,7 @@ export const useAuth = () => {
     if (process.client) {
       user.value = auth.getStoredUser()
       isAuthenticated.value = auth.isAuthenticated()
+      otpData.value = auth.getOTPData()
     }
   }
 
@@ -108,7 +142,10 @@ export const useAuth = () => {
     user,
     isAuthenticated,
     loading,
+    otpRequired,
+    otpData,
     login,
+    verifyOTP,
     register,
     resetPassword,
     forgetPassword,

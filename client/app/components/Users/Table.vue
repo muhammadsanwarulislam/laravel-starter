@@ -9,7 +9,7 @@
             Showing {{ from }} to {{ to }} of {{ total }} users
           </p>
         </div>
-        
+
         <slot name="bulk-actions" />
       </div>
     </div>
@@ -21,11 +21,7 @@
 
     <!-- Empty State -->
     <div v-else-if="users.length === 0" class="text-center py-12">
-      <UIEmptyState
-        title="No users"
-        description="Get started by creating a new user."
-        icon="users"
-      >
+      <UIEmptyState title="No users" description="Get started by creating a new user." icon="users">
         <slot name="empty-state-actions" />
       </UIEmptyState>
     </div>
@@ -35,12 +31,8 @@
         <thead class="bg-gray-50">
           <tr>
             <th scope="col" class="px-6 py-3">
-              <input 
-                v-model="allSelected"
-                @change="$emit('select-all', allSelected)"
-                type="checkbox"
-                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
+              <input v-model="allSelected" @change="$emit('select-all', allSelected)" type="checkbox"
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
             </th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               User
@@ -63,30 +55,17 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <UsersTableRow
-            v-for="user in users"
-            :key="user.id"
-            :user="user"
-            :selected="selectedUserIds.includes(user.id)"
-            @select="$emit('select-user', user.id)"
-            @view="$emit('view', user)"
-            @edit="$emit('edit', user)"
-            @delete="$emit('delete', user)"
-          />
+          <UsersTableRow v-for="user in users" :key="user.id" :user="user" :selected="selectedUserIds.includes(user.id)"
+            @select="$emit('select-user', user.id)" @view="$emit('view', user)" @edit="$emit('edit', user)"
+            @delete="$emit('delete', user)" />
         </tbody>
       </table>
     </div>
 
     <!-- Pagination -->
     <div v-if="!loading && users.length > 0" class="px-6 py-4 border-t border-gray-200">
-      <UIPagination
-        :current-page="currentPage"
-        :last-page="lastPage"
-        :total="total"
-        :from="from"
-        :to="to"
-        @page-change="$emit('page-change', $event)"
-      />
+      <UIPagination :current-page="currentPage" :last-page="lastPage" :total="total" :from="from" :to="to"
+        @page-change="$emit('page-change', $event)" />
     </div>
   </div>
 </template>

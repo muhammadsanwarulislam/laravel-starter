@@ -79,9 +79,10 @@ export interface Profile {
 
 // DTOs
 export interface LoginCredentials {
-  email: string
-  password: string
-  locale?: string
+  email?: string;
+  phone?: string;
+  password?: string;
+  locale?: string;
 }
 
 export interface RegisterData {
@@ -128,10 +129,11 @@ export interface MenuSection {
 }
 // Response types
 export interface LoginResponse {
-  user: User
-  token: string
-  token_type: string
-  locale: string
+  identifier: string;
+  identifier_type?: 'email' | 'phone';
+  expires_at: string;
+  token_type: string;
+  token: string;
 }
 
 export interface RegisterResponse {

@@ -24,19 +24,19 @@ const props = withDefaults(defineProps<Props>(), {
 
 const badgeClasses = computed(() => {
   const base = 'inline-flex items-center gap-1.5 font-medium transition-colors'
-  
+
   const sizes = {
     xs: props.iconOnly ? 'p-1 text-xs' : 'px-2 py-0.5 text-xs',
     sm: props.iconOnly ? 'p-1.5 text-xs' : 'px-2.5 py-1 text-xs',
     md: props.iconOnly ? 'p-2 text-sm' : 'px-3 py-1.5 text-sm'
   }
-  
+
   const borderRadius = {
     none: 'rounded-none',
     sm: 'rounded',
     full: 'rounded-full'
   }
-  
+
   // Filled variants
   const filled = {
     primary: 'bg-blue-100 text-blue-800 border border-blue-200',
@@ -49,7 +49,7 @@ const badgeClasses = computed(() => {
     dark: 'bg-gray-800 text-white border border-gray-700',
     gray: 'bg-gray-100 text-gray-700 border border-gray-200'
   }
-  
+
   // Outlined variants (more subtle)
   const outlined = {
     primary: 'bg-white text-blue-700 border border-blue-300',
@@ -62,9 +62,9 @@ const badgeClasses = computed(() => {
     dark: 'bg-white text-gray-800 border border-gray-400',
     gray: 'bg-white text-gray-600 border border-gray-300'
   }
-  
+
   const variantClasses = props.outlined ? outlined[props.variant] : filled[props.variant]
-  
+
   return [
     base,
     sizes[props.size],

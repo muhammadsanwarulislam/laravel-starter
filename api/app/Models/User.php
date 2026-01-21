@@ -18,6 +18,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'country_code_id',
         'phone',
         'status'
     ];
@@ -29,8 +30,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'status' => 'boolean',
+            'password'          => 'hashed',
+            'status'            => 'boolean',
         ];
     }
 
@@ -74,6 +75,14 @@ class User extends Authenticatable
 
         return cache()->remember($cacheKey, 300, function () {
             return $this->roles()->with('permissions')->get();
+        });
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::deleting(function ($user){
+            $user->roles()->detach();
         });
     }
 }

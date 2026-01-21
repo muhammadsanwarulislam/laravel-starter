@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\User;
 
-use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class CreateOrUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +23,12 @@ class RegisterRequest extends FormRequest
     {
         return [
             'name'              => 'required|string|max:155',
-            'email'             => 'required|string|email|max:155|unique:users',
-            'password'          => 'required|string|min:8|confirmed',
+            'email'             => 'required|string|email|max:155|unique:users,email,' . $this->route('user'),
+            'password'          => 'nullable|string|min:8|confirmed',
             'country_code_id'   => 'required|string|min:1|max:3',
-            'phone'             => 'nullable|string|max:11'
+            'phone'             => 'nullable|string|max:11',
+            'roles'             => 'required|exists:roles,id',
+            'status'            => 'required|boolean',
         ];
     }
 

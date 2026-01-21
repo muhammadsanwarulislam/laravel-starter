@@ -51,11 +51,7 @@ class LocalizationService
             $this->currentLocale = $locale;
             App::setLocale($locale);
             Session::put('locale', $locale);
-
-            if (auth()->check()) {
-                auth()->user()->update(['ui_locale' => $locale]);
-            }
-
+            
             return true;
         }
 
@@ -114,12 +110,5 @@ class LocalizationService
         Cache::forget('available_locales');
         Cache::forget('active_languages');
         $this->loadLanguages();
-    }
-
-    public function isLocaleSupported(string $locale): bool
-    {
-        return Language::where('code', $locale)
-            ->where('is_active', true)
-            ->exists();
     }
 }
