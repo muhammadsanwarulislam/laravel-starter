@@ -55,8 +55,7 @@
                                     </div>
                                     <input id="identifier" v-model="form.identifier" name="identifier" type="text"
                                         autocomplete="email"
-                                        :placeholder="isEmail ? 'you@example.com' : '+880 1XXXXXXXXX'"
-                                        required
+                                        :placeholder="isEmail ? 'you@example.com' : '+880 1XXXXXXXXX'" required
                                         class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
                                         @input="detectIdentifierType" />
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
@@ -65,7 +64,8 @@
                                         </span>
                                     </div>
                                 </div>
-                                <p v-if="form.identifier && !isEmail && !isValidPhone" class="mt-1 text-xs text-red-500">
+                                <p v-if="form.identifier && !isEmail && !isValidPhone"
+                                    class="mt-1 text-xs text-red-500">
                                     Please enter a valid phone number
                                 </p>
                             </div>
@@ -80,13 +80,12 @@
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <UIIconsPassword class="h-5 w-5 text-gray-400" />
                                     </div>
-                                    <input id="password" v-model="form.password" name="password" 
-                                        :type="showPassword ? 'text' : 'password'"
-                                        autocomplete="current-password" required
+                                    <input id="password" v-model="form.password" name="password"
+                                        :type="showPassword ? 'text' : 'password'" autocomplete="current-password"
+                                        required
                                         class="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
                                         placeholder="••••••••" />
-                                    <button type="button" 
-                                        @click="togglePassword"
+                                    <button type="button" @click="togglePassword"
                                         class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500">
                                         <UIIconsEye v-if="showPassword" class="h-5 w-5" />
                                         <UIIconsEyeOff v-else class="h-5 w-5" />
@@ -153,7 +152,8 @@
             </div>
         </div>
 
-        <ModalOTPVerify v-if="showOTPModal" :is-open="showOTPModal" @update:is-open="showOTPModal = $event" @verified="onOTPVerified" />
+        <ModalOTPVerify v-if="showOTPModal" :is-open="showOTPModal" @update:is-open="showOTPModal = $event"
+            @verified="onOTPVerified" />
     </div>
 </template>
 
@@ -180,10 +180,45 @@ const showOTPModal = ref(false)
 const isEmail = ref(true)
 const isValidPhone = ref(true)
 
+// Helper function to clean and validate phone number
+const cleanPhoneNumber = (phone: string): string => {
+    // Remove all non-digit characters
+    const digits = phone.replace(/\D/g, '')
+
+    let cleaned = digits
+
+    // Remove leading 0 if followed by country code patterns
+    if (cleaned.startsWith('0880') || cleaned.startsWith('0980')) {
+        cleaned = cleaned.substring(4) 
+    } else if (cleaned.startsWith('880')) {
+        cleaned = cleaned.substring(3) 
+    } else if (cleaned.startsWith('80')) {
+        cleaned = '0' + cleaned.substring(2) 
+    }
+
+    // Ensure it starts with 01 for mobile numbers (adjust as needed for your country)
+    if (!cleaned.startsWith('01') && cleaned.length >= 10) {
+        // If it doesn't start with 01 but has enough digits, check if it's missing leading 0
+        if (cleaned.startsWith('1') && cleaned.length === 10) {
+            cleaned = '0' + cleaned
+        }
+    }
+
+    return cleaned
+}
+
+const validatePhoneNumber = (phone: string): boolean => {
+    const cleaned = cleanPhoneNumber(phone)
+
+    const phoneRegex = /^01[3-9]\d{8}$/
+
+    return phoneRegex.test(cleaned) && cleaned.length === 11
+}
+
 // Detect if identifier is email or phone
 const detectIdentifierType = () => {
     const identifier = form.identifier.trim()
-    
+
     if (!identifier) {
         isEmail.value = true
         isValidPhone.value = true
@@ -199,11 +234,19 @@ const detectIdentifierType = () => {
 
     // If not email, assume it's a phone number
     isEmail.value = false
-    
-    // Validate phone number (basic validation - adjust as needed)
-    const phoneRegex = /^[\d\s\+\-\(\)]{10,15}$/
-    const digitsOnly = identifier.replace(/\D/g, '')
-    isValidPhone.value = phoneRegex.test(identifier) && digitsOnly.length >= 10 && digitsOnly.length <= 15
+    isValidPhone.value = validatePhoneNumber(identifier)
+}
+
+// Update the input to show cleaned phone number
+const updatePhoneDisplay = () => {
+    if (!isEmail.value && form.identifier) {
+        // Clean the phone number for display
+        const cleaned = cleanPhoneNumber(form.identifier)
+        // Only update if it's different and valid
+        if (cleaned && cleaned !== form.identifier.replace(/\D/g, '')) {
+            form.identifier = cleaned
+        }
+    }
 }
 
 const togglePassword = () => {
@@ -212,14 +255,26 @@ const togglePassword = () => {
 
 const handleSubmit = async () => {
     if (loading.value) return
+
+    // Validate identifier
+    if (!form.identifier.trim()) {
+        error.value = 'Please enter email or phone number'
+        return
+    }
+
+    if (!form.password) {
+        error.value = 'Please enter password'
+        return
+    }
+
     if (!isEmail.value && !isValidPhone.value) {
-        error.value = 'Please enter a valid phone number'
+        error.value = 'Please enter a valid phone number (e.g., 01711111111)'
         return
     }
 
     loading.value = true
     error.value = ''
-    
+
     try {
         const credentials: any = {
             password: form.password
@@ -228,12 +283,19 @@ const handleSubmit = async () => {
         if (isEmail.value) {
             credentials.email = form.identifier.trim()
         } else {
-            const phoneNumber = form.identifier.replace(/\D/g, '')
-            credentials.phone = phoneNumber.replace(/^0+/, '')
+            // Clean and use only the local phone number
+            const phoneNumber = cleanPhoneNumber(form.identifier)
+
+            // Additional validation
+            if (!phoneNumber.startsWith('01') || phoneNumber.length !== 11) {
+                throw new Error('Invalid phone number format. Please use format: 01XXXXXXXXX')
+            }
+
+            credentials.phone = phoneNumber
         }
-        
+
         const result = await auth.login(credentials)
-        
+
         if (result.success && result.otpRequired) {
             showOTPModal.value = true
         } else if (result.success) {
@@ -251,8 +313,22 @@ const handleSubmit = async () => {
     }
 }
 
+// Watch for identifier changes
 watch(() => form.identifier, () => {
     detectIdentifierType()
-    error.value = '' 
+    // Auto-clean phone number on blur or when typing stops
+    if (!isEmail.value && form.identifier) {
+        // Use debounce to clean after user stops typing
+        setTimeout(() => {
+            updatePhoneDisplay()
+        }, 1000)
+    }
+    error.value = ''
 })
+
+// Also update on blur
+const handleBlur = () => {
+    updatePhoneDisplay()
+    detectIdentifierType()
+}
 </script>

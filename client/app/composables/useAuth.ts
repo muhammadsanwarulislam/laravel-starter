@@ -3,14 +3,14 @@ import { services } from '~/services'
 export const useAuth = () => {
   const auth = services.auth
 
-  const user = ref(auth.getStoredUser())
+  const user            = ref(auth.getStoredUser())
   const isAuthenticated = ref(auth.isAuthenticated())
-  const loading = ref(false)
-  const otpRequired = ref(false)
-  const otpData = ref(auth.getOTPData())
+  const loading         = ref(false)
+  const otpRequired     = ref(false)
+  const otpData         = ref(auth.getOTPData())
 
   const login = async (credentials: any) => {
-    loading.value = true
+    loading.value     = true
     otpRequired.value = false
 
     try {
@@ -23,7 +23,7 @@ export const useAuth = () => {
           identifier: result.data.identifier,
           token: result.data.token
         }
-        // Store OTP data temporarily
+
         auth.storeOTPData(result.data.token)
       }
       return result
@@ -36,15 +36,17 @@ export const useAuth = () => {
     loading.value = true
     try {
       const data = otpData.value
+
       if (!data.token) {
         return { success: false, message: 'OTP session expired. Please login again.' }
       }
 
       const result = await auth.verifyOTP(otp, 'login')
+
       if (result.success) {
-        user.value = auth.getStoredUser()
+        user.value            = auth.getStoredUser()
         isAuthenticated.value = true
-        otpRequired.value = false
+        otpRequired.value     = false
       }
       return result
     } finally {
@@ -56,10 +58,12 @@ export const useAuth = () => {
     loading.value = true
     try {
       const result = await auth.register(data)
+
       if (result.success) {
-        user.value = auth.getStoredUser()
+        user.value            = auth.getStoredUser()
         isAuthenticated.value = true
       }
+
       return result
     } finally {
       loading.value = false
@@ -68,10 +72,11 @@ export const useAuth = () => {
 
   const logout = async () => {
     const result = await auth.logout()
+
     if (result.success) {
-      user.value = null
+      user.value            = null
       isAuthenticated.value = false
-      otpRequired.value = false
+      otpRequired.value     = false
 
       if (process.client) {
         await nextTick()
@@ -101,9 +106,9 @@ export const useAuth = () => {
 
   const clearAuth = () => {
     auth.clearAuth()
-    user.value = null
+    user.value            = null
     isAuthenticated.value = false
-    otpRequired.value = false
+    otpRequired.value     = false
   }
 
   const hasPermission = (permission: string): boolean => {
