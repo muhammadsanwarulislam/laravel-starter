@@ -1,4 +1,5 @@
 import type { MenuItem, MenuSection } from '~/api/types/api.types'
+import { useAuth } from './auth/useAuth'
 
 export const useMenu = () => {
   const auth = useAuth()

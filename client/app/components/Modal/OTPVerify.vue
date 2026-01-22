@@ -123,6 +123,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useAuth } from '~/composables/auth/useAuth';
 import { notification } from '~/utils/notification'
 
 const props = defineProps<{

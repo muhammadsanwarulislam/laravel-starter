@@ -1,3 +1,4 @@
+import { useAuth } from '~/composables/auth/useAuth'
 import { notification } from '~/utils/notification'
 
 export default defineNuxtRouteMiddleware((to, from) => {

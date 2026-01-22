@@ -19,6 +19,7 @@
 <script setup lang="ts">
 definePageMeta({ middleware: ["auth"] });
 import Card from '~/components/UI/Card.vue'
+import { useAuth } from '~/composables/auth/useAuth';
 
 const auth = useAuth()
 const api = useApi()

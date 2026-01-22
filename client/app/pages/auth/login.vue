@@ -159,6 +159,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: ["guest"], layout: "guest" });
+import { useAuth } from '~/composables/auth/useAuth';
 import { notification } from '~/utils/notification'
 
 const auth = useAuth()
@@ -283,10 +284,8 @@ const handleSubmit = async () => {
         if (isEmail.value) {
             credentials.email = form.identifier.trim()
         } else {
-            // Clean and use only the local phone number
             const phoneNumber = cleanPhoneNumber(form.identifier)
 
-            // Additional validation
             if (!phoneNumber.startsWith('01') || phoneNumber.length !== 11) {
                 throw new Error('Invalid phone number format. Please use format: 01XXXXXXXXX')
             }
@@ -316,9 +315,7 @@ const handleSubmit = async () => {
 // Watch for identifier changes
 watch(() => form.identifier, () => {
     detectIdentifierType()
-    // Auto-clean phone number on blur or when typing stops
     if (!isEmail.value && form.identifier) {
-        // Use debounce to clean after user stops typing
         setTimeout(() => {
             updatePhoneDisplay()
         }, 1000)
