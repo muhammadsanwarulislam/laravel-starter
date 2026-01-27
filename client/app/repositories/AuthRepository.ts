@@ -1,5 +1,5 @@
 import { BaseRepository } from './BaseRepository'
-import type { LoginCredentials, RegisterData, LoginResponse, RegisterResponse, AuthUserResponse } from '~/api/types/api.types'
+import type { RegisterData, LoginResponse, RegisterResponse, AuthUserResponse } from '~/api/types/api.types'
 import type { ApiResponse } from '~/api/types/api.types'
 
 export class AuthRepository extends BaseRepository {
@@ -31,7 +31,7 @@ export class AuthRepository extends BaseRepository {
   }
 
   async register(data: RegisterData): Promise<ApiResponse<RegisterResponse>> {
-    return this.post<RegisterResponse>('/register', data)
+    return this.post<RegisterResponse>('auth/register', data)
   }
 
   async logout(): Promise<ApiResponse<void>> {

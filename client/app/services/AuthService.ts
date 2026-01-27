@@ -1,5 +1,5 @@
 import { AuthRepository } from '../repositories/AuthRepository'
-import type { LoginCredentials, RegisterData } from '~/api/types/api.types'
+import type { RegisterData } from '~/api/types/api.types'
 
 export class AuthService {
   private repository: AuthRepository

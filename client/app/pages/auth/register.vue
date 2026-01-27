@@ -341,6 +341,7 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: ["guest"], layout: "guest" });
+import { useAuth } from '~/composables/auth/useAuth';
 import { notification } from '~/utils/notification'
 
 const auth = useAuth()

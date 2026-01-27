@@ -57,7 +57,7 @@
                                         autocomplete="email"
                                         :placeholder="isEmail ? 'you@example.com' : '+880 1XXXXXXXXX'" required
                                         class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
-                                        @input="detectIdentifierType" />
+                                        @input="handleIdentifierInput" @blur="handleIdentifierBlur" />
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                         <span class="text-xs text-gray-500 dark:text-gray-400">
                                             {{ isEmail ? 'Email' : 'Phone' }}
@@ -66,7 +66,7 @@
                                 </div>
                                 <p v-if="form.identifier && !isEmail && !isValidPhone"
                                     class="mt-1 text-xs text-red-500">
-                                    Please enter a valid phone number
+                                    Please enter a valid phone number (e.g., 01711111111)
                                 </p>
                             </div>
 
@@ -159,7 +159,8 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: ["guest"], layout: "guest" });
-import { useAuth } from '~/composables/auth/useAuth';
+
+import { useAuth } from '~/composables/auth/useAuth'
 import { notification } from '~/utils/notification'
 
 const auth = useAuth()
@@ -181,73 +182,34 @@ const showOTPModal = ref(false)
 const isEmail = ref(true)
 const isValidPhone = ref(true)
 
-// Helper function to clean and validate phone number
-const cleanPhoneNumber = (phone: string): string => {
-    // Remove all non-digit characters
-    const digits = phone.replace(/\D/g, '')
+const handleIdentifierInput = () => {
+    error.value = ''
 
-    let cleaned = digits
+    const { isEmail: detectedIsEmail, isValid } = auth.detectIdentifierType(form.identifier)
+    isEmail.value = detectedIsEmail
+    isValidPhone.value = isValid
 
-    // Remove leading 0 if followed by country code patterns
-    if (cleaned.startsWith('0880') || cleaned.startsWith('0980')) {
-        cleaned = cleaned.substring(4) 
-    } else if (cleaned.startsWith('880')) {
-        cleaned = cleaned.substring(3) 
-    } else if (cleaned.startsWith('80')) {
-        cleaned = '0' + cleaned.substring(2) 
+    if (!detectedIsEmail && form.identifier) {
+        setTimeout(() => {
+            const cleaned = auth.cleanPhone(form.identifier)
+            if (cleaned && cleaned !== form.identifier.replace(/\D/g, '')) {
+                form.identifier = cleaned
+            }
+        }, 300)
     }
-
-    // Ensure it starts with 01 for mobile numbers (adjust as needed for your country)
-    if (!cleaned.startsWith('01') && cleaned.length >= 10) {
-        // If it doesn't start with 01 but has enough digits, check if it's missing leading 0
-        if (cleaned.startsWith('1') && cleaned.length === 10) {
-            cleaned = '0' + cleaned
-        }
-    }
-
-    return cleaned
 }
 
-const validatePhoneNumber = (phone: string): boolean => {
-    const cleaned = cleanPhoneNumber(phone)
-
-    const phoneRegex = /^01[3-9]\d{8}$/
-
-    return phoneRegex.test(cleaned) && cleaned.length === 11
-}
-
-// Detect if identifier is email or phone
-const detectIdentifierType = () => {
-    const identifier = form.identifier.trim()
-
-    if (!identifier) {
-        isEmail.value = true
-        isValidPhone.value = true
-        return
-    }
-
-    // Check if it's an email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (emailRegex.test(identifier)) {
-        isEmail.value = true
-        return
-    }
-
-    // If not email, assume it's a phone number
-    isEmail.value = false
-    isValidPhone.value = validatePhoneNumber(identifier)
-}
-
-// Update the input to show cleaned phone number
-const updatePhoneDisplay = () => {
+const handleIdentifierBlur = () => {
     if (!isEmail.value && form.identifier) {
-        // Clean the phone number for display
-        const cleaned = cleanPhoneNumber(form.identifier)
-        // Only update if it's different and valid
-        if (cleaned && cleaned !== form.identifier.replace(/\D/g, '')) {
+        const cleaned = auth.cleanPhone(form.identifier)
+        if (cleaned) {
             form.identifier = cleaned
         }
     }
+
+    const { isEmail: detectedIsEmail, isValid } = auth.detectIdentifierType(form.identifier)
+    isEmail.value = detectedIsEmail
+    isValidPhone.value = isValid
 }
 
 const togglePassword = () => {
@@ -257,7 +219,6 @@ const togglePassword = () => {
 const handleSubmit = async () => {
     if (loading.value) return
 
-    // Validate identifier
     if (!form.identifier.trim()) {
         error.value = 'Please enter email or phone number'
         return
@@ -284,7 +245,7 @@ const handleSubmit = async () => {
         if (isEmail.value) {
             credentials.email = form.identifier.trim()
         } else {
-            const phoneNumber = cleanPhoneNumber(form.identifier)
+            const phoneNumber = auth.cleanPhone(form.identifier)
 
             if (!phoneNumber.startsWith('01') || phoneNumber.length !== 11) {
                 throw new Error('Invalid phone number format. Please use format: 01XXXXXXXXX')
@@ -297,6 +258,7 @@ const handleSubmit = async () => {
 
         if (result.success && result.otpRequired) {
             showOTPModal.value = true
+            notification.info('Please check your email/phone for OTP code')
         } else if (result.success) {
             notification.success('Login successful!')
             router.push('/dashboard')
@@ -312,20 +274,26 @@ const handleSubmit = async () => {
     }
 }
 
-// Watch for identifier changes
-watch(() => form.identifier, () => {
-    detectIdentifierType()
-    if (!isEmail.value && form.identifier) {
-        setTimeout(() => {
-            updatePhoneDisplay()
-        }, 1000)
+const onOTPVerified = async (result: any) => {
+    if (result.success) {
+        showOTPModal.value = false
+        notification.success('OTP verified successfully!')
+        await router.push('/dashboard')
+    } else {
+        notification.error(result.message || 'OTP verification failed')
     }
+}
+
+
+watch(() => form.identifier, () => {
     error.value = ''
 })
 
-// Also update on blur
-const handleBlur = () => {
-    updatePhoneDisplay()
-    detectIdentifierType()
-}
+onMounted(() => {
+    auth.initialize()
+})
 </script>
+
+<style scoped>
+
+</style>

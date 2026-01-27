@@ -1,164 +1,137 @@
 import { services } from '~/services'
+import { useUserStore } from './useUserStore'
+import { useAuthSession } from './useAuthSession'
+import { useAuthValidation } from './useAuthValidation'
+import { useAuthOperations } from './useAuthOperations'
 
 export const useAuth = () => {
-  const auth = services.auth
+  // Import specialized composables
+  const userStore       = useUserStore()
+  const authSession     = useAuthSession()
+  const authOps         = useAuthOperations()
+  const authValidation  = useAuthValidation()
 
-  const user            = ref(auth.getStoredUser())
-  const isAuthenticated = ref(auth.isAuthenticated())
+  // Reactive state
+  const user            = ref(userStore.getUser())
+  const isAuthenticated = computed(() => !!authSession.getAuthToken())
   const loading         = ref(false)
   const otpRequired     = ref(false)
-  const otpData         = ref(auth.getOTPData())
+  const otpData         = ref({
+    token: authSession.getOTPToken()
+  })
 
+  // Main methods
   const login = async (credentials: any) => {
-    loading.value     = true
-    otpRequired.value = false
-
-    try {
-      const result = await auth.login(credentials)
-
-      if (result.success && result.otpRequired) {
-        otpRequired.value = true
-
-        otpData.value = {
-          identifier: result.data.identifier,
-          token: result.data.token
-        }
-
-        auth.storeOTPData(result.data.token)
+    loading.value = true
+    const result = await authOps.login(credentials)
+    
+    if (result.success && result.otpRequired) {
+      otpRequired.value = true
+      otpData.value = {
+        token: result.data?.token || null
       }
-      return result
-    } finally {
-      loading.value = false
+      authSession.setOTPToken(result.data?.token || '')
     }
+    
+    loading.value = false
+    return result
   }
 
-  const verifyOTP = async (otp: any) => {
+  const verifyOTP = async (otp: string) => {
     loading.value = true
-    try {
-      const data = otpData.value
-
-      if (!data.token) {
-        return { success: false, message: 'OTP session expired. Please login again.' }
-      }
-
-      const result = await auth.verifyOTP(otp, 'login')
-
-      if (result.success) {
-        user.value            = auth.getStoredUser()
-        isAuthenticated.value = true
-        otpRequired.value     = false
-      }
-      return result
-    } finally {
-      loading.value = false
+    const result = await authOps.verifyOTP(otp)
+    
+    if (result.success) {
+      user.value = userStore.getUser()
+      otpRequired.value = false
+      otpData.value = { token: null }
+      authSession.clearOTPToken()
     }
+    
+    loading.value = false
+    return result
+  }
+
+  const logout = async () => {
+    const result = await authOps.logout()
+    if (result.success) {
+      user.value = null
+    }
+    return result
   }
 
   const register = async (data: any) => {
     loading.value = true
     try {
-      const result = await auth.register(data)
-
-      if (result.success) {
-        user.value            = auth.getStoredUser()
-        isAuthenticated.value = true
+      const result = await services.auth.register(data)
+      
+      if (result.success && result.data) {
+        userStore.setUser(result.data.user)
+        authSession.setAuthToken(result.data.token)
+        user.value = result.data.user
       }
-
+      
       return result
     } finally {
       loading.value = false
     }
   }
 
-  const logout = async () => {
-    const result = await auth.logout()
-
-    if (result.success) {
-      user.value            = null
-      isAuthenticated.value = false
-      otpRequired.value     = false
-
-      if (process.client) {
-        await nextTick()
-        navigateTo('/')
-      }
-    }
-    return result
-  }
-
-  const resetPassword = async (data: any) => {
-    const result = await auth.resetPassword(data)
-    return result
-  }
-
-  const forgetPassword = async (data: any) => {
-    const result = await auth.forgetPassword(data)
-    return result
-  }
-
   const fetchCurrentUser = async () => {
-    const result = await auth.getCurrentUser()
-    if (result.success && result.data) {
-      user.value = result.data.user
-    }
-    return result
-  }
-
-  const clearAuth = () => {
-    auth.clearAuth()
-    user.value            = null
-    isAuthenticated.value = false
-    otpRequired.value     = false
-  }
-
-  const hasPermission = (permission: string): boolean => {
-    if (!user.value) return false
-
-    // Super admin check
-    if (user.value.roles?.some((role: any) => role.slug === 'super-admin')) {
-      return true
-    }
-
-    // Check stored permissions
-    if (process.client) {
-      const permissionsStr = localStorage.getItem('user_permissions')
-      if (permissionsStr) {
-        const permissions = JSON.parse(permissionsStr)
-        return permissions.includes(permission)
+    loading.value = true
+    try {
+      const result = await services.auth.getCurrentUser()
+      
+      if (result.success && result.data) {
+        userStore.setUser(result.data.user)
+        user.value = result.data.user
       }
+      
+      return result
+    } finally {
+      loading.value = false
     }
-
-    return false
-  }
-
-  const hasRole = (role: string): boolean => {
-    return user.value?.roles?.some((r: any) => r.slug === role) || false
   }
 
   const initialize = () => {
-    if (process.client) {
-      user.value = auth.getStoredUser()
-      isAuthenticated.value = auth.isAuthenticated()
-      otpData.value = auth.getOTPData()
-    }
+    user.value = userStore.getUser()
+    otpData.value.token = authSession.getOTPToken()
   }
 
+  // Delegate to specialized composables
+  const hasPermission = userStore.hasPermission
+  const hasRole = userStore.hasRole
+  const clearAuth = authOps.clearAuthData
+  const validatePhone = authValidation.validatePhoneNumber
+  const cleanPhone = authValidation.cleanPhoneNumber
+  const detectIdentifierType = authValidation.detectIdentifierType
+
   return {
+    // State
     user,
     isAuthenticated,
     loading,
     otpRequired,
     otpData,
+    
+    // Main operations
     login,
     verifyOTP,
-    register,
-    resetPassword,
-    forgetPassword,
     logout,
+    register,
     fetchCurrentUser,
-    clearAuth,
+    
+    // Validation helpers
+    validatePhone,
+    cleanPhone,
+    detectIdentifierType,
+    
+    // Permission helpers
     hasPermission,
     hasRole,
+    
+    // Utility
+    clearAuth,
     initialize
   }
 }
