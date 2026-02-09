@@ -93,18 +93,24 @@ export const useAuth = () => {
     }
   }
 
+  const fetchCountryCodes = async () => {
+    const result = await services.countryCode.getAllCountryCodes()
+    return result
+  }
+
   const initialize = () => {
     user.value = userStore.getUser()
     otpData.value.token = authSession.getOTPToken()
+    fetchCountryCodes()
   }
 
   // Delegate to specialized composables
-  const hasPermission = userStore.hasPermission
-  const hasRole = userStore.hasRole
-  const clearAuth = authOps.clearAuthData
-  const validatePhone = authValidation.validatePhoneNumber
-  const cleanPhone = authValidation.cleanPhoneNumber
-  const detectIdentifierType = authValidation.detectIdentifierType
+  const hasPermission         = userStore.hasPermission
+  const hasRole               = userStore.hasRole
+  const clearAuth             = authOps.clearAuthData
+  const validatePhone         = authValidation.validatePhoneNumber
+  const cleanPhone            = authValidation.cleanPhoneNumber
+  const detectIdentifierType  = authValidation.detectIdentifierType
 
   return {
     // State
@@ -120,6 +126,7 @@ export const useAuth = () => {
     logout,
     register,
     fetchCurrentUser,
+    fetchCountryCodes,
     
     // Validation helpers
     validatePhone,

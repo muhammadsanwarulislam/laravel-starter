@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+Route::apiResource('countries', App\Http\Controllers\Api\CountryCodeController::class);
+
 // Authentication Routes
 Route::prefix('auth')->group(function () {
     Route::post('/login/otp', [App\Http\Controllers\Api\AuthController::class, 'requestLoginOtp']);
@@ -21,7 +23,6 @@ Route::get('/locale/current', [App\Http\Controllers\Api\LocalizationController::
 Route::get('/translations/ui', [App\Http\Controllers\Api\LocalizationController::class, 'getUiTranslations']);
 Route::get('/translations/ui/{key}', [App\Http\Controllers\Api\LocalizationController::class, 'getUiTranslation']);
 
-// Protected routes (require authentication)
 Route::middleware(['auth:sanctum'])->group(function () {
     // OTP Verification Route
     Route::prefix('otp')->group(function () {
@@ -69,6 +70,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // File Management 
     Route::prefix('files')->middleware('permission:view-files')->group(function () {
-        // File routes would go here
+        
     });
 });

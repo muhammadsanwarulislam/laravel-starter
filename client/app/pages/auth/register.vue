@@ -14,8 +14,8 @@
                         </p>
                     </div>
 
-                    <form @submit.prevent="handleSubmit" class="mt-8 space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <form @submit.prevent="handleSubmit" class="mt-4 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
                             <!-- Name -->
                             <div class="col-span-full">
                                 <label for="name"
@@ -31,6 +31,7 @@
                                         </svg>
                                     </div>
                                     <input id="name" v-model="form.name" name="name" type="text" required
+                                        @input="validateNameOnInput"
                                         :class="['block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
                                             errors.name ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600']"
                                         placeholder="John Doe" />
@@ -44,29 +45,54 @@
                                     </svg>
                                     {{ errors.name }}
                                 </p>
+                                <p v-else-if="form.name.trim() && /^[A-Za-z]/.test(form.name.trim())"
+                                    class="mt-2 text-xs text-green-600 dark:text-green-400 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    Valid name format
+                                </p>
                             </div>
 
-                            <!-- Phone -->
+                            <!-- Phone with Country Code -->
                             <div>
-                                <label for="phone"
-                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                                     Phone Number
                                 </label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                        </svg>
+                                <div class="flex gap-2">
+                                    <!-- Country Code Selector -->
+                                    <div class="relative flex-1 max-w-xs">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                            </svg>
+                                        </div>
+                                        <select v-model="form.country_code_id"
+                                            :class="['block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 appearance-none',
+                                                errors.country_code_id ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600']">
+                                            <option v-for="country in countryCodes" :key="country.id" :value="country.id">
+                                                {{ country.dial_code }} {{ country.name }}
+                                            </option>
+                                        </select>
+                                        <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 20 20" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 8l4 4 4-4" />
+                                            </svg>
+                                        </div>
                                     </div>
-                                    <input id="phone" v-model="form.phone" name="phone" type="tel" required
-                                        :class="['block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
-                                            errors.phone ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600']"
-                                        placeholder="01XXXXXXXXX" />
+                                    
+                                    <!-- Phone Number Input -->
+                                    <div class="relative flex-1">
+                                        <input id="phone" v-model="form.phone" name="phone" type="tel" required
+                                            :class="['block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
+                                                errors.phone ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600']"
+                                            placeholder="01XXXXXXXXX" />
+                                    </div>
                                 </div>
-                                <p v-if="errors.phone"
-                                    class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
+                                <p v-if="errors.phone" class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
                                             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -347,9 +373,11 @@ import { notification } from '~/utils/notification'
 const auth = useAuth()
 const router = useRouter()
 
+console.log('Auth:', auth.fetchCountryCodes());
 interface RegisterForm {
     name: string
     email: string
+    country_code_id: number
     phone: string
     password: string
     password_confirmation: string
@@ -359,6 +387,7 @@ interface RegisterForm {
 interface FormErrors {
     name?: string
     email?: string
+    country_code_id?: number
     phone?: string
     password?: string
     password_confirmation?: string
@@ -368,11 +397,14 @@ interface FormErrors {
 const form = reactive<RegisterForm>({
     name: '',
     email: '',
+    country_code_id: 1,
     phone: '',
     password: '',
     password_confirmation: '',
     accepted_terms: false
 })
+
+const countryCodes = ref([])
 
 const loading = ref(false)
 const error = ref('')
@@ -391,18 +423,43 @@ const validateForm = (): boolean => {
     Object.keys(errors).forEach(key => delete errors[key as keyof FormErrors])
     let isValid = true
 
+    const nameRegex = /^[A-Za-z][A-Za-z0-9]*([-_ ][A-Za-z0-9]+)*$/
+    
     if (!form.name.trim()) {
         errors.name = 'Name is required'
         isValid = false
+    } else if (!nameRegex.test(form.name.trim())) {
+        errors.name = 'Name must start with a letter and can contain letters, numbers, hyphens, underscores, or spaces'
+        isValid = false
+    } else if (/^\d+$/.test(form.name.trim())) {
+        errors.name = 'Name cannot be only numbers'
+        isValid = false
+    } else if (/^[-_0-9]/.test(form.name.trim())) {
+        errors.name = 'Name cannot start with numbers or special characters'
+        isValid = false
     }
 
+    if (!form.country_code_id) {
+        errors.country_code_id = 'Country code is required'
+        isValid = false
+    }
+
+    // Update phone validation based on selected country code
     const phoneRegex = /^01[3-9]\d{8}$/
     if (!form.phone.trim()) {
         errors.phone = 'Phone number is required'
         isValid = false
-    } else if (!phoneRegex.test(form.phone)) {
-        errors.phone = 'Please enter a valid Bangladeshi mobile number (11 digits starting with 01)'
-        isValid = false
+    } else if (form.country_code_id === 1) {
+        if (!phoneRegex.test(form.phone)) {
+            errors.phone = 'Please enter a valid Bangladeshi mobile number (11 digits starting with 01)'
+            isValid = false
+        }
+    } else {
+        // Generic validation for other countries
+        if (!/^\d{6,15}$/.test(form.phone.replace(/\s+/g, ''))) {
+            errors.phone = 'Please enter a valid phone number'
+            isValid = false
+        }
     }
 
     if (form.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
@@ -429,6 +486,20 @@ const validateForm = (): boolean => {
     return isValid
 }
 
+const validateNameOnInput = () => {
+    if (form.name.trim()) {
+        if (!/^[A-Za-z]/.test(form.name.trim())) {
+            errors.name = 'Name must start with a letter'
+        } else if (/^\d+$/.test(form.name.trim())) {
+            errors.name = 'Name cannot be only numbers'
+        } else {
+            delete errors.name
+        }
+    } else {
+        delete errors.name
+    }
+}
+
 const handleSubmit = async () => {
     if (loading.value) return
 
@@ -443,6 +514,7 @@ const handleSubmit = async () => {
         const result = await auth.register({
             name: form.name.trim(),
             email: form.email.trim() || undefined,
+            country_code_id: form.country_code_id,
             phone: form.phone.trim(),
             password: form.password,
             password_confirmation: form.password_confirmation,
@@ -477,4 +549,15 @@ const handleSubmit = async () => {
         loading.value = false
     }
 }
+
+onMounted(async () => {
+    try {
+        const result = await auth.fetchCountryCodes()
+        if (result.success) {
+            countryCodes.value = result.data
+        }
+    } catch (error) {
+        console.error('Failed to fetch country codes:', error)
+    }
+})
 </script>

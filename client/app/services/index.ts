@@ -3,6 +3,7 @@ import { UserService } from './UserService'
 import { RoleService } from './RoleService'
 import { PermissionService } from './PermissionService'
 import { LocalizationService } from './LocalizationService'
+import { CountryCodeService } from './CountryCodeService'
 
 export class ServiceFactory {
   private static instances: Map<string, any> = new Map()
@@ -16,6 +17,10 @@ export class ServiceFactory {
   }
 
   // Singleton getters
+  static get countryCode(): CountryCodeService {
+    return this.getService(CountryCodeService)
+  }
+  
   static get auth(): AuthService {
     return this.getService(AuthService)
   }
