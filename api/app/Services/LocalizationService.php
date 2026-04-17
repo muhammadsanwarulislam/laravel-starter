@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Models\Language;
-use App\Models\UiTranslation;
+use App\Repositories\LanguageRepository;
+use App\Repositories\UiTranslationRepository;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
@@ -16,42 +16,54 @@ class LocalizationService
     protected $defaultLocale;
     protected $availableLocales;
 
-    public function __construct()
+    public function __construct(protected LanguageRepository $languageRepo, protected UiTranslationRepository $uiTranslationRepository)
     {
         $this->loadLanguages();
         $this->detectLocale();
+
     }
 
     private function loadLanguages()
     {
-        $this->availableLocales = Cache::remember('available_locales', 3600, function () {
-            return Language::where('is_active', true)
-                ->orderBy('sort_order')
-                ->get()
-                ->keyBy('code');
-        });
+        $this->availableLocales = $this->languageRepo->getActiveLanguages()->keyBy('code');
 
-        $this->defaultLocale = $this->availableLocales->where('is_default', true)->first()
-            ?? $this->availableLocales->first();
+        $this->defaultLocale = $this->availableLocales->where('is_default', true)->first() ?? $this->availableLocales->first();
     }
 
     private function detectLocale()
     {
         $locale = Session::get('locale')
-            ?? request()->header('Accept-Language')
+            ?? $this->normalizeLocale(request()->header('X-Locale'))
+            ?? $this->normalizeLocale(request()->header('Accept-Language'))
             ?? $this->getBrowserLocale()
-            ?? $this->defaultLocale->code;
+            ?? $this->defaultLocale?->code
+            ?? config('app.locale');
 
-        $this->setLocale($locale);
+        if (!$this->setLocale($locale)) {
+            $fallbackLocale = $this->defaultLocale?->code ?? config('app.locale');
+            $this->currentLocale = $fallbackLocale;
+            App::setLocale($fallbackLocale);
+            Session::put('locale', $fallbackLocale);
+        }
     }
 
     public function setLocale(string $locale): bool
     {
+        $normalizedLocale = $this->normalizeLocale($locale);
+
+        if ($normalizedLocale && isset($this->availableLocales[$normalizedLocale])) {
+            $this->currentLocale = $normalizedLocale;
+            App::setLocale($normalizedLocale);
+            Session::put('locale', $normalizedLocale);
+
+            return true;
+        }
+
         if (isset($this->availableLocales[$locale])) {
             $this->currentLocale = $locale;
             App::setLocale($locale);
             Session::put('locale', $locale);
-            
+
             return true;
         }
 
@@ -60,7 +72,7 @@ class LocalizationService
 
     public function getCurrentLocale(): string
     {
-        return $this->currentLocale;
+        return $this->currentLocale ?? $this->defaultLocale?->code ?? config('app.locale');
     }
 
     public function getAvailableLocales()
@@ -70,16 +82,7 @@ class LocalizationService
 
     public function getUiTranslations(string $group = 'ui'): array
     {
-        $cacheKey = "ui_translations_{$group}_{$this->currentLocale}";
-
-        return Cache::remember($cacheKey, 3600, function () use ($group) {
-            return UiTranslation::where('group', $group)
-                ->whereHas('language', function ($query) {
-                    $query->where('code', $this->currentLocale);
-                })
-                ->pluck('value', 'key')
-                ->toArray();
-        });
+        return $this->uiTranslationRepository->getTranslationsByGroupAndLocale($group, $this->currentLocale)->toArray();
     }
 
     public function trans(string $key, array $replace = []): string
@@ -101,8 +104,25 @@ class LocalizationService
 
     private function getBrowserLocale(): ?string
     {
-        $locale = substr(request()->server('HTTP_ACCEPT_LANGUAGE') ?? '', 0, 2);
-        return isset($this->availableLocales[$locale]) ? $locale : null;
+        return $this->normalizeLocale(request()->server('HTTP_ACCEPT_LANGUAGE'));
+    }
+
+    private function normalizeLocale(?string $locale): ?string
+    {
+        if (!$locale) {
+            return null;
+        }
+
+        $primaryLocale = trim(explode(',', $locale)[0]);
+        $normalizedLocale = str_replace('_', '-', $primaryLocale);
+
+        if (isset($this->availableLocales[$normalizedLocale])) {
+            return $normalizedLocale;
+        }
+
+        $shortLocale = strtolower(substr($normalizedLocale, 0, 2));
+
+        return isset($this->availableLocales[$shortLocale]) ? $shortLocale : null;
     }
 
     public function clearCache(): void

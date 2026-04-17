@@ -24,7 +24,11 @@
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <UIIconsUser class="h-5 w-5 text-gray-400" />
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                        </svg>
                                     </div>
                                     <input id="name" v-model="form.name" name="name" type="text" required
                                         @input="validateNameOnInput"
@@ -34,12 +38,20 @@
                                 </div>
                                 <p v-if="errors.name"
                                     class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
-                                    <UIIconsError class="w-4 h-4 mr-1" />
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
                                     {{ errors.name }}
                                 </p>
                                 <p v-else-if="form.name.trim() && /^[A-Za-z]/.test(form.name.trim())"
                                     class="mt-2 text-xs text-green-600 dark:text-green-400 flex items-center">
-                                    <UIIconsTick class="w-4 h-4 mr-1" />
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
                                     Valid name format
                                 </p>
                             </div>
@@ -53,7 +65,10 @@
                                     <!-- Country Code Selector -->
                                     <div class="relative flex-1 max-w-xs">
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <UIIconsPhone class="h-5 w-5 text-gray-400" />
+                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                            </svg>
                                         </div>
                                         <select v-model="form.country_code_id"
                                             :class="['block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 appearance-none',
@@ -63,7 +78,9 @@
                                             </option>
                                         </select>
                                         <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-                                            <UIIconsDropDown class="h-5 w-5 text-gray-400" />
+                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 20 20" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 8l4 4 4-4" />
+                                            </svg>
                                         </div>
                                     </div>
                                     
@@ -76,7 +93,11 @@
                                     </div>
                                 </div>
                                 <p v-if="errors.phone" class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
-                                    <UIIconsError class="w-4 h-4 mr-1" />
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
                                     {{ errors.phone }}
                                 </p>
                             </div>
@@ -89,7 +110,11 @@
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <UIIconsEmail class="h-5 w-5 text-gray-400" />
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
                                     </div>
                                     <input id="email" v-model="form.email" name="email" type="email"
                                         autocomplete="email"
@@ -99,7 +124,11 @@
                                 </div>
                                 <p v-if="errors.email"
                                     class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
-                                    <UIIconsError class="w-4 h-4 mr-1" />
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
                                     {{ errors.email }}
                                 </p>
                             </div>
@@ -112,7 +141,11 @@
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <UIIconsPassword class="h-5 w-5 text-gray-400" />
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                        </svg>
                                     </div>
                                     <input id="password" v-model="form.password" name="password"
                                         :type="showPassword ? 'text' : 'password'" autocomplete="new-password" required
@@ -130,7 +163,11 @@
                                 </div>
                                 <p v-if="errors.password"
                                     class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
-                                    <UIIconsError class="w-4 h-4 mr-1" />
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
                                     {{ errors.password }}
                                 </p>
                                 <p v-else class="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -146,7 +183,11 @@
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <UIIconsConfirmPassword class="h-5 w-5 text-gray-400" />
+                                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                        </svg>
                                     </div>
                                     <input id="password_confirmation" v-model="form.password_confirmation"
                                         name="password_confirmation" :type="showPassword ? 'text' : 'password'"
@@ -157,7 +198,11 @@
                                 </div>
                                 <p v-if="errors.password_confirmation"
                                     class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
-                                    <UIIconsError class="w-4 h-4 mr-1" />
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
                                     {{ errors.password_confirmation }}
                                 </p>
                             </div>
@@ -479,21 +524,16 @@ const handleSubmit = async () => {
             notification.success('Registration successful!')
             router.push('/dashboard')
         } else {
-            if (result.message) {
-                error.value = result.message
-
-                if (result.data?.errors) {
-                    const backendErrors = result.data.errors
-                    Object.keys(backendErrors).forEach((key: string) => {
-                        const errorKey = key as keyof FormErrors
-                        if (backendErrors[key] && Array.isArray(backendErrors[key])) {
-                            errors[errorKey] = backendErrors[key][0]
-                        }
-                    })
-                }
-            } else {
-                error.value = 'Registration failed'
+            if (result.errors) {
+                Object.keys(result.errors).forEach((key: string) => {
+                    const errorKey = key as keyof FormErrors
+                    if (result.errors?.[key] && Array.isArray(result.errors[key])) {
+                        errors[errorKey] = result.errors[key][0]
+                    }
+                })
             }
+
+            error.value = result.message || 'Registration failed'
             notification.error(error.value)
         }
     } catch (err: any) {

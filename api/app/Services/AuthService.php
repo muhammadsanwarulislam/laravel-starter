@@ -39,8 +39,9 @@ class AuthService
 
             DB::commit();
             return [
-                'user' => $user,
-                'token' => $accessToken
+                'user' => $user->load('roles.permissions'),
+                'token' => $accessToken,
+                'locale' => $this->localizationService->getCurrentLocale(),
             ];
         } catch (\Exception $e) {
             DB::rollBack();
@@ -50,9 +51,9 @@ class AuthService
 
     public function initiateLoginWithOtp(array $credentials): array
     {
-        $phone = $credentials['phone'] ?? null;
-        $email = $credentials['email'] ?? null;
-        $password = $credentials['password'];
+        $phone      = $credentials['phone'];
+        $email      = $credentials['email'];
+        $password   = $credentials['password'];
 
         $user = $this->findUserByIdentifier($phone, $email);
 
@@ -219,6 +220,10 @@ class AuthService
     public function resendOtp(string $type = 'login', ?string $deliveryMethod = null, ?string $phone = null, ?string $email = null): array
     {
         $user = $this->findUserByIdentifier($phone, $email);
+
+        if (!$user) {
+            throw new \Exception('User not found for the provided identifier');
+        }
 
         $otpResult = $this->generateAndSendOtp($user, $type, $deliveryMethod);
 

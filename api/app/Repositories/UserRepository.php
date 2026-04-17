@@ -91,6 +91,7 @@ class UserRepository extends BaseRepository
                 'created_at' => now(),
                 'updated_at' => now()
             ]]);
+            $user->clearPermissionCache();
         }
     }
 

@@ -1,13 +1,29 @@
 import { BaseRepository } from './BaseRepository'
-import type { Permission, ApiResponse } from '~/api/types/api.types'
+import type { Permission, CreatePermissionData, ApiResponse } from '~/api/types/api.types'
 
 export class PermissionRepository extends BaseRepository {
   constructor() {
     super()
   }
 
-  async getAll(): Promise<ApiResponse<Permission[]>> {
-    return this.get<Permission[]>('/permissions')
+  async getAll(params?: Record<string, any>): Promise<ApiResponse<any>> {
+    return this.get<any>('/permissions', params)
+  }
+
+  async getById(id: number): Promise<ApiResponse<Permission>> {
+    return this.get<Permission>(`/permissions/${id}`)
+  }
+
+  async create(data: CreatePermissionData): Promise<ApiResponse<Permission>> {
+    return this.post<Permission>('/permissions', data)
+  }
+
+  async update(id: number, data: CreatePermissionData): Promise<ApiResponse<Permission>> {
+    return this.put<Permission>(`/permissions/${id}`, data)
+  }
+
+  async deletePermission(id: number): Promise<ApiResponse<void>> {
+    return this.delete<void>(`/permissions/${id}`)
   }
 
   async getModules(): Promise<ApiResponse<string[]>> {

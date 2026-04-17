@@ -2,10 +2,11 @@
   <div class="text-center py-12">
     <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-gray-100">
       <slot name="icon">
-        <UIIconsUsers v-if="icon === 'users'" class="h-6 w-6 text-gray-400" />
-        <UIIconsSearch v-else-if="icon === 'search'" class="h-6 w-6 text-gray-400" />
-        <UIIconsDocument v-else-if="icon === 'document'" class="h-6 w-6 text-gray-400" />
-        <UIIconsExclamation v-else class="h-6 w-6 text-gray-400" />
+        <UIIconsUsers v-if="icon === 'users'" class="h-16 w-16 text-gray-400" />
+        <UIIconsSearch v-else-if="icon === 'search'" class="h-16 w-16 text-gray-400" />
+        <UIIconsDocument v-else-if="icon === 'document'" class="h-16 w-16 text-gray-400" />
+        <UIIconsLocalization v-else-if="icon === 'localization'" class="h-16 w-16 text-gray-400" />
+        <UIIconsExclamation v-else class="h-16 w-16 text-gray-400" />
       </slot>
     </div>
     <h3 class="mt-2 text-sm font-medium text-gray-900">{{ title }}</h3>
@@ -20,7 +21,7 @@
 interface Props {
   title: string
   description?: string
-  icon?: 'users' | 'search' | 'document' | 'default'
+  icon?: 'users' | 'search' | 'document' | 'default' | 'localization'
 }
 
 withDefaults(defineProps<Props>(), {

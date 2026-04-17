@@ -5,6 +5,11 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\FileManager;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
 use App\Repositories\UserRepository;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +47,7 @@ class UserService
         
         if (isset($data['roles'])) {
             $user->roles()->sync($data['roles'], true);
+            $user->clearPermissionCache();
         }
 
         return $user;
@@ -54,7 +60,7 @@ class UserService
 
     public function updateUser(int $userId, array $data): User
     {
-        $user = User::findOrFail($userId);
+        $user = $this->userRepository->findOrFail($userId);
         
         // Update user fields
         $updateData = array_filter($data, fn($key) => !in_array($key, ['roles', 'password']), ARRAY_FILTER_USE_KEY);
@@ -66,6 +72,7 @@ class UserService
         // Update roles if provided
         if (isset($data['roles'])) {
             $user->roles()->sync($data['roles']);
+            $user->clearPermissionCache();
         }
 
         // Update password if provided
@@ -78,7 +85,8 @@ class UserService
 
     public function deleteUser($userId): bool
     {
-        return $this->userRepository->delete($this->userRepository->changeFieldType($userId));
+        // return $this->userRepository->delete($this->userRepository->changeFieldType($userId));
+        return $this->userRepository->delete($userId);
     }
 
     public function updateUserStatus($userId, bool $status): User
@@ -93,6 +101,7 @@ class UserService
     {
         $user = User::findOrFail($userId);
         $user->roles()->sync($roleIds);
+        $user->clearPermissionCache();
         
         return $user;
     }
@@ -100,5 +109,63 @@ class UserService
     public function getUserWithRoles(int $userId): ?User
     {
         return $this->userRepository->getUserWithRoles($userId);
+    }
+
+    public function updateOwnProfile(User $user, array $data): User
+    {
+        $userData = Arr::only($data, ['name', 'email', 'phone', 'country_code_id', 'ui_locale']);
+        $profileData = Arr::only($data, ['gender', 'type', 'address']);
+
+        if (!empty($userData)) {
+            $user->update($userData);
+        }
+
+        if (!empty(array_filter($profileData, fn ($value) => $value !== null && $value !== ''))) {
+            $user->profile()->updateOrCreate(
+                ['user_id' => $user->id],
+                $profileData
+            );
+        } elseif ($user->profile && array_key_exists('address', $data)) {
+            $user->profile()->update($profileData);
+        }
+
+        return $user->fresh(['profile', 'roles', 'files']);
+    }
+
+    public function updateProfilePhoto(User $user, UploadedFile $photo): User
+    {
+        $uploadDirectory = public_path('uploads/profile-photos');
+
+        if (!File::exists($uploadDirectory)) {
+            File::makeDirectory($uploadDirectory, 0755, true);
+        }
+
+        $existingPhoto = $user->files()->where('type', 'profile_image')->latest()->first();
+
+        if ($existingPhoto) {
+            $existingPath = public_path('uploads/' . ltrim($existingPhoto->path, '/'));
+            if (File::exists($existingPath)) {
+                File::delete($existingPath);
+            }
+            $existingPhoto->delete();
+        }
+
+        $extension = $photo->getClientOriginalExtension() ?: 'jpg';
+        $filename = Str::uuid()->toString() . '.' . $extension;
+        $relativePath = 'profile-photos/' . $filename;
+
+        $photo->move($uploadDirectory, $filename);
+
+        FileManager::create([
+            'user_id' => $user->id,
+            'uuid' => Str::uuid()->toString(),
+            'name' => pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME),
+            'file' => $filename,
+            'type' => 'profile_image',
+            'size' => (string) $photo->getSize(),
+            'path' => $relativePath,
+        ]);
+
+        return $user->fresh(['profile', 'roles', 'files']);
     }
 }

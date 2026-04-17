@@ -14,25 +14,25 @@
           <div class="lg:w-1/2 mb-12 lg:mb-0 lg:pr-12">
             <div
               class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300 text-sm font-medium mb-6">
-              {{ t('hero.tagline') }}
+              {{ t("hero.tagline") }}
             </div>
 
             <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
-              {{ t('hero.title.part1') }}
+              {{ t("hero.title.part1") }}
               <span class="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                {{ t('hero.title.part2') }}
+                {{ t("hero.title.part2") }}
               </span>
             </h1>
 
             <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-              {{ t('hero.description') }}
+              {{ t("hero.description") }}
             </p>
 
             <div class="flex flex-col sm:flex-row gap-4 mb-8">
               <NuxtLink to="/auth/register"
                 class="group relative px-8 py-4 bg-linear-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200">
                 <span class="relative z-10 flex items-center justify-center">
-                  {{ t('hero.get_started') }}
+                  {{ t("hero.get_started") }}
                   <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -44,7 +44,7 @@
               <NuxtLink to="/auth/login"
                 class="group px-8 py-4 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:border-indigo-300 dark:hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-200">
                 <span class="flex items-center justify-center">
-                  {{ t('hero.view_demo') }}
+                  {{ t("hero.view_demo") }}
                   <UIIconsEye class="w-5 h-5 ml-2" />
                 </span>
               </NuxtLink>
@@ -53,11 +53,11 @@
             <div class="flex items-center space-x-6 text-sm text-gray-500 dark:text-gray-400">
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>{{ t('hero.free_open_source') }}</span>
+                <span>{{ t("hero.free_open_source") }}</span>
               </div>
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                <span>{{ t('hero.production_ready') }}</span>
+                <span>{{ t("hero.production_ready") }}</span>
               </div>
             </div>
           </div>
@@ -101,8 +101,12 @@
                         </svg>
                       </div>
                       <div>
-                        <div class="text-lg font-bold text-gray-900 dark:text-white">Laravel</div>
-                        <div class="text-xs text-red-600 dark:text-red-400 font-medium">API Backend</div>
+                        <div class="text-lg font-bold text-gray-900 dark:text-white">
+                          Laravel
+                        </div>
+                        <div class="text-xs text-red-600 dark:text-red-400 font-medium">
+                          API Backend
+                        </div>
                       </div>
                     </div>
                     <div
@@ -113,8 +117,12 @@
                         </svg>
                       </div>
                       <div>
-                        <div class="text-lg font-bold text-gray-900 dark:text-white">Nuxt.js</div>
-                        <div class="text-xs text-green-600 dark:text-green-400 font-medium">Frontend</div>
+                        <div class="text-lg font-bold text-gray-900 dark:text-white">
+                          Nuxt.js
+                        </div>
+                        <div class="text-xs text-green-600 dark:text-green-400 font-medium">
+                          Frontend
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -182,16 +190,16 @@
         <div class="text-center mb-16">
           <div
             class="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300 text-sm font-medium mb-4">
-            {{ t('features.tagline') }}
+            {{ t("features.tagline") }}
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            {{ t('features.title.part1') }}
+            {{ t("features.title.part1") }}
             <span class="bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              {{ t('features.title.part2') }}
+              {{ t("features.title.part2") }}
             </span>
           </h2>
           <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            {{ t('features.description') }}
+            {{ t("features.description") }}
           </p>
         </div>
 
@@ -206,8 +214,12 @@
                 class="w-12 h-12 bg-linear-to-br from-indigo-600 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                 <span class="text-2xl">{{ feature.emoji }}</span>
               </div>
-              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">{{ t(feature.titleKey) }}</h3>
-              <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{{ t(feature.descriptionKey) }}</p>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-3">
+                {{ t(feature.titleKey) }}
+              </h3>
+              <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                {{ t(feature.descriptionKey) }}
+              </p>
             </div>
           </div>
         </div>
@@ -220,16 +232,16 @@
         <div class="text-center mb-16">
           <div
             class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 text-sm font-medium mb-4">
-            {{ t('tech.tagline') }}
+            {{ t("tech.tagline") }}
           </div>
           <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
-            {{ t('tech.title.part1') }}
+            {{ t("tech.title.part1") }}
             <span class="bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-              {{ t('tech.title.part2') }}
+              {{ t("tech.title.part2") }}
             </span>
           </h2>
           <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            {{ t('tech.description') }}
+            {{ t("tech.description") }}
           </p>
         </div>
 
@@ -242,8 +254,12 @@
                 </svg>
               </div>
               <div>
-                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('tech.laravel.title') }}</h3>
-                <p class="text-indigo-600 dark:text-indigo-400">{{ t('tech.laravel.subtitle') }}</p>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                  {{ t("tech.laravel.title") }}
+                </h3>
+                <p class="text-indigo-600 dark:text-indigo-400">
+                  {{ t("tech.laravel.subtitle") }}
+                </p>
               </div>
             </div>
             <ul class="space-y-3">
@@ -251,7 +267,9 @@
                 <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span class="text-gray-600 dark:text-gray-300">{{ t(`tech.laravel.feature${n}`) }}</span>
+                <span class="text-gray-600 dark:text-gray-300">{{
+                  t(`tech.laravel.feature${n}`)
+                  }}</span>
               </li>
             </ul>
           </div>
@@ -264,8 +282,12 @@
                 </svg>
               </div>
               <div>
-                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ t('tech.nuxt.title') }}</h3>
-                <p class="text-green-600 dark:text-green-400">{{ t('tech.nuxt.subtitle') }}</p>
+                <h3 class="text-2xl font-bold text-gray-900 dark:text-white">
+                  {{ t("tech.nuxt.title") }}
+                </h3>
+                <p class="text-green-600 dark:text-green-400">
+                  {{ t("tech.nuxt.subtitle") }}
+                </p>
               </div>
             </div>
             <ul class="space-y-3">
@@ -273,7 +295,9 @@
                 <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span class="text-gray-600 dark:text-gray-300">{{ t(`tech.nuxt.feature${n}`) }}</span>
+                <span class="text-gray-600 dark:text-gray-300">{{
+                  t(`tech.nuxt.feature${n}`)
+                  }}</span>
               </li>
             </ul>
           </div>
@@ -284,43 +308,41 @@
 </template>
 
 <script setup>
-import { useLandingTranslations } from '~/composables/useLandingTranslations'
+definePageMeta({ middleware: ["guest"], layout: "guest" });
 
-definePageMeta({ middleware: ["guest"], layout: "guest" })
-
-const { t } = useLandingTranslations()
+const { t } = useLocalization()
 
 const features = [
   {
-    emoji: '🔐',
-    titleKey: 'feature.auth.title',
-    descriptionKey: 'feature.auth.description'
+    emoji: "🔐",
+    titleKey: "feature.auth.title",
+    descriptionKey: "feature.auth.description",
   },
   {
-    emoji: '👤',
-    titleKey: 'feature.profile.title',
-    descriptionKey: 'feature.profile.description'
+    emoji: "👤",
+    titleKey: "feature.profile.title",
+    descriptionKey: "feature.profile.description",
   },
   {
-    emoji: '🌐',
-    titleKey: 'feature.i18n.title',
-    descriptionKey: 'feature.i18n.description'
+    emoji: "🌐",
+    titleKey: "feature.i18n.title",
+    descriptionKey: "feature.i18n.description",
   },
   {
-    emoji: '🏗️',
-    titleKey: 'feature.architecture.title',
-    descriptionKey: 'feature.architecture.description'
+    emoji: "🏗️",
+    titleKey: "feature.architecture.title",
+    descriptionKey: "feature.architecture.description",
   },
   {
-    emoji: '💡',
-    titleKey: 'feature.best_practices.title',
-    descriptionKey: 'feature.best_practices.description'
+    emoji: "💡",
+    titleKey: "feature.best_practices.title",
+    descriptionKey: "feature.best_practices.description",
   },
   {
-    emoji: '🗄️',
-    titleKey: 'feature.seeding.title',
-    descriptionKey: 'feature.seeding.description'
-  }
+    emoji: "🗄️",
+    titleKey: "feature.seeding.title",
+    descriptionKey: "feature.seeding.description",
+  },
 ];
 </script>
 

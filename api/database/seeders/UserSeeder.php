@@ -23,9 +23,6 @@ class UserSeeder extends Seeder
         $superAdminRole     = Role::where('slug', 'super_admin')->first();
         $adminRole          = Role::where('slug', 'admin')->first();
         $managerRole        = Role::where('slug', 'manager')->first();
-        $editorRole         = Role::where('slug', 'editor')->first();
-        $userRole           = Role::where('slug', 'user')->first();
-        $guestRole          = Role::where('slug', 'guest')->first();
 
         $bangladeshiCountryCode = CountryCode::where('code', 'BD')->first();
 
@@ -75,37 +72,7 @@ class UserSeeder extends Seeder
                     'type'      => 'teacher',
                     'address'   => '789 Manager Road, Chittagong, Bangladesh',
                 ],
-            ],
-            [
-                'name'              => 'Editor User',
-                'email'             => 'editor@example.com',
-                'password'          => 'password',
-                'country_code_id'   => $bangladeshiCountryCode->id,
-                'phone'             => '01744444444',
-                'status'            => true,
-                'email_verified_at' => now(),
-                'roles'             => [$editorRole->id],
-                'profile' => [
-                    'gender'    => 'male',
-                    'type'      => 'teacher',
-                    'address'   => '101 Editor Lane, Sylhet, Bangladesh',
-                ],
-            ],
-            [
-                'name'              => 'Guest User',
-                'email'             => 'guest@example.com',
-                'password'          => 'password',
-                'country_code_id'   => $bangladeshiCountryCode->id,
-                'phone'             => '01700000000',
-                'status'            => true,
-                'email_verified_at' => now(),
-                'roles'             => [$guestRole->id],
-                'profile' => [
-                    'gender'    => 'other',
-                    'type'      => 'student',
-                    'address'   => '707 Guest Street, Dhaka, Bangladesh',
-                ],
-            ],
+            ]
         ];
 
         foreach ($users as $userData) {

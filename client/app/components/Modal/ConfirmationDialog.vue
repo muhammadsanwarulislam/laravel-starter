@@ -1,25 +1,21 @@
 <template>
-  <div class="fixed inset-0 z-9999 overflow-y-auto">
+  <div class="fixed inset-0 z-50 overflow-y-auto">
     <!-- Overlay with blur -->
-    <div 
-      class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300"
-      @click="$emit('cancel')"
-    ></div>
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300" @click="$emit('cancel')">
+    </div>
 
     <!-- Modal Container -->
     <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
       <!-- Modal Card with 3D effect -->
-      <div 
+      <div
         class="inline-block align-bottom bg-white dark:bg-gray-800 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all duration-300 sm:my-8 sm:align-middle sm:max-w-md sm:w-full relative"
         :class="[
           'modal-card-' + type,
           showModal ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'
-        ]"
-      >
+        ]">
         <!-- 3D Border effect -->
-        <div class="absolute inset-0 rounded-2xl border-2 pointer-events-none"
-          :class="borderClass"></div>
-        
+        <div class="absolute inset-0 rounded-2xl border-2 pointer-events-none" :class="borderClass"></div>
+
         <!-- Modal Content -->
         <div class="px-6 pt-8 pb-6 sm:p-8 relative z-10">
           <!-- Icon Container -->
@@ -27,8 +23,7 @@
             :class="iconContainerClass">
             <div class="relative">
               <!-- Glow effect -->
-              <div class="absolute inset-0 rounded-full animate-ping opacity-30"
-                :class="glowClass"></div>
+              <div class="absolute inset-0 rounded-full animate-ping opacity-30" :class="glowClass"></div>
               <!-- Icon -->
               <svg class="h-8 w-8 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 :class="iconColorClass">
@@ -58,26 +53,22 @@
 
           <!-- Actions -->
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
-            <button
-              type="button"
-              @click="$emit('cancel')"
+            <button type="button" @click="$emit('cancel')"
               class="w-full px-6 py-3 text-sm font-medium rounded-xl border transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-sm"
-              :class="cancelButtonClass"
-            >
+              :class="cancelButtonClass">
               Cancel
             </button>
-            <button
-              type="button"
-              @click="$emit('confirm')"
+            <button type="button" @click="$emit('confirm')"
               class="w-full px-6 py-3 text-sm font-medium rounded-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg relative overflow-hidden group"
-              :class="confirmButtonClass"
-            >
+              :class="confirmButtonClass">
               <!-- Button shine effect -->
-              <span class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-30 transition-opacity duration-300"
+              <span
+                class="absolute top-0 left-0 w-full h-full opacity-0 group-hover:opacity-30 transition-opacity duration-300"
                 :class="buttonShineClass"></span>
               <span class="relative z-10 flex items-center justify-center">
                 {{ confirmButtonText }}
-                <svg v-if="type === 'delete'" class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg v-if="type === 'delete'" class="ml-2 w-4 h-4" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
               </span>
@@ -85,10 +76,13 @@
           </div>
 
           <!-- Optional: Extra warning text for delete -->
-          <div v-if="type === 'delete'" class="mt-6 p-3 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
+          <div v-if="type === 'delete'"
+            class="mt-6 p-3 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
             <p class="text-xs text-red-700 dark:text-red-300 flex items-start">
               <svg class="w-4 h-4 mr-2 mt-0.5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                <path fill-rule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clip-rule="evenodd" />
               </svg>
               This action cannot be undone. All data will be permanently removed.
             </p>
@@ -218,7 +212,7 @@ const confirmButtonText = computed(() => {
 .modal-card-delete {
   transform-style: preserve-3d;
   transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(239, 68, 68, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     0 1px 0 rgba(255, 255, 255, 0.1);
@@ -227,7 +221,7 @@ const confirmButtonText = computed(() => {
 .modal-card-warning {
   transform-style: preserve-3d;
   transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(245, 158, 11, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     0 1px 0 rgba(255, 255, 255, 0.1);
@@ -236,7 +230,7 @@ const confirmButtonText = computed(() => {
 .modal-card-success {
   transform-style: preserve-3d;
   transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(16, 185, 129, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     0 1px 0 rgba(255, 255, 255, 0.1);
@@ -245,7 +239,7 @@ const confirmButtonText = computed(() => {
 .modal-card-info {
   transform-style: preserve-3d;
   transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
-  box-shadow: 
+  box-shadow:
     0 20px 60px rgba(59, 130, 246, 0.3),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     0 1px 0 rgba(255, 255, 255, 0.1);
@@ -253,28 +247,28 @@ const confirmButtonText = computed(() => {
 
 /* Hover effects */
 .modal-card-delete:hover {
-  box-shadow: 
+  box-shadow:
     0 25px 80px rgba(239, 68, 68, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     0 2px 0 rgba(255, 255, 255, 0.15);
 }
 
 .modal-card-warning:hover {
-  box-shadow: 
+  box-shadow:
     0 25px 80px rgba(245, 158, 11, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     0 2px 0 rgba(255, 255, 255, 0.15);
 }
 
 .modal-card-success:hover {
-  box-shadow: 
+  box-shadow:
     0 25px 80px rgba(16, 185, 129, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     0 2px 0 rgba(255, 255, 255, 0.15);
 }
 
 .modal-card-info:hover {
-  box-shadow: 
+  box-shadow:
     0 25px 80px rgba(59, 130, 246, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.4),
     0 2px 0 rgba(255, 255, 255, 0.15);

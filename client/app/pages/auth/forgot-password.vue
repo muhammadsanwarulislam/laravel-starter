@@ -309,15 +309,14 @@ const handleSubmit = async () => {
     success.value = false
 
     try {
-        const result = await auth.forgetPassword({
-            email: form.email.trim()
-        })
+        const result = await auth.forgetPassword(form.email.trim())
 
         if (result.success) {
             successMessage.value = `Reset link has been sent to ${form.email}. Please check your inbox.`
             success.value = true
             notification.success('Password reset email sent successfully!')
         } else {
+            errors.email = result.errors?.email?.[0]
             error.value = result.message || 'Failed to send reset email'
             notification.error(error.value)
         }

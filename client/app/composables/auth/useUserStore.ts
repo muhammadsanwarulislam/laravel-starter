@@ -65,7 +65,7 @@ export const useUserStore = () => {
         if (!userData) return false
 
         // Super admin check
-        if (userData.roles?.some((role: any) => role.slug === 'super-admin')) {
+        if (userData.roles?.some((role: any) => role.slug === 'super_admin')) {
             return true
         }
 

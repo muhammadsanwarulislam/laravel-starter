@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('countries', App\Http\Controllers\Api\CountryCodeController::class);
+Route::apiResource('languages', App\Http\Controllers\Api\LanguageController::class);
 
 // Authentication Routes
 Route::prefix('auth')->group(function () {
@@ -18,11 +18,12 @@ Route::prefix('otp')->group(function () {
 });
 
 //Localization Routes
-Route::get('/languages', [App\Http\Controllers\Api\LocalizationController::class, 'getLanguages']);
-Route::get('/locale/current', [App\Http\Controllers\Api\LocalizationController::class, 'getCurrentLocale']);
-Route::get('/translations/ui', [App\Http\Controllers\Api\LocalizationController::class, 'getUiTranslations']);
-Route::get('/translations/ui/{key}', [App\Http\Controllers\Api\LocalizationController::class, 'getUiTranslation']);
+Route::get('/locale/current', [App\Http\Controllers\Api\LocaleController::class, 'getCurrentLocale']);
+Route::post('/locale/set', [App\Http\Controllers\Api\LocaleController::class, 'setLocale']);
+Route::get('/translations/ui', [App\Http\Controllers\Api\UiTranslationController::class, 'getUiTranslations']);
+Route::get('/translations/ui/{key}', [App\Http\Controllers\Api\UiTranslationController::class, 'getUiTranslation']);
 
+// Protected routes (require authentication)
 Route::middleware(['auth:sanctum'])->group(function () {
     // OTP Verification Route
     Route::prefix('otp')->group(function () {
@@ -37,6 +38,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Profile
     Route::get('/profile', [App\Http\Controllers\Api\UserController::class, 'profile']);
     Route::put('/profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile']);
+    Route::post('/profile/photo', [App\Http\Controllers\Api\UserController::class, 'updateProfilePhoto']);
 
     // User Management (requires permissions)
     Route::prefix('users')->group(function () {
@@ -50,26 +52,34 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
     // Role Management
-    Route::apiResource('roles', App\Http\Controllers\Api\RoleController::class)->middleware('permission:view-roles');
-    Route::post('/roles/{role}/permissions', [App\Http\Controllers\Api\RoleController::class, 'assignPermissions'])->middleware('permission:edit-roles');
+    Route::prefix('roles')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\RoleController::class, 'index'])->middleware('permission:view-roles');
+        Route::post('/', [App\Http\Controllers\Api\RoleController::class, 'store'])->middleware('permission:create-roles');
+        Route::get('/{role}', [App\Http\Controllers\Api\RoleController::class, 'show'])->middleware('permission:view-roles');
+        Route::put('/{role}', [App\Http\Controllers\Api\RoleController::class, 'update'])->middleware('permission:edit-roles');
+        Route::delete('/{role}', [App\Http\Controllers\Api\RoleController::class, 'destroy'])->middleware('permission:delete-roles');
+        Route::post('/{role}/permissions', [App\Http\Controllers\Api\RoleController::class, 'assignPermissions'])->middleware('permission:edit-roles');
+    });
 
     // Permission Management
     Route::prefix('permissions')->middleware('permission:view-permissions')->group(function () {
         Route::get('/', [App\Http\Controllers\Api\PermissionController::class, 'index']);
+        Route::post('/', [App\Http\Controllers\Api\PermissionController::class, 'store'])->middleware('permission:manage-permissions');
         Route::get('/modules', [App\Http\Controllers\Api\PermissionController::class, 'getModules']);
         Route::get('/module/{module}', [App\Http\Controllers\Api\PermissionController::class, 'getByModule']);
+        Route::get('/{permission}', [App\Http\Controllers\Api\PermissionController::class, 'show']);
+        Route::put('/{permission}', [App\Http\Controllers\Api\PermissionController::class, 'update'])->middleware('permission:manage-permissions');
+        Route::delete('/{permission}', [App\Http\Controllers\Api\PermissionController::class, 'destroy'])->middleware('permission:manage-permissions');
         Route::post('/sync', [App\Http\Controllers\Api\PermissionController::class, 'sync'])->middleware('permission:manage-permissions');
     });
 
     // Localization Management (admin only)
     Route::prefix('localization')->middleware('permission:view-translations')->group(function () {
-        Route::post('/locale/set', [App\Http\Controllers\Api\LocalizationController::class, 'setLocale']);
-        Route::post('/translations/ui', [App\Http\Controllers\Api\LocalizationController::class, 'storeUiTranslation'])->middleware('permission:edit-translations');
+        Route::post('/locale/set', [App\Http\Controllers\Api\LocaleController::class, 'setLocale']);
+        Route::post('/translations/ui', [App\Http\Controllers\Api\UiTranslationController::class, 'storeUiTranslation'])->middleware('permission:edit-translations');
         Route::get('/translations/content/{model}/{id}', [App\Http\Controllers\Api\LocalizationController::class, 'getContentTranslations']);
+        Route::delete('/translations/ui/{id}', [App\Http\Controllers\Api\UiTranslationController::class, 'deleteTranslation'])->middleware('permission:edit-translations');
+
     });
 
-    // File Management 
-    Route::prefix('files')->middleware('permission:view-files')->group(function () {
-        
-    });
 });

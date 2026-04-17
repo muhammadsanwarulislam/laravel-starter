@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
@@ -23,11 +22,12 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'              => 'required|string|max:155',
-            'email'             => 'required|string|email|max:155|unique:users',
+            'name'              => 'required|string|max:155|regex:/^[A-Za-z][A-Za-z0-9]*([-_ ][A-Za-z0-9]+)*$/',
+            'email'             => 'nullable|string|email|max:155|unique:users',
             'password'          => 'required|string|min:8|confirmed',
-            'country_code_id'   => 'required|numeric|min:1|max:5',
-            'phone'             => 'nullable|string|max:11'
+            'country_code_id'   => 'required|numeric|exists:country_codes,id',
+            'phone'             => 'required|string|max:15|unique:users,phone',
+            'accepted_terms'    => 'required|accepted',
         ];
     }
 
@@ -35,7 +35,8 @@ class RegisterRequest extends FormRequest
     {
         return [
             'email.unique' => 'The email has already been taken.',
-            'name.regex' => 'The name must start with a letter and can contain letters, numbers, spaces, hyphens, or underscores.'
+            'name.regex' => 'The name must start with a letter and can contain letters, numbers, spaces, hyphens, or underscores.',
+            'accepted_terms.accepted' => 'You must accept the terms and conditions.',
         ];
     }
 }

@@ -33,6 +33,7 @@ class AuthController extends Controller
             'user' => $result['user'],
             'token' => $result['token'],
             'token_type' => 'Bearer',
+            'locale' => $result['locale'] ?? config('app.locale'),
         ], 'Registration successful');
     }
 
@@ -58,7 +59,8 @@ class AuthController extends Controller
     public function verifyOtpAndResponse(VerifyOtpRequest $request): JsonResponse
     {
         try {
-            $result = $this->authService->verifyOtp($request->validated(), $request->validated()['type']);
+            $validated = $request->validated();
+            $result = $this->authService->verifyOtp($validated, $validated['type'] ?? 'login');
 
             if (isset($result['error'])) {
                 return $this->error($result['error'], null, $result['code']);
@@ -152,10 +154,11 @@ class AuthController extends Controller
     public function resendOtp(ResendOtpRequest $request): JsonResponse
     {
         try {
-            $type           = $request->validated()['type'];
-            $deliveryMethod = $request->validated()['delivery_method'];
-            $phone          = $request->validated()['phone'];
-            $email          = $request->validated()['email'];
+            $validated = $request->validated();
+            $type           = $validated['type'] ?? 'login';
+            $deliveryMethod = $validated['delivery_method'] ?? (!empty($validated['phone']) ? 'phone' : 'email');
+            $phone          = $validated['phone'] ?? null;
+            $email          = $validated['email'] ?? null;
 
             $result = $this->authService->resendOtp($type, $deliveryMethod, $phone, $email);
 

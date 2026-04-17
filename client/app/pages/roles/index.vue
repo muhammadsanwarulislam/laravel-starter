@@ -1,149 +1,107 @@
 <template>
-  <div class="p-6">
-    <!-- Header -->
-    <SharedPageHeader title="Roles Management" description="Manage and monitor all system roles">
-      <template #actions>
-        <UIButton variant="primary" @click="navigateToCreate">
-          <template #icon>
-            <UIIconsPlus class="h-5 w-5" />
-          </template>
-          Add Role
-        </UIButton>
-      </template>
-    </SharedPageHeader>
+    <div class="p-6">
+        <SharedPageHeader title="Roles Management" description="Manage and monitor all system roles">
+            <template #actions>
+                <UIButton variant="primary" @click="$router.push('/roles/create')">
+                    <template #icon>
+                        <UIIconsPlus class="h-5 w-5" />
+                    </template>
+                    Add Role
+                </UIButton>
+            </template>
+        </SharedPageHeader>
 
-    <!-- Filters -->
-    <RolesFilters :role-options="roleOptions" :loading-roles="loadingRoles" @search="handleSearch"
-      @filter="handleFilter">
-      <template #advanced-filters>
-        <div v-if="showAdvancedFilters" class="mt-4">
-          <button @click="showAdvancedFilters = !showAdvancedFilters"
-            class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 focus:outline-none">
-            <UIIconsDocument class="-ml-1 mr-2 h-5 w-5 text-gray-400" />
-            Advanced Filters
-          </button>
-        </div>
+        <GenericTable :columns="roleColumns" :data="roles" :loading="loading" :pagination="pagination"
+            @update:sort="handleSort" @update:page="handlePageChange">
+            <template #column-permissions="{ item }">
+                <span>{{ item.permissions?.[0]?.name || 'No Permissions' }}</span>
+            </template>
+            <template #actions="{ item }">
+                <UIButton variant="secondary" size="xs" outlined title="Edit Role" @click="editRole(item.id)"
+                    class="hover:shadow-md mr-2">
+                    <template #icon>
+                        <UIIconsPencil class="h-4 w-4" />
+                    </template>
+                    Edit
+                </UIButton>
 
-        <RolesAdvancedFilters v-if="showAdvancedFilters" v-model:filters="advancedFilters"
-          @apply="applyAdvancedFilters" @clear="clearAdvancedFilters" />
-      </template>
-    </RolesFilters>
+                <UIButton variant="danger" size="xs" outlined @click="openDeleteModal(item.id)" title="Delete Role"
+                    class="hover:shadow-md">
+                    <template #icon>
+                        <UIIconsTrash class="h-4 w-4" />
+                    </template>
+                    Delete
+                </UIButton>
+            </template>
+        </GenericTable>
 
-    <!-- Table -->
-    <RolesTable :loading="isLoading" :roles="roles" />
-  </div>
+        <ModalConfirmationDialog v-if="showDeleteModal" title="Delete Role" :message="deleteMessage" type="delete"
+        @confirm="confirmDelete" @cancel="closeDeleteModal" />
+    </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
-import { notification } from '~/utils/notification'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useRolePermission } from "~/composables/rolePermission/useRolePermission";
+import { formatDate } from "~/utils/date";
 
-const router = useRouter()
-const api = useApi()
+definePageMeta({ middleware: ["auth"] });
 
-// State
-const roles = ref<Array<any>>([])
-const selectedRoles = ref<Array<number>>([])
-const isLoading = ref(false)
-const loadingRoles = ref(false)
-const showAdvancedFilters = ref(false)
-const roleOptions = ref<Array<any>>([])
-const showBulkModal = ref(false)
-const showDeleteModal = ref(false)
-const bulkActionType = ref<'activate' | 'deactivate' | 'delete'>('delete')
-const roleToDelete = ref<any>(null)
-const selectAll = ref(false)
+const router = useRouter();
+const { roles, loading, pagination, fetchRoles, deleteRole } = useRolePermission();
 
-const filters = reactive({
-  search: '',
-  status: null as boolean | null,
-  role: '',
-  startDate: null as string | null,
-  endDate: null as string | null,
-  verified: null as string | null,
-  sortBy: 'created_at:desc',
-  page: 1,
-  limit: 10
-})
+const showDeleteModal = ref(false);
+const deleteRoleId = ref<number | null>(null);
+const deleteMessage = ref(
+  "Are you sure you want to delete this role? This action cannot be undone."
+);
 
-const advancedFilters = reactive({
-  startDate: null as string | null,
-  endDate: null as string | null,
-  verified: null as string | null,
-  sortBy: 'created_at:desc'
-})
+const roleColumns: Column[] = [
+    { key: "id", label: "ID", sortable: true },
+    { key: "name", label: "Name", sortable: true },
+    { key: "description", label: "Description" },
+    { key: "is_system", label: "System Role" },
+    { key: "level", label: "Level" },
+    { key: "permissions", label: "Permissions" },
+    {
+        key: "created_at",
+        label: "Created At",
+        sortable: true,
+        format: (val) => formatDate(val),
+    },
+];
 
+const handleSort = (key: string, order: "asc" | "desc") => {
+    fetchRoles({ sort_field: key, sort_order: order, page: pagination.value?.currentPage || 1 });
+};
 
-// Methods
-const fetchRoles = async () => {
-  try {
-    isLoading.value = true
+const handlePageChange = (page: number) => {
+    fetchRoles({ page });
+};
 
-    const response = await api.role.getRoles()
-    if(response.success && response.data) {
-      roles.value = response.data
+const editRole = (id: number) => {
+  router.push(`/roles/${id}/edit`);
+};
+
+const openDeleteModal = (id: number) => {
+  deleteRoleId.value = id;
+  showDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false;
+  deleteRoleId.value = null;
+};
+
+const confirmDelete = async () => {
+  if (deleteRoleId.value) {
+    const response = await deleteRole(deleteRoleId.value);
+    if (response.success) {
+      closeDeleteModal();
     }
-  } catch (error) {
-    notification.error('Failed to fetch roles')
-  } finally {
-    isLoading.value = false
   }
-}
+};
 
-const fetchRolesOptions = async () => {
-  try {
-    loadingRoles.value = true
-    const response = await api.role.getRoles()
-
-    if (response.success && response.data) {
-      roleOptions.value = response.data
-    }
-  } catch (error) {
-    notification.error('Failed to fetch roles')
-  } finally {
-    loadingRoles.value = false
-  }
-}
-
-const handleSearch = (search: string) => {
-  filters.search = search
-  filters.page = 1
-  fetchRoles()
-}
-
-const handleFilter = (filter: any) => {
-  Object.assign(filters, filter)
-  filters.page = 1
-  fetchRoles()
-}
-
-const applyAdvancedFilters = () => {
-  Object.assign(filters, advancedFilters)
-  filters.page = 1
-  fetchRoles()
-}
-
-const clearAdvancedFilters = () => {
-  advancedFilters.startDate = null
-  advancedFilters.endDate = null
-  advancedFilters.verified = null
-  advancedFilters.sortBy = 'created_at:desc'
-
-  filters.startDate = null
-  filters.endDate = null
-  filters.verified = null
-  filters.sortBy = 'created_at:desc'
-  filters.page = 1
-
-  fetchRoles()
-}
-
-const navigateToCreate = () => {
-  router.push('/roles/create')
-}
-
-onMounted(() => {
-  fetchRoles()
-  fetchRolesOptions()
-})
+onMounted(() => fetchRoles());
 </script>

@@ -13,6 +13,10 @@ export interface PaginatedResponse<T> {
   total: number
   from: number
   to: number
+  first_page_url?: string
+  last_page_url?: string
+  next_page_url?: string | null
+  prev_page_url?: string | null
   links: PaginationLink[]
 }
 
@@ -27,14 +31,17 @@ export interface User {
   id: number
   name: string
   email: string
+  country_code_id?: number | null
   phone?: string
   status: boolean
   ui_locale?: string
+  avatar_url?: string | null
   email_verified_at?: string
   created_at: string
   updated_at: string
   roles?: Role[]
   profile?: Profile
+  files?: FileManager[]
 }
 
 export interface Role {
@@ -42,6 +49,8 @@ export interface Role {
   name: string
   slug: string
   description?: string
+  is_system: boolean
+  level: number
   permissions?: Permission[]
   created_at: string
   updated_at: string
@@ -69,10 +78,26 @@ export interface Language {
 export interface Profile {
   id: number
   user_id: number
-  avatar?: string
-  bio?: string
-  company?: string
-  job_title?: string
+  gender?: 'male' | 'female' | 'other'
+  type?: 'student' | 'teacher' | 'admin'
+  address?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface UserProfileResponse {
+  user: User
+  permissions: string[]
+}
+
+export interface FileManager {
+  id: number
+  uuid: string
+  name: string
+  file: string
+  type: string
+  size: string
+  path: string
   created_at: string
   updated_at: string
 }
@@ -87,18 +112,31 @@ export interface LoginCredentials {
 
 export interface RegisterData {
   name: string
-  email: string
+  email?: string
+  country_code_id: number
+  password_confirmation: string
+  accepted_terms: boolean
   password: string
-  phone?: string
+  phone: string
   locale?: string
 }
 
 export interface UpdateUserData {
   name?: string
   email?: string
+  country_code_id?: number | null
   phone?: string
   status?: boolean
   ui_locale?: string
+  gender?: 'male' | 'female' | 'other' | ''
+  type?: 'student' | 'teacher' | 'admin' | ''
+  address?: string
+}
+
+export interface ChangePasswordData {
+  current_password: string
+  password: string
+  password_confirmation: string
 }
 
 export interface CreateUserData extends UpdateUserData {
@@ -107,7 +145,14 @@ export interface CreateUserData extends UpdateUserData {
 
 export interface CreateRoleData {
   name: string
-  slug: string
+  description?: string
+  level: number
+  permissions?: number[]
+}
+
+export interface CreatePermissionData {
+  name: string
+  module: string
   description?: string
 }
 
@@ -136,10 +181,24 @@ export interface LoginResponse {
   token: string;
 }
 
+export interface AuthenticatedSessionResponse {
+  user: User
+  token: string
+  token_type: string
+  locale?: string
+}
+
+export interface OtpSessionData {
+  token: string | null
+  identifier: string | null
+  identifier_type: 'email' | 'phone' | null
+}
+
 export interface RegisterResponse {
   user: User
   token: string
   token_type: string
+  locale?: string
 }
 
 export interface AuthUserResponse {

@@ -46,7 +46,7 @@ class OtpValidationRepository extends BaseRepository
         return $this->create($instance);
     }
 
-    public function checkOtpValidity(int $userId, int $otpCode, string $type): OtpValidation
+    public function checkOtpValidity(int $userId, string $otpCode, string $type): OtpValidation
     {
         $otpRecord = $this->findValidOtpRecord($userId, $otpCode, $type);
         
@@ -59,7 +59,7 @@ class OtpValidationRepository extends BaseRepository
         return $otpRecord;
     }
 
-    private function findValidOtpRecord(int $userId, int $otpCode, string $type): ?OtpValidation
+    private function findValidOtpRecord(int $userId, string $otpCode, string $type): ?OtpValidation
     {
         return $this->model->where('user_id', $userId)
             ->where('otp_code', $otpCode)

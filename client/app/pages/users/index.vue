@@ -1,342 +1,146 @@
 <template>
   <div class="p-6">
-    <!-- Header -->
-    <SharedPageHeader title="Users Management" description="Manage and monitor all system users">
+    <SharedPageHeader :title="t('users.title')" :description="t('users.description')">
       <template #actions>
-        <UIButton variant="primary" @click="navigateToCreate">
+        <UIButton variant="primary" @click="$router.push('/users/create')">
           <template #icon>
             <UIIconsPlus class="h-5 w-5" />
           </template>
-          Add User
+          {{ t('common.create') }}
         </UIButton>
       </template>
     </SharedPageHeader>
 
-    <!-- Filters -->
-    <UsersFilters :role-options="roleOptions" :loading-roles="loadingRoles" @search="handleSearch"
-      @filter="handleFilter">
-      <template #advanced-filters>
-        <div v-if="showAdvancedFilters" class="mt-4">
-          <button @click="showAdvancedFilters = !showAdvancedFilters"
-            class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 focus:outline-none">
-            <UIIconsDocument class="-ml-1 mr-2 h-5 w-5 text-gray-400" />
-            Advanced Filters
-          </button>
+    <GenericTable :columns="userColumns" :data="users" :loading="loading" :pagination="pagination"
+      @update:sort="handleSort" @update:page="handlePageChange">
+      <!-- Custom column: roles as badges -->
+      <template #column-roles="{ item }">
+        <div class="flex flex-wrap gap-1">
+          <span v-for="role in item.roles" :key="role.id"
+            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+            :class="getRoleBadgeClass(role.slug)">
+            {{ role.name }}
+          </span>
+          <span v-if="!item.roles?.length" class="text-gray-400">—</span>
         </div>
-
-        <UsersAdvancedFilters v-if="showAdvancedFilters" v-model:filters="advancedFilters"
-          @apply="applyAdvancedFilters" @clear="clearAdvancedFilters" />
-      </template>
-    </UsersFilters>
-
-    <!-- Users Table -->
-    <UsersTable :users="users" :selected-user-ids="selectedUsers" :loading="isLoading"
-      :current-page="pagination.currentPage" :last-page="pagination.lastPage" :total="pagination.total"
-      :from="pagination.from" :to="pagination.to" @select-all="toggleSelectAll" @select-user="toggleUserSelection"
-      @view="navigateToView" @edit="navigateToEdit" @delete="showDeleteConfirm" @page-change="goToPage">
-      <!-- Bulk Actions -->
-      <template #bulk-actions>
-        <UsersBulkActions v-if="selectedUsers.length > 0" :count="selectedUsers.length"
-          @activate="showBulkActionModal('activate')" @deactivate="showBulkActionModal('deactivate')"
-          @delete="showBulkActionModal('delete')" />
       </template>
 
-      <!-- Empty State Actions -->
-      <template #empty-state-actions>
-        <UIButton variant="primary" @click="navigateToCreate">
+      <!-- Custom column: status as toggle -->
+      <template #column-status="{ item }">
+        <button @click="toggleUserStatus(item)"
+          class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out"
+          :class="item.status ? 'bg-green-600' : 'bg-gray-200'">
+          <span
+            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+            :class="item.status ? 'translate-x-5' : 'translate-x-0'" />
+        </button>
+      </template>
+
+      <!-- Actions slot -->
+      <template #actions="{ item }">
+        <UIButton variant="secondary" size="xs" outlined title="Edit User" @click="editUser(item.id)"
+          class="hover:shadow-md mr-2">
           <template #icon>
-            <UIIconsPlus class="h-5 w-5" />
+            <UIIconsPencil class="h-4 w-4" />
           </template>
-          Add User
+          {{ t('common.edit') }}
+        </UIButton>
+
+        <UIButton variant="danger" size="xs" outlined @click="openDeleteModal(item.id)" title="Delete User"
+          class="hover:shadow-md">
+          <template #icon>
+            <UIIconsTrash class="h-4 w-4" />
+          </template>
+          {{ t('common.delete') }}
         </UIButton>
       </template>
-    </UsersTable>
+    </GenericTable>
 
-    <!-- Modals -->
-    <UsersBulkActions v-if="showBulkModal" :action="bulkActionType" :count="selectedUsers.length"
-      @confirm="handleBulkAction" @cancel="closeBulkModal" />
-
-    <ModalConfirmationDialog v-if="showDeleteModal" title="Delete User" :message="deleteMessage" type="delete"
+    <!-- Delete Confirmation Modal -->
+    <ModalConfirmationDialog v-if="showDeleteModal" :title="t('common.delete')" :message="deleteMessage" type="delete"
       @confirm="confirmDelete" @cancel="closeDeleteModal" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
-import { notification } from '~/utils/notification'
+import { ref, onMounted } from "vue"
+import { useRouter } from "vue-router"
+import { useUsers } from "~/composables/user/useUser"
+import { formatDate } from "~/utils/date"
 
-definePageMeta({ middleware: ["auth"] });
+definePageMeta({ middleware: ["auth"] })
 
 const router = useRouter()
-const api = useApi()
+const { t } = useLocalization()
+const { users, loading, pagination, fetchUsers, updateStatus, deleteUser } = useUsers()
 
-const users = ref<any[]>([])
-const selectedUsers = ref<number[]>([])
-const isLoading = ref(false)
-const loadingRoles = ref(false)
-const showAdvancedFilters = ref(false)
-const roleOptions = ref<any[]>([])
-const showBulkModal = ref(false)
 const showDeleteModal = ref(false)
-const bulkActionType = ref<'activate' | 'deactivate' | 'delete'>('delete')
-const userToDelete = ref<any>(null)
-const selectAll = ref(false)
+const deleteUserId = ref<number | null>(null)
+const deleteMessage = ref(
+  "Are you sure you want to delete this user? This action cannot be undone."
+)
 
+const userColumns: Column[] = [
+  { key: "id", label: "ID", sortable: true },
+  { key: "name", label: t("common.name"), sortable: true },
+  { key: "email", label: t("common.email"), sortable: true },
+  { key: "phone", label: t("common.phone") },
+  { key: "roles", label: t("common.roles") },
+  { key: "status", label: t("common.status"), sortable: true },
+  // {
+  //   key: "created_at",
+  //   label: t("common.created_at"),
+  //   sortable: true,
+  //   format: (val) => formatDate(val),
+  // },
+]
 
-const filters = reactive({
-  search: '',
-  status: null as boolean | null,
-  role: '',
-  startDate: null as string | null,
-  endDate: null as string | null,
-  verified: null as string | null,
-  sortBy: 'created_at:desc',
-  page: 1,
-  limit: 10
-})
-
-const advancedFilters = reactive({
-  startDate: null as string | null,
-  endDate: null as string | null,
-  verified: null as string | null,
-  sortBy: 'created_at:desc'
-})
-
-
-const pagination = reactive({
-  currentPage: 1,
-  lastPage: 1,
-  total: 0,
-  from: 0,
-  to: 0,
-  perPage: 10
-})
-
-
-const deleteMessage = computed(() => {
-  if (userToDelete.value) {
-    return `Are you sure you want to delete user "${userToDelete.value.name}"? This action cannot be undone.`
-  }
-  return ''
-})
-
-
-const fetchUsers = async () => {
-  try {
-    isLoading.value = true
-
-    const params: any = {
-      page: filters.page,
-      limit: filters.limit
-    }
-
-    if (filters.search) params.search = filters.search
-    if (filters.status !== null) params.status = filters.status
-    if (filters.role) params.role = filters.role
-    if (filters.verified) params.verified = filters.verified === 'verified'
-    if (filters.startDate) params.start_date = filters.startDate
-    if (filters.endDate) params.end_date = filters.endDate
-
-    if (filters.sortBy) {
-      const [sortField, sortDir] = filters.sortBy.split(':')
-      params.sort_by = sortField
-      params.sort_dir = sortDir
-    }
-
-    const response = await api.user.getUsers(params)
-    
-    if (response.success && response.data) {
-      users.value = response.data
-
-      if (response.pagination) {
-        Object.assign(pagination, response.pagination)
-      }
-    } else {
-      notification.error(response.message || 'Failed to fetch users')
-      users.value = []
-    }
-  } catch (error) {
-    console.error('Error fetching users:', error)
-    notification.error('An error occurred while fetching users')
-    users.value = []
-  } finally {
-    isLoading.value = false
-  }
+const handleSort = (key: string, order: "asc" | "desc") => {
+  fetchUsers({ sort_by: key, sort_order: order })
 }
 
-const fetchRoles = async () => {
-  try {
-    loadingRoles.value = true
-    const response = await api.role.getRoles()
-
-    if (response.success && response.data) {
-      roleOptions.value = response.data
-    }
-  } catch (error) {
-    notification.error('Failed to fetch roles')
-  } finally {
-    loadingRoles.value = false
-  }
+const handlePageChange = (page: number) => {
+  fetchUsers({ page });
 }
 
-const handleSearch = (search: string) => {
-  filters.search = search
-  filters.page = 1
-  fetchUsers()
+const getRoleBadgeClass = (slug: string) => {
+  const map: Record<string, string> = {
+    super_admin: "bg-purple-100 text-purple-800",
+    admin: "bg-red-100 text-red-800",
+    manager: "bg-blue-100 text-blue-800",
+    editor: "bg-green-100 text-green-800",
+    guest: "bg-gray-100 text-gray-800",
+  };
+  return map[slug] || "bg-gray-100 text-gray-800";
 }
 
-const handleFilter = (filter: any) => {
-  Object.assign(filters, filter)
-  filters.page = 1
-  fetchUsers()
+const editUser = (id: number) => {
+  router.push(`/users/${id}/edit`);
 }
 
-const applyAdvancedFilters = () => {
-  Object.assign(filters, advancedFilters)
-  filters.page = 1
-  fetchUsers()
+const toggleUserStatus = async (user: any) => {
+  await updateStatus(user.id, !user.status);
+  fetchUsers();
 }
 
-const clearAdvancedFilters = () => {
-  advancedFilters.startDate = null
-  advancedFilters.endDate = null
-  advancedFilters.verified = null
-  advancedFilters.sortBy = 'created_at:desc'
-
-  filters.startDate = null
-  filters.endDate = null
-  filters.verified = null
-  filters.sortBy = 'created_at:desc'
-  filters.page = 1
-
-  fetchUsers()
-}
-
-const toggleSelectAll = (selected: boolean) => {
-  if (selected) {
-    selectedUsers.value = users.value.map(user => user.id)
-  } else {
-    selectedUsers.value = []
-  }
-}
-
-const toggleUserSelection = (userId: number) => {
-  const index = selectedUsers.value.indexOf(userId)
-  if (index > -1) {
-    selectedUsers.value.splice(index, 1)
-  } else {
-    selectedUsers.value.push(userId)
-  }
-}
-
-const goToPage = (page: number) => {
-  if (page >= 1 && page <= pagination.lastPage) {
-    filters.page = page
-    fetchUsers()
-  }
-}
-
-const navigateToCreate = () => {
-  router.push('/users/create')
-}
-
-const navigateToView = (user: any) => {
-  router.push(`/users/${user.id}`)
-}
-
-const navigateToEdit = (user: any) => {
-  router.push(`/users/${user.id}/edit`)
-}
-
-const showDeleteConfirm = (user: any) => {
-  userToDelete.value = user
-  showDeleteModal.value = true
+const openDeleteModal = (id: number) => {
+  deleteUserId.value = id;
+  showDeleteModal.value = true;
 }
 
 const closeDeleteModal = () => {
-  showDeleteModal.value = false
-  userToDelete.value = null
-}
-
-const showBulkActionModal = (action: 'activate' | 'deactivate' | 'delete') => {
-  if (selectedUsers.value.length === 0) return
-
-  bulkActionType.value = action
-  showBulkModal.value = true
-}
-
-const closeBulkModal = () => {
-  showBulkModal.value = false
-  bulkActionType.value = 'delete'
-}
-
-const handleBulkAction = async () => {
-  try {
-    isLoading.value = true
-
-    switch (bulkActionType.value) {
-      case 'activate':
-        await api.user.bulkUpdateStatus(selectedUsers.value, true)
-        notification.success(`Activated ${selectedUsers.value.length} user(s)`)
-        break
-      case 'deactivate':
-        await api.user.bulkUpdateStatus(selectedUsers.value, false)
-        notification.success(`Deactivated ${selectedUsers.value.length} user(s)`)
-        break
-      case 'delete':
-        await api.user.bulkDeleteUsers(selectedUsers.value)
-        notification.success(`Deleted ${selectedUsers.value.length} user(s)`)
-        break
-    }
-
-    selectedUsers.value = []
-    selectAll.value = false
-    fetchUsers()
-  } catch (error) {
-    notification.error('An error occurred while performing bulk action')
-  } finally {
-    isLoading.value = false
-    closeBulkModal()
-  }
+  showDeleteModal.value = false;
+  deleteUserId.value = null;
 }
 
 const confirmDelete = async () => {
-  if (!userToDelete.value) return
-
-  try {
-    isLoading.value = true
-    const response = await api.user.deleteUser(userToDelete.value.id)
-
-    if (response.success) {
-      notification.success(`User "${userToDelete.value.name}" deleted successfully`)
-      fetchUsers()
-    } else {
-      notification.error(response.message || 'Failed to delete user')
+  if (deleteUserId.value) {
+    const success = await deleteUser(deleteUserId.value);
+    if (success) {
+      closeDeleteModal();
     }
-  } catch (error) {
-    console.error('Error deleting user:', error)
-    notification.error('An error occurred while deleting user')
-  } finally {
-    isLoading.value = false
-    closeDeleteModal()
   }
 }
 
-onMounted(() => {
-  fetchUsers()
-  fetchRoles()
-})
-
-
-watch(selectedUsers, (newVal) => {
-  selectAll.value = newVal.length === users.value.length && users.value.length > 0
-})
-
-watch(() => [filters.startDate, filters.endDate], () => {
-  if (filters.startDate && filters.endDate && filters.startDate > filters.endDate) {
-    const temp = filters.startDate
-    filters.startDate = filters.endDate
-    filters.endDate = temp
-  }
-})
+onMounted(() => fetchUsers())
 </script>

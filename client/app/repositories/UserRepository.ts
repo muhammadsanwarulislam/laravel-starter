@@ -1,5 +1,5 @@
 import { BaseRepository } from './BaseRepository'
-import type { User, PaginatedResponse, CreateUserData, UpdateUserData } from '~/api/types/api.types'
+import type { User, UserProfileResponse, PaginatedResponse, CreateUserData, UpdateUserData } from '~/api/types/api.types'
 import type { ApiResponse } from '~/api/types/api.types'
 
 export class UserRepository extends BaseRepository {
@@ -35,11 +35,18 @@ export class UserRepository extends BaseRepository {
     return this.post<User>(`/users/${id}/roles`, { roles: roleIds })
   }
 
-  async getProfile(): Promise<ApiResponse<User>> {
-    return this.get<User>('/profile')
+  async getProfile(): Promise<ApiResponse<UserProfileResponse>> {
+    return this.get<UserProfileResponse>('/profile')
   }
 
-  async updateProfile(data: UpdateUserData): Promise<ApiResponse<User>> {
-    return this.put<User>('/profile', data)
+  async updateProfile(data: UpdateUserData): Promise<ApiResponse<UserProfileResponse>> {
+    return this.put<UserProfileResponse>('/profile', data)
+  }
+
+  async updateProfilePhoto(photo: File): Promise<ApiResponse<UserProfileResponse>> {
+    const formData = new FormData()
+    formData.append('photo', photo)
+
+    return this.post<UserProfileResponse>('/profile/photo', formData)
   }
 }

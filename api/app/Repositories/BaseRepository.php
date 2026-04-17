@@ -15,6 +15,48 @@ abstract class BaseRepository
         $this->model = $model;
     }
 
+    public function getFiltered(
+        ?string $search = null,
+        ?array $searchFields = null,
+        ?array $conditions = null,
+        array $relations = []
+    ) {
+        $query = $this->model->with($relations);
+
+        // Handle search
+        if ($search && $searchFields) {
+            $query->where(function ($q) use ($search, $searchFields) {
+                foreach ($searchFields as $field) {
+                    $q->orWhere($field, 'like', "%{$search}%");
+                }
+            });
+        }
+
+        // Handle conditions
+        if ($conditions) {
+            $query->where($conditions);
+        }
+
+        return $query;
+    }
+
+    /**
+     * Paginate filtered results
+     */
+    public function paginateFiltered(
+        int $perPage = 15,
+        ?string $search = null,
+        ?array $searchFields = null,
+        ?array $conditions = null,
+        array $relations = [],
+        string $sortField = 'created_at',
+        string $sortOrder = 'desc'
+    ): LengthAwarePaginator {
+        $query = $this->getFiltered($search, $searchFields, $conditions, $relations);
+
+        return $query->orderBy($sortField, $sortOrder)->paginate($perPage);
+    }
+
     public function all(array $columns = ['*'], array $relations = []): Collection
     {
         return $this->model->with($relations)->get($columns);
@@ -57,7 +99,7 @@ abstract class BaseRepository
 
     public function delete($id): bool
     {
-        return $this->model->find($id)->delete();
+        return $this->model->destroy($id) > 0;
     }
 
     public function deleteBy(array $criteria): bool

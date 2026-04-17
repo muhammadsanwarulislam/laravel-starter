@@ -17,7 +17,9 @@ export const useAuth = () => {
   const loading         = ref(false)
   const otpRequired     = ref(false)
   const otpData         = ref({
-    token: authSession.getOTPToken()
+    token: authSession.getOTPSession().token,
+    identifier: authSession.getOTPSession().identifier,
+    identifier_type: authSession.getOTPSession().identifier_type,
   })
 
   // Main methods
@@ -28,9 +30,15 @@ export const useAuth = () => {
     if (result.success && result.otpRequired) {
       otpRequired.value = true
       otpData.value = {
-        token: result.data?.token || null
+        token: result.data?.token || null,
+        identifier: result.data?.identifier || null,
+        identifier_type: result.data?.identifier_type || null,
       }
-      authSession.setOTPToken(result.data?.token || '')
+      authSession.setOTPSession({
+        token: result.data?.token || null,
+        identifier: result.data?.identifier || null,
+        identifier_type: result.data?.identifier_type || null,
+      })
     }
     
     loading.value = false
@@ -44,8 +52,8 @@ export const useAuth = () => {
     if (result.success) {
       user.value = userStore.getUser()
       otpRequired.value = false
-      otpData.value = { token: null }
-      authSession.clearOTPToken()
+      otpData.value = { token: null, identifier: null, identifier_type: null }
+      authSession.clearOTPSession()
     }
     
     loading.value = false
@@ -68,6 +76,9 @@ export const useAuth = () => {
       if (result.success && result.data) {
         userStore.setUser(result.data.user)
         authSession.setAuthToken(result.data.token)
+        if (result.data.user?.roles) {
+          userStore.setPermissions(userStore.extractPermissions(result.data.user.roles))
+        }
         user.value = result.data.user
       }
       
@@ -98,9 +109,36 @@ export const useAuth = () => {
     return result
   }
 
+  const forgetPassword = async (email: string) => {
+    return services.auth.forgetPassword(email)
+  }
+
+  const resetPassword = async (payload: any) => {
+    return services.auth.resetPassword(payload)
+  }
+
+  const changePassword = async (payload: any) => {
+    return services.auth.changePassword(payload)
+  }
+
+  const resendOTP = async () => {
+    const session = authSession.getOTPSession()
+
+    if (!session.identifier || !session.identifier_type) {
+      return { success: false, message: 'OTP session expired. Please login again.' }
+    }
+
+    return services.auth.resendOTP({
+      type: 'login',
+      delivery_method: session.identifier_type,
+      email: session.identifier_type === 'email' ? session.identifier : undefined,
+      phone: session.identifier_type === 'phone' ? session.identifier : undefined,
+    })
+  }
+
   const initialize = () => {
     user.value = userStore.getUser()
-    otpData.value.token = authSession.getOTPToken()
+    otpData.value = authSession.getOTPSession()
     fetchCountryCodes()
   }
 
@@ -125,6 +163,10 @@ export const useAuth = () => {
     verifyOTP,
     logout,
     register,
+    forgetPassword,
+    resetPassword,
+    changePassword,
+    resendOTP,
     fetchCurrentUser,
     fetchCountryCodes,
     

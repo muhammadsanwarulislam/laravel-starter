@@ -22,9 +22,9 @@ class UserController extends Controller
             search: $request->search,
             role: $request->role,
             status: $request->status,
-            sortField: $request->get('sort_field', 'created_at'),
-            sortOrder: $request->get('sort_order', 'desc'),
-            perPage: $request->get('per_page', 5)
+            sortField: $request->input('sort_field', 'created_at'),
+            sortOrder: $request->input('sort_order', 'desc'),
+            perPage: (int)$request->input('limit', 5)
         );
 
         return $this->success($users, 'Users retrieved successfully');
@@ -50,24 +50,14 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(CreateOrUpdateRequest $request, $id)
     {
-        if ($request->user()->id == $id) {
-            return $this->error('You cannot update your own account through this endpoint', null, 403);
+        try {
+            $user = $this->userService->updateUser((int)$id, $request->validated());
+            return $this->success($user->load('roles'), 'User updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
         }
-
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $id,
-            'phone' => 'nullable|string|max:20',
-            'status' => 'boolean',
-            'roles' => 'array',
-            'roles.*' => 'exists:roles,id'
-        ]);
-
-        $user = $this->userService->updateUser($id, $validated);
-
-        return $this->success($user->load('roles'), 'User updated successfully');
     }
 
     public function destroy(Request $request, $id)
@@ -114,7 +104,7 @@ class UserController extends Controller
 
     public function profile(Request $request)
     {
-        $user = $request->user()->load(['profile', 'roles']);
+        $user = $request->user()->load(['profile', 'roles', 'files']);
 
         return $this->success([
             'user' => $user,
@@ -129,11 +119,33 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
+            'country_code_id' => 'nullable|exists:countries,id',
+            'ui_locale' => 'nullable|exists:languages,code',
+            'gender' => 'nullable|in:male,female,other',
+            'type' => 'nullable|in:student,teacher,admin',
+            'address' => 'nullable|string|max:500',
         ]);
 
-        $user->update($validated);
+        $updatedUser = $this->userService->updateOwnProfile($user, $validated);
 
-        return $this->success($user->load('profile'), 'Profile updated successfully');
+        return $this->success([
+            'user' => $updatedUser->load(['profile', 'roles', 'files']),
+            'permissions' => $updatedUser->cachedPermissions(),
+        ], 'Profile updated successfully');
+    }
+
+    public function updateProfilePhoto(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'photo' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
+        ]);
+
+        $updatedUser = $this->userService->updateProfilePhoto($request->user(), $validated['photo']);
+
+        return $this->success([
+            'user' => $updatedUser->load(['profile', 'roles', 'files']),
+            'permissions' => $updatedUser->cachedPermissions(),
+        ], 'Profile photo updated successfully');
     }
 }

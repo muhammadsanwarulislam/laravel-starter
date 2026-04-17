@@ -44,6 +44,7 @@ export const useAuthOperations = () => {
                 // Store user data
                 userStore.setUser(result.data.user)
                 authSession.setAuthToken(result.data.token)
+                authSession.clearOTPSession()
 
                 // Store permissions if available
                 if (result.data.user?.roles) {
@@ -74,7 +75,7 @@ export const useAuthOperations = () => {
         userStore.clearUser()
         userStore.clearPermissions()
         authSession.clearAuthToken()
-        authSession.clearOTPToken()
+        authSession.clearOTPSession()
     }
 
     return {

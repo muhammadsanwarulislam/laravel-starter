@@ -5,40 +5,42 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Role\CreateOrUpdateRequest;
 use App\Models\Role;
+use App\Services\RoleService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function __construct(protected RoleService $roleService)
     {
-        $roles = Role::with('permissions')->get();
-        return $this->success($roles, 'Roles retrieved successfully');
+        
     }
 
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:roles,slug',
-            'description' => 'nullable|string',
-            'level' => 'required|integer|min:0|max:100',
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->validationError($validator->errors());
+        try {
+            $roles = $this->roleService->getFilteredRoles(
+                search: $request->search,
+                status: $request->status,
+                sortField: $request->input('sort_field', 'created_at'),
+                sortOrder: $request->input('sort_order', 'desc'),
+                perPage: (int)$request->input('limit', 5)
+            );
+            return $this->success($roles, 'Roles retrieved successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
         }
+    }
 
-        $role = Role::create($request->except('permissions'));
-
-        if ($request->has('permissions')) {
-            $role->permissions()->sync($request->permissions);
+    public function store(CreateOrUpdateRequest $request)
+    {
+        try {
+            $role = $this->roleService->createRole($request->validated());
+            return $this->success($role->load('permissions'), 'Role created successfully', 201);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
         }
-
-        return $this->success($role->load('permissions'), 'Role created successfully', 201);
     }
 
     public function show(Role $role)
@@ -46,36 +48,23 @@ class RoleController extends Controller
         return $this->success($role->load('permissions'), 'Role retrieved successfully');
     }
 
-    public function update(Request $request, Role $role)
+    public function update(CreateOrUpdateRequest $request, Role $role)
     {
-        if ($role->is_system) {
+        if ($role->is_system && $request->hasAny(['name', 'description', 'level', 'permissions'])) {
             return $this->error('System roles cannot be modified', null, 403);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'slug' => 'sometimes|string|max:255|unique:roles,slug,' . $role->id,
-            'description' => 'nullable|string',
-            'level' => 'sometimes|integer|min:0|max:100',
-            'permissions' => 'array',
-            'permissions.*' => 'exists:permissions,id'
-        ]);
-
-        if ($validator->fails()) {
-            return $this->validationError($validator->errors());
+        try {
+            $updatedRole = $this->roleService->updateRole($role->id, $request->validated());
+            return $this->success($updatedRole, 'Role updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
         }
-
-        $role->update($request->except('permissions'));
-
-        if ($request->has('permissions')) {
-            $role->permissions()->sync($request->permissions);
-        }
-
-        return $this->success($role->load('permissions'), 'Role updated successfully');
     }
 
-    public function destroy(Role $role)
+    public function destroy(Request $request, $id)
     {
+        $role = Role::findOrFail($id);
         if ($role->is_system) {
             return $this->error('System roles cannot be deleted', null, 403);
         }
@@ -91,17 +80,13 @@ class RoleController extends Controller
 
     public function assignPermissions(Request $request, Role $role)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'permissions' => 'required|array',
             'permissions.*' => 'exists:permissions,id'
         ]);
 
-        if ($validator->fails()) {
-            return $this->validationError($validator->errors());
-        }
+        $updatedRole = $this->roleService->syncPermissions($role, $validated['permissions']);
 
-        $role->permissions()->sync($request->permissions);
-
-        return $this->success($role->load('permissions'), 'Permissions assigned successfully');
+        return $this->success($updatedRole, 'Permissions assigned successfully');
     }
 }

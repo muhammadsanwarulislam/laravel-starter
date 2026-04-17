@@ -25,7 +25,7 @@ class LoginRequest extends FormRequest
             'phone'     => 'nullable|string|required_without:email',
             'email'     => 'nullable|email|required_without:phone',
             'password'  => 'required',
-            'locale'    => 'nullable|string|in:en,es,fr' 
+            'locale'    => 'nullable|string|exists:languages,code'
         ];
     }
 }

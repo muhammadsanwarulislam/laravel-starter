@@ -6,10 +6,66 @@ namespace App\Services;
 
 use App\Models\Permission;
 use App\Models\Role;
+use App\Repositories\PermissionRepository;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class PermissionService
 {
+    public function __construct(protected PermissionRepository $permissionRepository) {}
+
+    public function getFilteredPermissions(
+        ?string $search = null,
+        ?string $module = null,
+        string $sortField = 'module',
+        string $sortOrder = 'asc',
+        int $perPage = 15
+    ): LengthAwarePaginator {
+        return $this->permissionRepository->getFilteredPermissions(
+            search: $search,
+            module: $module,
+            sortField: $sortField,
+            sortOrder: $sortOrder,
+            perPage: $perPage
+        );
+    }
+
+    public function createPermission(array $data): Permission
+    {
+        $permission = $this->permissionRepository->createPermission([
+            'name' => $data['name'],
+            'slug' => $this->buildSlug($data['name'], $data['module']),
+            'module' => Str::slug($data['module']),
+            'description' => $data['description'] ?? null,
+        ]);
+
+        self::invalidatePermissionCaches();
+
+        return $permission;
+    }
+
+    public function updatePermission(int $permissionId, array $data): Permission
+    {
+        $permission = $this->permissionRepository->updatePermission($permissionId, [
+            'name' => $data['name'],
+            'slug' => $this->buildSlug($data['name'], $data['module']),
+            'module' => Str::slug($data['module']),
+            'description' => $data['description'] ?? null,
+        ]);
+
+        self::invalidatePermissionCaches();
+
+        return $permission;
+    }
+
+    public function deletePermission(Permission $permission): void
+    {
+        $permission->delete();
+
+        self::invalidatePermissionCaches();
+    }
+
     public static function getModules(): array
     {
         return Cache::remember('permission_modules', 3600, function () {
@@ -48,12 +104,7 @@ class PermissionService
         $validSlugs = array_column($permissions, 'slug');
         Permission::whereNotIn('slug', $validSlugs)->delete();
 
-        Cache::forget('permission_modules');
-
-        // Clear role permission caches
-        Role::all()->each(function ($role) {
-            Cache::forget("role_{$role->id}_permissions");
-        });
+        self::invalidatePermissionCaches();
     }
 
     public static function getPermissionsByModule(string $module): array
@@ -75,5 +126,19 @@ class PermissionService
         }
 
         return $user->hasPermission($permission);
+    }
+
+    public static function invalidatePermissionCaches(): void
+    {
+        Cache::forget('permission_modules');
+
+        Role::all()->each(function ($role): void {
+            Cache::forget("role_{$role->id}_permissions");
+        });
+    }
+
+    protected function buildSlug(string $name, string $module): string
+    {
+        return Str::slug($name) . '-' . Str::slug($module);
     }
 }

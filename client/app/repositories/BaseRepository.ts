@@ -12,7 +12,7 @@ export abstract class BaseRepository {
     endpoint: string,
     options: any = {}
   ): Promise<ApiResponse<T>> {
-    const headers = this.buildHeaders(options.headers)
+    const headers = this.buildHeaders(options.headers, options.body)
     
     try {
       const response = await $fetch<ApiResponse<T>>(`${this.baseUrl}${endpoint}`, {
@@ -26,11 +26,15 @@ export abstract class BaseRepository {
     }
   }
 
-  protected buildHeaders(customHeaders?: any): Record<string, string> {
+  protected buildHeaders(customHeaders?: any, body?: any): Record<string, string> {
+    const isFormData = typeof FormData !== 'undefined' && body instanceof FormData
     const headers: Record<string, string> = {
       'Accept': 'application/json',
-      'Content-Type': 'application/json',
       ...(customHeaders || {})
+    }
+
+    if (!isFormData && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json'
     }
 
     // Add auth token
@@ -64,29 +68,33 @@ export abstract class BaseRepository {
     }
   }
 
-  protected async get<T>(endpoint: string, params?: any): Promise<ApiResponse<T>> {
+  protected async get<T>(endpoint: string, params?: any, options: any = {}): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
+      ...options,
       method: 'GET',
       params
     })
   }
 
-  protected async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  protected async post<T>(endpoint: string, data?: any, options: any = {}): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
+      ...options,
       method: 'POST',
       body: data
     })
   }
 
-  protected async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+  protected async put<T>(endpoint: string, data?: any, options: any = {}): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
+      ...options,
       method: 'PUT',
       body: data
     })
   }
 
-  protected async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+  protected async delete<T>(endpoint: string, options: any = {}): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
+      ...options,
       method: 'DELETE'
     })
   }

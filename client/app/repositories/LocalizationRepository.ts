@@ -18,7 +18,27 @@ export class LocalizationRepository extends BaseRepository {
     return this.get<Record<string, string>>('/translations/ui')
   }
 
-  async setLocale(locale: string): Promise<ApiResponse<void>> {
-    return this.post<void>('/localization/locale/set', { locale })
+  async storeUiTranslation(key: string, value: string, locale: string, group: string = 'ui'): Promise<{ success: boolean; data?: any; message?: string }> {
+    return this.post('/localization/translations/ui', { key, value, locale, group });
+}
+
+  async setLocale(locale: string): Promise<ApiResponse<{ locale: string; translations: Record<string, string> }>> {
+    return this.post<{ locale: string; translations: Record<string, string> }>('/locale/set', { locale })
+  }
+
+  async createLanguage(data: any): Promise<ApiResponse<Language>> {
+    return this.post<Language>('/languages', data)
+  }
+
+  async updateLanguage(id: number, data: any): Promise<ApiResponse<Language>> {
+    return this.put<Language>(`/languages/${id}`, data)
+  }
+
+  async deleteLanguage(id: number): Promise<ApiResponse<void>> {
+    return this.delete<void>(`/languages/${id}`)
+  }
+
+  async deleteTranslation(id: number): Promise<ApiResponse<void>> {
+    return this.delete<void>(`/localization/translations/ui/${id}`)
   }
 }

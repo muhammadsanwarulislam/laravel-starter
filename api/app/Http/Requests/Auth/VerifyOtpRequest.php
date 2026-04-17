@@ -16,9 +16,9 @@ class VerifyOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'otp'       => 'required',
+            'otp'       => 'required|string|digits:6',
             'type'      => 'nullable|string|in:login,registration,password_reset,email_verification,phone_verification,email_change,phone_change,two_factor_authentication',
-            'locale'    => 'nullable|string|in:en,es,fr'
+            'locale'    => 'nullable|string|exists:languages,code'
         ];
     }
 }

@@ -6,8 +6,8 @@ export class RoleRepository extends BaseRepository {
     super()
   }
 
-  async getAll(): Promise<ApiResponse<Role[]>> {
-    return this.get<Role[]>('/roles')
+  async getAll(params?: Record<string, any>): Promise<ApiResponse<any>> {
+    return this.get<any>('/roles', params)
   }
 
   async getById(id: number): Promise<ApiResponse<Role>> {
@@ -22,7 +22,7 @@ export class RoleRepository extends BaseRepository {
     return this.put<Role>(`/roles/${id}`, data)
   }
 
-  async delete(id: number): Promise<ApiResponse<void>> {
+  async deleteRole(id: number): Promise<ApiResponse<void>> {
     return this.delete<void>(`/roles/${id}`)
   }
 

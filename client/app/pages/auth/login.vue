@@ -110,11 +110,7 @@
                                 <span class="relative">
                                     {{ loading ? 'Signing in...' : 'Sign in' }}
                                 </span>
-                                <svg class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
+                                <UIIconsArrowRight class="bg-transparent" />
                             </button>
                         </div>
 
@@ -127,6 +123,7 @@
                                             d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                                             clip-rule="evenodd" />
                                     </svg>
+                                    <UIIconsArrowLeft class="bg-transparent h-5 w-5 mt-1" />
                                 </div>
                                 <div class="ml-3">
                                     <p class="text-sm font-medium text-red-800 dark:text-red-200">
@@ -142,17 +139,14 @@
                 <div class="mt-6 text-center">
                     <NuxtLink to="/"
                         class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors duration-200 inline-flex items-center">
-                        <svg class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
+                        <UIIconsArrowLeft2 class="bg-transparent w-4 h-4 mr-1" />
                         Back to home
                     </NuxtLink>
                 </div>
             </div>
         </div>
 
-        <ModalOTPVerify v-if="showOTPModal" :is-open="showOTPModal" @update:is-open="showOTPModal = $event"
+        <ModalOTPVerify v-if="showOTPModal" :is-open="showOTPModal" :identifier="auth.otpData.identifier || undefined" @update:is-open="showOTPModal = $event"
             @verified="onOTPVerified" />
     </div>
 </template>

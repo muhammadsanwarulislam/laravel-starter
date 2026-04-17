@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 class Role extends Model
 {
@@ -28,11 +29,11 @@ class Role extends Model
 
     public function permissions(): BelongsToMany
     {
-        return $this->belongsToMany(Permission::class);
+        return $this->belongsToMany(Permission::class)->withTimestamps();
     }
 
     // Cached permissions for performance
-    public function cachedPermissions()
+    public function cachedPermissions(): array
     {
         $cacheKey = "role_{$this->id}_permissions";
 
@@ -41,27 +42,34 @@ class Role extends Model
         });
     }
 
-    public function hasPermission($permissionSlug)
+    public function hasPermission($permissionSlug): bool
     {
         $permissions = $this->cachedPermissions();
         return in_array($permissionSlug, $permissions);
     }
 
-    // Clear cache on update
-    protected static function boot()
+    public function clearCachedPermissions(): void
     {
-        parent::boot();
+        cache()->forget("role_{$this->id}_permissions");
 
-        static::saved(function ($role) {
-            cache()->forget("role_{$role->id}_permissions");
-
-            // Clear user role caches
-            $role->users()->chunk(100, function ($users) {
+        $this->users()
+            ->select('users.id')
+            ->chunk(100, function (Collection $users): void {
                 foreach ($users as $user) {
                     cache()->forget("user_{$user->id}_roles");
                     cache()->forget("user_{$user->id}_permissions");
                 }
             });
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $role): void {
+            $role->clearCachedPermissions();
+        });
+
+        static::deleted(function (self $role): void {
+            $role->clearCachedPermissions();
         });
     }
 }

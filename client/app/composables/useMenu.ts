@@ -48,25 +48,26 @@ export const useMenu = () => {
           },
           {
             id: 'roles',
-            title: 'Roles & Permissions',
+            title: 'Roles',
             icon: 'RolePermissions',
             to: '/roles',
             permissions: [
               'view-roles', 'create-roles', 'edit-roles',
-              'delete-roles', 'assign-roles',
-              'view-permissions', 'manage-permissions'
+              'delete-roles', 'assign-roles'
             ],
             roles: [],
             isActive: route.path.startsWith('/roles')
           },
           {
-            id: 'settings',
-            title: 'Settings',
-            icon: 'Settings',
-            to: '/settings',
-            permissions: ['view-settings', 'edit-settings'],
+            id: 'permissions',
+            title: 'Permissions',
+            icon: 'RolePermissions',
+            to: '/permissions',
+            permissions: [
+              'view-permissions', 'manage-permissions'
+            ],
             roles: [],
-            isActive: route.path.startsWith('/settings')
+            isActive: route.path.startsWith('/permissions')
           },
           {
             id: 'localization',

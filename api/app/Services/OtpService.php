@@ -23,11 +23,6 @@ class OtpService
     {
     }
 
-    public function generateOtp(): string
-    {
-        return str_pad((string) random_int(0, pow(10, $this->otpLength) - 1), $this->otpLength, '0', STR_PAD_LEFT);
-    }
-
     public function createOtp(User $user, string $type = 'login', ?string $ip = null): array
     {
         $this->otpValidationRepository->cleanupExpiredOtps($user->id);
@@ -65,7 +60,12 @@ class OtpService
         ];
     }
 
-    public function verifyOtp(int $userId, int $otp, string $type = 'login'): array
+    public function generateOtp(): string
+    {
+        return str_pad((string) random_int(0, pow(10, $this->otpLength) - 1), $this->otpLength, '0', STR_PAD_LEFT);
+    }
+
+    public function verifyOtp(int $userId, string $otp, string $type = 'login'): array
     {
        $this->otpValidationRepository->checkOtpValidity($userId, $otp, $type);    
 
@@ -88,8 +88,11 @@ class OtpService
 
     public function sendOtpViaSms(User $user, string $otp): bool
     {
+        /**
+         * In a real implementation, it will integrate with an SMS gateway here to send the OTP to the user's phone number.
+         */
         \Log::info("SMS OTP for {$user->phone}: {$otp}");
-        
+        Notification::send($user, new SentOtp($otp));
         return true; 
     }
 }

@@ -116,11 +116,13 @@ const error = ref('')
 
 // Computed properties
 const maskedIdentifier = computed(() => {
-  if (!props.identifier) return 'your registered email/phone'
+  const identifier = props.identifier || auth.otpData.value.identifier
+
+  if (!identifier) return 'your registered email/phone'
 
   // Mask email
-  if (props.identifier.includes('@')) {
-    const [name, domain] = props.identifier.split('@')
+  if (identifier.includes('@')) {
+    const [name, domain] = identifier.split('@')
     const maskedName = name.length > 2
       ? name.substring(0, 2) + '*'.repeat(name.length - 2)
       : '*'.repeat(name.length)
@@ -128,12 +130,12 @@ const maskedIdentifier = computed(() => {
   }
 
   // Mask phone number
-  if (props.identifier.replace(/\D/g, '').length >= 10) {
-    const digits = props.identifier.replace(/\D/g, '')
+  if (identifier.replace(/\D/g, '').length >= 10) {
+    const digits = identifier.replace(/\D/g, '')
     return `+*** ${digits.slice(-4)}`
   }
 
-  return props.identifier
+  return identifier
 })
 
 // Methods
@@ -182,7 +184,7 @@ const verifyOTP = async () => {
   error.value = ''
 
   try {
-    const result = await auth.verifyOTP(parseInt(otpCode.value))
+    const result = await auth.verifyOTP(otpCode.value)
 
     if (result.success) {
       notification.success('Login successful!')
@@ -222,8 +224,12 @@ const resendOTP = async () => {
   resendLoading.value = true
 
   try {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    const result = await auth.resendOTP()
+
+    if (!result.success) {
+      notification.error(result.message || 'Failed to resend OTP. Please try again.')
+      return
+    }
 
     // Reset OTP timer and start resend cooldown
     timer.reset()
@@ -233,7 +239,7 @@ const resendOTP = async () => {
     resetOTP()
     await nextTick(() => digitInputs.value[0]?.focus())
 
-    notification.success('New OTP sent successfully!')
+    notification.success(result.message || 'New OTP sent successfully!')
   } catch (err: any) {
     notification.error('Failed to resend OTP. Please try again.')
   } finally {
