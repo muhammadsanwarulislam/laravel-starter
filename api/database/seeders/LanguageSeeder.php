@@ -154,7 +154,7 @@ class LanguageSeeder extends Seeder
                 'es' => 'Configuración', 
                 'fr' => 'Paramètres'
             ],
-            'common.save' => [
+            'common.button.save' => [
                 'en' => 'Save', 
                 'bn' => 'সংরক্ষণ', 
                 'hi' => 'सहेजें', 
@@ -162,7 +162,7 @@ class LanguageSeeder extends Seeder
                 'es' => 'Guardar', 
                 'fr' => 'Enregistrer'
             ],
-            'common.cancel' => [
+            'common.button.cancel' => [
                 'en' => 'Cancel', 
                 'bn' => 'বাতিল', 
                 'hi' => 'रद्द करें', 
@@ -170,7 +170,7 @@ class LanguageSeeder extends Seeder
                 'es' => 'Cancelar', 
                 'fr' => 'Annuler'
             ],
-            'common.edit' => [
+            'common.button.edit' => [
                 'en' => 'Edit', 
                 'bn' => 'সম্পাদনা', 
                 'hi' => 'संपादित करें', 
@@ -178,7 +178,7 @@ class LanguageSeeder extends Seeder
                 'es' => 'Editar', 
                 'fr' => 'Modifier'
             ],
-            'common.delete' => [
+            'common.button.delete' => [
                 'en' => 'Delete', 
                 'bn' => 'মুছে ফেলুন', 
                 'hi' => 'हटाएं', 
@@ -186,13 +186,45 @@ class LanguageSeeder extends Seeder
                 'es' => 'Eliminar', 
                 'fr' => 'Supprimer'
             ],
-            'common.create' => [
+            'common.button.create' => [
                 'en' => 'Create', 
                 'bn' => 'তৈরি করুন', 
                 'hi' => 'बनाएं', 
                 'ar' => 'إنشاء',
                 'es' => 'Crear', 
                 'fr' => 'Créer'
+            ],
+            'common.button.back' => [
+                'en' => 'Back', 
+                'bn' => 'পূর্ববর্তী', 
+                'hi' => 'पीछे', 
+                'ar' => 'العودة', 
+                'es' => 'Atrás', 
+                'fr' => 'Retour'
+            ],
+            'common.button.sign_in' => [
+                'en' => 'Sign In', 
+                'bn' => 'সাইন ইন', 
+                'hi' => 'साइन इन', 
+                'ar' => 'تسجيل الدخول', 
+                'es' => 'Iniciar sesión', 
+                'fr' => 'Connexion'
+            ],
+            'common.button.sign_up' => [
+                'en' => 'Sign Up', 
+                'bn' => 'সাইন আপ', 
+                'hi' => 'साइन अप', 
+                'ar' => 'تسجيل حساب', 
+                'es' => 'Registrarse', 
+                'fr' => 'Inscription'
+            ],
+            'common.button.backToHome' => [
+                'en' => 'Back to Home', 
+                'bn' => 'হোম পেইজ', 
+                'hi' => 'होम पेज', 
+                'ar' => 'الصفحة الرئيسية', 
+                'es' => 'Volver al inicio', 
+                'fr' => 'Retour à la maison'
             ],
             'common.name' => [
                 'en' => 'Name', 
@@ -249,6 +281,142 @@ class LanguageSeeder extends Seeder
                 'ar' => 'تاريخ الإنشاء', 
                 'es' => 'Creado el', 
                 'fr' => 'Créé le'
+            ],
+            'navbar.home' => [
+                'en' => 'Home', 
+                'bn' => 'হোম', 
+                'hi' => 'होम', 
+                'ar' => 'الصفحة الرئيسية', 
+                'es' => 'Inicio', 
+                'fr' => 'Accueil'
+            ],
+            'navbar.features' => [
+                'en' => 'Features', 
+                'bn' => 'ফিচার', 
+                'hi' => 'विशेषताएं', 
+                'ar' => 'الميزات', 
+                'es' => 'Características', 
+                'fr' => 'Fonctionnalités'
+            ],
+            'navbar.tech_stack' => [
+                'en' => 'Tech Stack', 
+                'bn' => 'টেক স্ট্যাক', 
+                'hi' => 'टेक स्टैक', 
+                'ar' => 'مجموعة التقنيات', 
+                'es' => 'Pila tecnológica', 
+                'fr' => 'Pile technologique'
+            ],
+            'button.view_docs' => [
+                'en' => 'View Documentation', 
+                'bn' => 'ডকুমেন্টেশন দেখুন', 
+                'hi' => 'डॉक्यूमेंटेशन देखें', 
+                'ar' => 'عرض الوثائق', 
+                'es' => 'Ver documentación', 
+                'fr' => 'Voir la documentation'
+            ],
+            'button.view_github' => [
+                'en' => 'View on GitHub', 
+                'bn' => 'GitHub এ দেখুন', 
+                'hi' => 'GitHub पर देखें', 
+                'ar' => 'اظهار على GitHub', 
+                'es' => 'Ver en GitHub', 
+                'fr' => 'Voir sur GitHub'
+            ],
+            'button.sign_in' => [
+                'en' => 'Sign In', 
+                'bn' => 'সাইন ইন', 
+                'hi' => 'साइन इन', 
+                'ar' => 'تسجيل الدخول', 
+                'es' => 'Iniciar sesión', 
+                'fr' => 'Connexion'
+            ],
+            'user.registration.form.title' => [
+                'en' => 'Create an Account', 
+                'bn' => 'একটি অ্যাকাউন্ট তৈরি করুন', 
+                'hi' => 'एक खाता बनाएं', 
+                'ar' => 'إنشاء حساب', 
+                'es' => 'Crear una cuenta', 
+                'fr' => 'Créer un compte'
+            ],
+            'user.registration.form.subtitle' => [
+                'en' => 'Already have an account?', 
+                'bn' => 'একটি অ্যাকাউন্ট আছে?', 
+                'hi' => 'क्या आपको एक खाता है?', 
+                'ar' => 'هل لديك حساب؟', 
+                'es' => '¿Ya tienes una cuenta?', 
+                'fr' => 'Avez-vous un compte?'
+            ],
+            'user.registration.form.slogan' => [
+                'en' => 'Join the community', 
+                'bn' => 'সমাজে যুক্ত হও', 
+                'hi' => 'समाज में युक्त हो', 
+                'ar' => 'انضم للمجتمع', 
+                'es' => 'Unirse a la comunidad', 
+                'fr' => 'Joindre la communauté'
+            ],
+            'user.registration.form.name' => [
+                'en' => 'Full Name', 
+                'bn' => 'পূর্ণ নাম', 
+                'hi' => 'पूरा नाम', 
+                'ar' => 'الاسم الكامل', 
+                'es' => 'Nombre completo', 
+                'fr' => 'Nom complet'
+            ],
+            'user.registration.form.email' => [
+                'en' => 'Email Address', 
+                'bn' => 'ইমেল ঠিকানা', 
+                'hi' => 'ईमेल पता', 
+                'ar' => 'عنوان البريد الالكتروني', 
+                'es' => 'Dirección de correo electrónica', 
+                'fr' => 'Adresse email'
+            ],
+            'user.registration.form.password' => [
+                'en' => 'Password', 
+                'bn' => 'পাসওয়ার্ড', 
+                'hi' => 'पासवर्ड', 
+                'ar' => 'كلمة المرور', 
+                'es' => 'Contraseña', 
+                'fr' => 'Mot de passe'
+            ],
+            'user.registration.form.password_confirmation' => [
+                'en' => 'Confirm Password', 
+                'bn' => 'পাসওয়ার্ড নিশ্চিত করুন', 
+                'hi' => 'पासवर्ड की पुष्टि करें', 
+                'ar' => 'تأكيد كلمة المرور', 
+                'es' => 'Confirmar contrasena', 
+                'fr' => 'Confirmer le mot de passe'
+            ],
+            'user.registration.form.phone' => [
+                'en' => 'Phone Number', 
+                'bn' => 'ফোন নম্বর', 
+                'hi' => 'फोन नंबर', 
+                'ar' => 'رقم الهاتف', 
+                'es' => 'Número de teléfono', 
+                'fr' => 'Numéro de tелефone'
+            ],
+            'user.registration.form.country_code' => [
+                'en' => 'Country Code', 
+                'bn' => 'দেশের কোড', 
+                'hi' => 'देश कोड', 
+                'ar' => 'كود البلد', 
+                'es' => 'Código de país', 
+                'fr' => 'Code pays'
+            ],
+            'user.registration.form.agreement' => [
+                'en' => 'I agree to the terms and conditions', 
+                'bn' => 'আমি নিয়োগ করি নিবন্ধনের শর্তাবলী', 
+                'hi' => 'मैं सर्तों और शर्तों में सहमत हूं', 
+                'ar' => 'اوافق على الشروط والاحكام', 
+                'es' => 'Estoy de acuerdo con los términos y condiciones', 
+                'fr' => 'Je suis d’accord avec les conditions et les obligations'
+            ],
+            'user.login.form.emailOrPhone' => [
+                'en' => 'Email or Phone', 
+                'bn' => 'ইমেল অথবা ফোন', 
+                'hi' => 'ईमेल या फोन', 
+                'ar' => 'البريد الالكتروني او رقم الهاتف', 
+                'es' => 'Correo electrónica o teléfono', 
+                'fr' => 'Email ou tелефone'
             ],
             'users.title' => [
                 'en' => 'Users Management', 

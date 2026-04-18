@@ -29,13 +29,13 @@
                     class="bg-white dark:bg-gray-800 py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-gray-200 dark:border-gray-700">
                     <div class="text-center">
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
-                            Sign in
+                            {{ t('button.sign_in') }}
                         </h2>
                         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
                             Or
                             <NuxtLink to="/auth/register"
                                 class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200">
-                                create a new account
+                                {{ t('user.registration.form.title') }}
                             </NuxtLink>
                         </p>
                     </div>
@@ -46,7 +46,7 @@
                             <div>
                                 <label for="identifier"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Email or Phone Number
+                                    {{ t('user.login.form.emailOrPhone') }}
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -60,7 +60,7 @@
                                         @input="handleIdentifierInput" @blur="handleIdentifierBlur" />
                                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                         <span class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ isEmail ? 'Email' : 'Phone' }}
+                                            {{ isEmail ? t('common.email') : t('common.phone') }}
                                         </span>
                                     </div>
                                 </div>
@@ -74,7 +74,7 @@
                             <div>
                                 <label for="password"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Password
+                                    {{ t('user.registration.form.password') }}
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -108,7 +108,7 @@
                                     <UIIconsSpinner class="animate-spin h-5 w-5 text-white" />
                                 </span>
                                 <span class="relative">
-                                    {{ loading ? 'Signing in...' : 'Sign in' }}
+                                    {{ loading ? 'Signing in...' : t('button.sign_in') }}
                                 </span>
                                 <UIIconsArrowRight class="bg-transparent" />
                             </button>
@@ -157,6 +157,7 @@ definePageMeta({ middleware: ["guest"], layout: "guest" });
 import { useAuth } from '~/composables/auth/useAuth'
 import { notification } from '~/utils/notification'
 
+const { t } = useLocalization();
 const auth = useAuth()
 const router = useRouter()
 

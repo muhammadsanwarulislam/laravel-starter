@@ -39,7 +39,7 @@
               <template #icon>
                 <UIIconsPlus class="h-4 w-4" />
               </template>
-              {{ t('common.save') }}
+              {{ t('common.button.save') }}
             </UIButton>
           </div>
         </div>
@@ -64,11 +64,11 @@
                       class="w-full px-2 py-1 border border-gray-300 rounded focus:ring-blue-500 focus:border-blue-500" />
                     <div class="flex gap-2">
                       <UIButton variant="secondary" size="xs" outlined @click="cancelEdit" class="hover:shadow-md">
-                        {{ t('common.cancel') }}
+                        {{ t('common.button.cancel') }}
                       </UIButton>
                       <UIButton variant="primary" size="xs" :disabled="isSaving" @click="saveTranslation(key)"
                         class="hover:shadow-md">
-                        {{ isSaving ? 'Saving...' : t('common.save') }}
+                        {{ isSaving ? 'Saving...' : t('common.button.save') }}
                       </UIButton>
                     </div>
                     <div v-if="editError" class="text-red-600 text-xs">{{ editError }}</div>
@@ -78,11 +78,11 @@
                     <div class="flex gap-2">
                       <UIButton variant="secondary" size="xs" outlined @click="startEdit(key, value)" class="hover:shadow-md">
                         <template #icon><UIIconsPencil class="h-4 w-4" /></template>
-                        {{ t('common.edit') }}
+                        {{ t('common.button.edit') }}
                       </UIButton>
                       <UIButton variant="danger" size="xs" outlined @click="deleteTranslation(key)" class="hover:shadow-md">
                         <template #icon><UIIconsTrash class="h-4 w-4" /></template>
-                        {{ t('common.delete') }}
+                        {{ t('common.button.delete') }}
                       </UIButton>
                     </div>
                   </div>

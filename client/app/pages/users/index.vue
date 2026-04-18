@@ -6,7 +6,7 @@
           <template #icon>
             <UIIconsPlus class="h-5 w-5" />
           </template>
-          {{ t('common.create') }}
+          {{ t('common.button.create') }}
         </UIButton>
       </template>
     </SharedPageHeader>
@@ -43,7 +43,7 @@
           <template #icon>
             <UIIconsPencil class="h-4 w-4" />
           </template>
-          {{ t('common.edit') }}
+          {{ t('common.button.edit') }}
         </UIButton>
 
         <UIButton variant="danger" size="xs" outlined @click="openDeleteModal(item.id)" title="Delete User"
@@ -51,13 +51,13 @@
           <template #icon>
             <UIIconsTrash class="h-4 w-4" />
           </template>
-          {{ t('common.delete') }}
+          {{ t('common.button.delete') }}
         </UIButton>
       </template>
     </GenericTable>
 
     <!-- Delete Confirmation Modal -->
-    <ModalConfirmationDialog v-if="showDeleteModal" :title="t('common.delete')" :message="deleteMessage" type="delete"
+    <ModalConfirmationDialog v-if="showDeleteModal" :title="t('common.button.delete')" :message="deleteMessage" type="delete"
       @confirm="confirmDelete" @cancel="closeDeleteModal" />
   </div>
 </template>

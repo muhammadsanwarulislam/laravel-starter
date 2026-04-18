@@ -25,13 +25,13 @@
         <div class="flex items-center space-x-3">
           <NuxtLink to="/auth/login"
             class="relative px-4 py-2 text-indigo-600 dark:text-indigo-400 font-medium rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-800 transition-all duration-200 group">
-            Sign In
+            {{ t('common.button.sign_in') }}
             <span
               class="absolute inset-0 rounded-lg bg-indigo-600/0 group-hover:bg-indigo-600/5 transition-all duration-200"></span>
           </NuxtLink>
           <NuxtLink to="/auth/register"
             class="relative px-6 py-2 bg-linear-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 group overflow-hidden">
-            <span class="relative z-10">Get Started</span>
+            <span class="relative z-10">{{ t('hero.get_started') }}</span>
             <span
               class="absolute inset-0 bg-linear-to-r from-indigo-600 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
           </NuxtLink>
@@ -57,13 +57,13 @@
           <div class="flex items-center px-4">
             <NuxtLink to="/auth/login"
               class="w-full block px-4 py-2 text-center text-indigo-600 dark:text-indigo-400 font-medium rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-800 transition-all duration-200">
-              Sign In
+              {{ t('common.button.sign_in') }}
             </NuxtLink>
           </div>
           <div class="mt-3 flex items-center px-4">
             <NuxtLink to="/auth/register"
               class="w-full block px-4 py-2 text-center bg-linear-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
-              Get Started
+              {{ t('hero.get_started') }}
             </NuxtLink>
           </div>
         </div>
@@ -78,10 +78,11 @@ import { useNavigation } from '~/composables/useNavigation';
 
 const { scrollToSection } = useNavigation();
 const mobileMenuOpen = ref(false);
+const { t } = useLocalization();
 
 const navLinks = [
-  { name: 'Home', href: '#', target: 'hero' },
-  { name: 'Features', href: '#features', target: 'features' },
-  { name: 'Tech Stack', href: '#tech-stack', target: 'tech-stack' },
+  { name: t('navbar.home'), href: '#hero', target: 'hero' },
+  { name: t('navbar.features'), href: '#features', target: 'features' },
+  { name: t('navbar.tech_stack'), href: '#tech-stack', target: 'tech-stack' },
 ];
 </script>
