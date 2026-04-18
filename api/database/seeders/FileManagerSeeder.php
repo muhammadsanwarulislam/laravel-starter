@@ -13,7 +13,6 @@ class FileManagerSeeder extends Seeder
 {
     public function run(): void
     {
-        // Clear existing data
         FileManager::query()->delete();
 
         $users = User::all();
