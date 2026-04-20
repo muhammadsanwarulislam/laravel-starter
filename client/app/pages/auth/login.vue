@@ -236,16 +236,13 @@ const handleSubmit = async () => {
         const credentials: any = {
             password: form.password
         }
-
         if (isEmail.value) {
             credentials.email = form.identifier.trim()
         } else {
             const phoneNumber = auth.cleanPhone(form.identifier)
-
             if (!phoneNumber.startsWith('01') || phoneNumber.length !== 11) {
                 throw new Error('Invalid phone number format. Please use format: 01XXXXXXXXX')
             }
-
             credentials.phone = phoneNumber
         }
 
@@ -253,13 +250,12 @@ const handleSubmit = async () => {
 
         if (result.success && result.otpRequired) {
             showOTPModal.value = true
-            notification.info('Please check your email/phone for OTP code')
+            notification.success(t('auth.otp_sent'))
         } else if (result.success) {
-            notification.success('Login successful!')
+            notification.success(t('auth.login.success'))
             router.push('/dashboard')
         } else {
-            error.value = result.message || 'Login failed'
-            notification.error(error.value)
+            notification.error(t('auth.login.failed'))
         }
     } catch (err: any) {
         error.value = err.message || 'An error occurred'
@@ -272,10 +268,10 @@ const handleSubmit = async () => {
 const onOTPVerified = async (result: any) => {
     if (result.success) {
         showOTPModal.value = false
-        notification.success('OTP verified successfully!')
+        notification.success(t('auth.otp_verified'))
         await router.push('/dashboard')
     } else {
-        notification.error(result.message || 'OTP verification failed')
+        notification.error(t('auth.otp_verification_failed'))
     }
 }
 

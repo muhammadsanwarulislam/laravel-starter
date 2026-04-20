@@ -1,12 +1,24 @@
 {
     "auth.login.success": "تسجيل الدخول ناجح",
     "auth.login.error": "بيانات الاعتماد غير صالحة",
+    "auth.login.failed": "فشل تسجيل الدخول",
     "auth.register.success": "التسجيل ناجح",
     "auth.logout.success": "تسجيل الخروج ناجح",
+    "auth.logout.failed": "فشل تسجيل الخروج",
+    "auth.otp_sent": "تم ارسال الكود",
+    "auth.otp_verified": "تم التحقق من الكود بنجاح",
+    "auth.otp_resend": "تم ارسال الكود مرة اخرى",
+    "auth.otp_resend_success": "تم ارسال الكود مرة اخرى بنجاح",
+    "auth.otp_verification_failed": "فشل الكود",
+
     "common.welcome": "مرحبا",
     "common.dashboard": "لوحة القيادة",
     "common.profile": "الملف الشخصي",
     "common.settings": "الإعدادات",
+    "common.users": "المستخدمين",
+    "common.permissions": "الصلاحيات",
+    "common.localizations": "الترجمات",
+    "common.modules": "الموديلات",
     "common.button.save": "حفظ",
     "common.button.cancel": "إلغاء",
     "common.button.edit": "تعديل",
@@ -16,6 +28,8 @@
     "common.button.sign_in": "تسجيل الدخول",
     "common.button.sign_up": "تسجيل حساب",
     "common.button.backToHome": "الصفحة الرئيسية",
+    "common.button.logout": "تسجيل الخروج",
+    "common.button.profile": "الملف الشخصي",
     "common.name": "اسم",
     "common.email": "البريد الإلكتروني",
     "common.phone": "هاتف",
@@ -23,12 +37,18 @@
     "common.status": "الحالة",
     "common.actions": "العمليات",
     "common.created_at": "تاريخ الإنشاء",
+
+
     "navbar.home": "الصفحة الرئيسية",
     "navbar.features": "الميزات",
     "navbar.tech_stack": "مجموعة التقنيات",
+
+
     "button.view_docs": "عرض الوثائق",
     "button.view_github": "اظهار على GitHub",
     "button.sign_in": "تسجيل الدخول",
+
+
     "user.registration.form.title": "إنشاء حساب",
     "user.registration.form.subtitle": "هل لديك حساب؟",
     "user.registration.form.slogan": "انضم للمجتمع",
@@ -42,10 +62,16 @@
     "user.login.form.emailOrPhone": "البريد الالكتروني او رقم الهاتف",
     "users.title": "إدارة المستخدمين",
     "users.description": "إدارة مستخدمي النظام",
+
+
     "roles.title": "إدارة الأدوار",
     "roles.description": "إدارة الصلاحيات للنظام",
+
+
     "permissions.title": "إدارة الصلاحيات",
     "permissions.description": "إدارة الصلاحيات للنظام",
+
+
     "hero.tagline": "🚀 مجموعة البدء الكاملة للمطورين",
     "hero.title.part1": "إنشاء",
     "hero.title.part2": "Nuxt.js و Laravel",
@@ -53,6 +79,8 @@
     "hero.get_started": "ابدأ الآن",
     "hero.view_demo": "عرض العرض التجريبي",
     "hero.production_ready": "جاهز للإنتاج",
+
+
     "features.tagline": "✨ الميزات الرئيسية",
     "features.title.part1": "كل ما تحتاجه",
     "features.title.part2": "بناء تطبيقات حديثة",
@@ -69,6 +97,8 @@
     "feature.best_practices.description": "اتبع أفضل الممارسات الصناعية لمعايير الترميز والأمان والأداء.",
     "feature.seeding.title": "تعبئة المحتوى الديناميكي",
     "feature.seeding.description": "سيدرز مهيأة مسبقًا للمحتوى الديناميكي لملء تطبيقك بسرعة ببيانات الاختبار.",
+
+
     "tech.tagline": "💻 مجموعة التقنيات الحديثة",
     "tech.title.part1": "بُنيت مع",
     "tech.title.part2": "أحدث التقنيات",
@@ -85,6 +115,8 @@
     "tech.nuxt.feature2": "تصنيع الخادم (SSR)",
     "tech.nuxt.feature3": "الدولية (i18n)",
     "tech.nuxt.feature4": "هندسة تعتمد على الأحداث",
+
+
     "validation.required": "هذا الحقل مطلوب",
     "validation.email": "الرجاء إدخال عنوان بريد إلكتروني صالح",
     "validation.min": "الحد الأدنى :min حرف مطلوب",

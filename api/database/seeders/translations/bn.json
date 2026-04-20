@@ -1,13 +1,46 @@
 {
     "auth.login.success": "লগইন সফল",
     "auth.login.error": "ভুল তথ্য",
+    "auth.login.failed": "লগইন failed হয়েছে",
     "auth.register.success": "নিবন্ধন সফল",
     "auth.logout.success": "লগআউট সফল",
+    "auth.logout.failed": "লগআউট failed হয়েছে",
+    "auth.otp_sent": "ওটি পাঠানো হয়েছে",
+    "auth.otp_verified": "ওটি verified করা হয়েছে",
+    "auth.otp_resend": "ওটি পুনরায় পাঠানো হয়েছে",
+    "auth.otp_resend_success": "ওটি পুনরায় পাঠানো হয়েছে",
+    "auth.otp_verification_failed": "ওটি ভুল হয়েছে",
+
+    "validation.required": "এই ক্ষেত্রটি প্রয়োজন",
+    "validation.email": "সঠিক ইমেইল দিন",
+    "validation.min": "ন্যূনতম :min অক্ষর প্রয়োজন",
+
+    "success.created": "সফলভাবে তৈরি হয়েছে",
+
+    "error.not_found": "রিসোর্স পাওয়া যায়নি",
+    "error.unauthorized": "অননুমোদিত অ্যাক্সেস",
+    "error.server": "সার্ভার ত্রুটি ঘটেছে",
     
     "common.welcome": "স্বাগতম",
     "common.dashboard": "ড্যাশবোর্ড",
     "common.profile": "প্রোফাইল",
+    "common.users": "ব্যবহারকারীরা",
+    "common.permissions": "পারমিশন",
+    "common.localizations": "লোকালিজেশন",
+    "common.modules": "মডিউল",
+    "common.ecommerce": "ইকমার্স",
     "common.settings": "সেটিংস",
+    "common.name": "নাম",
+    "common.email": "ইমেইল",
+    "common.phone": "ফোন",
+    "common.roles": "রোল",
+    "common.password": "পাসওয়ার্ড",
+    "common.password_confirmation": "পাসওয়ার্ড নিশ্চিত করুন",
+    "common.status": "অবস্থা",
+    "common.actions": "কার্যক্রম",
+    "common.created_at": "তৈরি হয়েছে",
+
+
     "common.button.save": "সংরক্ষণ",
     "common.button.cancel": "বাতিল",
     "common.button.edit": "সম্পাদনা",
@@ -17,19 +50,20 @@
     "common.button.sign_in": "সাইন ইন",
     "common.button.sign_up": "সাইন আপ",
     "common.button.backToHome": "হোম পেইজ",
-    "common.name": "নাম",
-    "common.email": "ইমেইল",
-    "common.phone": "ফোন",
-    "common.roles": "ভূমিকা",
-    "common.status": "অবস্থা",
-    "common.actions": "কার্যক্রম",
-    "common.created_at": "তৈরি হয়েছে",
+    "common.button.logout": "লগআউট",
+    "common.button.profile": "প্রোফাইল",
+
+
     "navbar.home": "হোম",
     "navbar.features": "ফিচার",
     "navbar.tech_stack": "টেক স্ট্যাক",
+
+
     "button.view_docs": "ডকুমেন্টেশন দেখুন",
     "button.view_github": "GitHub এ দেখুন",
     "button.sign_in": "সাইন ইন",
+
+
     "user.registration.form.title": "একটি অ্যাকাউন্ট তৈরি করুন",
     "user.registration.form.subtitle": "একটি অ্যাকাউন্ট আছে?",
     "user.registration.form.slogan": "সমাজে যুক্ত হও",
@@ -41,12 +75,19 @@
     "user.registration.form.country_code": "দেশের কোড",
     "user.registration.form.agreement": "আমি নিয়োগ করি নিবন্ধনের শর্তাবলী",
     "user.login.form.emailOrPhone": "ইমেল অথবা ফোন",
+
+
     "users.title": "ব্যবহারকারী পরিচালনা",
     "users.description": "সিস্টেম ব্যবহারকারী পরিচালনা",
+
     "roles.title": "ভূমিকা পরিচালনা",
     "roles.description": "সিস্টেমের সমস্ত ভূমিকা পরিচালনা এবং পর্যবেক্ষণ করুন",
+
+
     "permissions.title": "অনুমতি পরিচালনা",
     "permissions.description": "সিস্টেমের সমস্ত অনুমতি পরিচালনা এবং পর্যবেক্ষণ করুন",
+
+
     "hero.tagline": "🚀 আধুনিক ফুল-স্ট্যাক স্টার্টার কিট",
     "hero.title.part1": "তৈরি করুন",
     "hero.title.part2": "Nuxt.js ও Laravel দিয়ে",
@@ -54,6 +95,8 @@
     "hero.get_started": "শুরু করুন",
     "hero.view_demo": "ডেমো দেখুন",
     "hero.production_ready": "প্রোডাকশন রেডি",
+
+
     "features.tagline": "✨ মূল ফিচারসমূহ",
     "features.title.part1": "আপনার যা যা প্রয়োজন",
     "features.title.part2": "আধুনিক অ্যাপ তৈরিতে",
@@ -70,6 +113,7 @@
     "feature.best_practices.description": "কোডিং স্ট্যান্ডার্ড, নিরাপত্তা এবং কর্মক্ষমতার জন্য শিল্পের সেরা অনুশীলন অনুসরণ করুন।",
     "feature.seeding.title": "ডাইনামিক কন্টেন্ট সিডিং",
     "feature.seeding.description": "টেস্ট ডেটা দিয়ে দ্রুত অ্যাপ পূরণ করার জন্য প্রি-কনফিগার্ড সিডার।",
+
     "tech.tagline": "💻 আধুনিক টেক স্ট্যাক",
     "tech.title.part1": "তৈরি হয়েছে",
     "tech.title.part2": "সর্বশেষ প্রযুক্তিতে",
@@ -85,12 +129,5 @@
     "tech.nuxt.feature1": "Vue 3 Composition API",
     "tech.nuxt.feature2": "সার্ভার-সাইড রেন্ডারিং (SSR)",
     "tech.nuxt.feature3": "আন্তর্জাতিকীকরণ (i18n)",
-    "tech.nuxt.feature4": "কম্পোনেন্ট-ভিত্তিক আর্কিটেকচার",
-    "validation.required": "এই ক্ষেত্রটি প্রয়োজন",
-    "validation.email": "সঠিক ইমেইল দিন",
-    "validation.min": "ন্যূনতম :min অক্ষর প্রয়োজন",
-    "success.created": "সফলভাবে তৈরি হয়েছে",
-    "error.not_found": "রিসোর্স পাওয়া যায়নি",
-    "error.unauthorized": "অননুমোদিত অ্যাক্সেস",
-    "error.server": "সার্ভার ত্রুটি ঘটেছে"
+    "tech.nuxt.feature4": "কম্পোনেন্ট-ভিত্তিক আর্কিটেকচার"
 }

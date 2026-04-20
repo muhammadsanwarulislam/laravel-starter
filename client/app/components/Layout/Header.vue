@@ -38,12 +38,7 @@
               <p class="text-sm font-medium text-gray-800 dark:text-white">{{ userName }}</p>
               <p class="text-xs text-gray-500 dark:text-gray-400">{{ userRole }}</p>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20"
-              fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clip-rule="evenodd" />
-            </svg>
+            <UIIconsChevronDown class="h-5 w-5 text-gray-600 dark:text-gray-300" />
           </button>
 
           <!-- User dropdown menu -->
@@ -56,22 +51,14 @@
             <div class="py-2">
               <NuxtLink to="/auth/profile"
                 class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                My Profile
+                <UIIconsProfile class="mr-3 h-5 w-5 text-gray-700 dark:text-gray-200" />
+                {{ t('common.button.profile') }}
               </NuxtLink>
               <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
               <button @click="handleLogout"
                 class="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24"
-                  stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                Logout
+                <UIIconsLogout class="mr-3 h-5 w-5 text-red-600 dark:text-red-400" />
+                {{ t('common.button.logout') }}
               </button>
             </div>
           </div>
@@ -91,6 +78,7 @@ const emit = defineEmits(['toggleSidebar'])
 const auth = useAuth()
 const router = useRouter()
 const showUserMenu = ref(false)
+const { t } = useLocalization()
 
 const user = computed(() => auth.user.value)
 const userName = computed(() => user.value?.name || 'User')
@@ -114,10 +102,10 @@ const toggleUserMenu = () => {
 const handleLogout = async () => {
   const result = await auth.logout()
   if (result.success) {
-    notification.success('Logged out successfully')
+    notification.success(t('auth.logout.success'))
     router.push('/')
   } else {
-    notification.error(result.message || 'Logout failed')
+    notification.error(t('auth.logout.failed'))
   }
 }
 

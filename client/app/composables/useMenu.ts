@@ -20,7 +20,7 @@ export const useMenu = () => {
         items: [
           {
             id: 'dashboard',
-            title: 'Dashboard',
+            title: 'common.dashboard',
             icon: 'Dashboard',
             to: '/dashboard',
             permissions: [], 
@@ -35,7 +35,7 @@ export const useMenu = () => {
         items: [
           {
             id: 'users',
-            title: 'Users',
+            title: 'common.users',
             icon: 'Users',
             to: '/users',
             permissions: [
@@ -48,7 +48,7 @@ export const useMenu = () => {
           },
           {
             id: 'roles',
-            title: 'Roles',
+            title: 'common.roles',
             icon: 'RolePermissions',
             to: '/roles',
             permissions: [
@@ -60,7 +60,7 @@ export const useMenu = () => {
           },
           {
             id: 'permissions',
-            title: 'Permissions',
+            title: 'common.permissions',
             icon: 'RolePermissions',
             to: '/permissions',
             permissions: [
@@ -71,7 +71,7 @@ export const useMenu = () => {
           },
           {
             id: 'localization',
-            title: 'Localization',
+            title: 'common.localizations',
             icon: 'Localization',
             to: '/localization',
             permissions: [
@@ -89,7 +89,7 @@ export const useMenu = () => {
         items: [
           {
             id: 'profile',
-            title: 'My Profile',
+            title: 'common.profile',
             icon: 'Profile',
             to: '/auth/profile',
             permissions: ['view-profile', 'edit-profile'],

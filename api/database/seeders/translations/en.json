@@ -1,12 +1,35 @@
 {
     "auth.login.success": "Login successful",
     "auth.login.error": "Invalid credentials",
+    "auth.login.failed": "Login failed",
+    "auth.logout.failed": "Logout failed",
     "auth.register.success": "Registration successful",
     "auth.logout.success": "Logout successful",
+    "auth.otp_sent": "OTP sent",
+    "auth.otp_verified": "OTP verified successfully",
+    "auth.otp_resend": "OTP resent",
+    "auth.otp_resend_success": "OTP resent successfully",
+    "auth.otp_verification_failed": "OTP failed",
+
+    "validation.required": "This field is required",
+    "validation.email": "Please enter a valid email address",
+    "validation.min": "Minimum :min characters required",
+
+    "success.created": "Created successfully",
+
+    "error.not_found": "Resource not found",
+    "error.unauthorized": "Unauthorized access",
+    "error.server": "Server error occurred",
+
     "common.welcome": "Welcome",
     "common.dashboard": "Dashboard",
     "common.profile": "Profile",
     "common.settings": "Settings",
+    "common.users": "Users",
+    "common.permissions": "Permissions",
+    "common.localizations": "Localizations",
+    "common.modules": "Modules",
+    "common.ecommerce": "Ecommerce",
     "common.button.save": "Save",
     "common.button.cancel": "Cancel",
     "common.button.edit": "Edit",
@@ -16,6 +39,8 @@
     "common.button.sign_in": "Sign In",
     "common.button.sign_up": "Sign Up",
     "common.button.backToHome": "Back to Home",
+    "common.button.logout": "Logout",
+    "common.button.profile": "Profile",
     "common.name": "Name",
     "common.email": "Email",
     "common.phone": "Phone",
@@ -23,12 +48,16 @@
     "common.status": "Status",
     "common.actions": "Actions",
     "common.created_at": "Created At",
+
     "navbar.home": "Home",
     "navbar.features": "Features",
     "navbar.tech_stack": "Tech Stack",
+
     "button.view_docs": "View Documentation",
     "button.view_github": "View on GitHub",
     "button.sign_in": "Sign In",
+
+
     "user.registration.form.title": "Create an Account",
     "user.registration.form.subtitle": "Already have an account?",
     "user.registration.form.slogan": "Join the community",
@@ -42,10 +71,16 @@
     "user.login.form.emailOrPhone": "Email or Phone",
     "users.title": "Users Management",
     "users.description": "Manage system users",
+
+
     "roles.title": "Roles Management",
     "roles.description": "Manage and monitor all system roles",
+
+
     "permissions.title": "Permissions Management",
     "permissions.description": "Manage and monitor all system permissions",
+
+
     "hero.tagline": "🚀 Modern Full-Stack Starter Kit",
     "hero.title.part1": "Build with",
     "hero.title.part2": "Nuxt.js & Laravel",
@@ -69,6 +104,8 @@
     "feature.best_practices.description": "Follow industry best practices for coding standards, security, and performance.",
     "feature.seeding.title": "Dynamic Content Seeding",
     "feature.seeding.description": "Pre-configured seeders for dynamic content to quickly populate your application with test data.",
+
+
     "tech.tagline": "💻 Modern Tech Stack",
     "tech.title.part1": "Built with",
     "tech.title.part2": "Latest Technologies",
@@ -84,12 +121,5 @@
     "tech.nuxt.feature1": "Vue 3 Composition API",
     "tech.nuxt.feature2": "Server-side rendering (SSR)",
     "tech.nuxt.feature3": "Internationalization (i18n)",
-    "tech.nuxt.feature4": "Component-based architecture",
-    "validation.required": "This field is required",
-    "validation.email": "Please enter a valid email address",
-    "validation.min": "Minimum :min characters required",
-    "success.created": "Created successfully",
-    "error.not_found": "Resource not found",
-    "error.unauthorized": "Unauthorized access",
-    "error.server": "Server error occurred"
+    "tech.nuxt.feature4": "Component-based architecture"
 }

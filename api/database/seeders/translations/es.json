@@ -1,12 +1,25 @@
 {
     "auth.login.success": "Inicio de sesión exitoso",
     "auth.login.error": "Credenciales inválidas",
+    "auth.login.failed": "Inicio de sesión fallido",
     "auth.register.success": "Registro exitoso",
     "auth.logout.success": "Cierre de sesión exitoso",
+    "auth.logout.failed": "Cierre de sesión fallido",
+    "auth.otp_sent": "Código enviado",
+    "auth.otp_verified": "Verificación de OTP exitosa",
+    "auth.otp_resend": "Código reenviado",
+    "auth.otp_resend_success": "Código reenviado exitosamente",
+    "auth.otp_verification_failed": "Código fallido",
+
     "common.welcome": "Bienvenido",
     "common.dashboard": "Tablero",
     "common.profile": "Perfil",
     "common.settings": "Configuración",
+    "common.users": "Usuarios",
+    "common.permissions": "Permisos",
+    "common.localizations": "Localizaciones",
+    "common.modules": "Módulos",
+    "common.ecommerce": "E-commerce",
     "common.button.save": "Guardar",
     "common.button.cancel": "Cancelar",
     "common.button.edit": "Editar",
@@ -16,6 +29,8 @@
     "common.button.sign_in": "Iniciar sesión",
     "common.button.sign_up": "Registrarse",
     "common.button.backToHome": "Volver al inicio",
+    "common.button.logout": "Cerrar sesión",
+    "common.button.profile": "Perfil",
     "common.name": "Nombre",
     "common.email": "Correo electrónico",
     "common.phone": "Teléfono",
@@ -23,12 +38,18 @@
     "common.status": "Estado",
     "common.actions": "Acciones",
     "common.created_at": "Creado el",
+
+
     "navbar.home": "Inicio",
     "navbar.features": "Características",
     "navbar.tech_stack": "Pila tecnológica",
+
+
     "button.view_docs": "Ver documentación",
     "button.view_github": "Ver en GitHub",
     "button.sign_in": "Iniciar sesión",
+
+
     "user.registration.form.title": "Crear una cuenta",
     "user.registration.form.subtitle": "¿Ya tienes una cuenta?",
     "user.registration.form.slogan": "Unirse a la comunidad",
@@ -42,10 +63,16 @@
     "user.login.form.emailOrPhone": "Correo electrónica o teléfono",
     "users.title": "Gestión de usuarios",
     "users.description": "Gestionar usuarios del sistema",
+
+
     "roles.title": "Gestión de roles",
     "roles.description": "Gestionar roles del sistema",
+
+    
     "permissions.title": "Gestión de permisos",
     "permissions.description": "Gestionar permisos del sistema",
+
+
     "hero.tagline": "🚀 Kit de inicio completo para desarrolladores",
     "hero.title.part1": "Crear",
     "hero.title.part2": "Nuxt.js y Laravel",
@@ -85,6 +112,8 @@
     "tech.nuxt.feature2": "Renderizado del lado del servidor (SSR)",
     "tech.nuxt.feature3": "Internacionalización (i18n)",
     "tech.nuxt.feature4": "Arquitectura basada en componentes",
+
+
     "validation.required": "Este campo es obligatorio",
     "validation.email": "Por favor ingrese un correo electrónico válido",
     "validation.min": "Se requieren al menos :min caracteres",

@@ -16,12 +16,10 @@
             <a v-for="link in navLinks" :key="link.name" :href="link.href" @click.prevent="scrollToSection(link.target)"
               class="relative text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-all duration-200 group cursor-pointer">
               {{ link.name }}
-              <span
-                class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 dark:bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
             </a>
           </div>
         </div>
-        
+
         <div class="flex items-center space-x-3">
           <NuxtLink to="/auth/login"
             class="relative px-4 py-2 text-indigo-600 dark:text-indigo-400 font-medium rounded-lg hover:bg-indigo-50 dark:hover:bg-gray-800 transition-all duration-200 group">
@@ -80,9 +78,9 @@ const { scrollToSection } = useNavigation();
 const mobileMenuOpen = ref(false);
 const { t } = useLocalization();
 
-const navLinks = [
+const navLinks = computed(() => [
   { name: t('navbar.home'), href: '#hero', target: 'hero' },
   { name: t('navbar.features'), href: '#features', target: 'features' },
   { name: t('navbar.tech_stack'), href: '#tech-stack', target: 'tech-stack' },
-];
+]);
 </script>
