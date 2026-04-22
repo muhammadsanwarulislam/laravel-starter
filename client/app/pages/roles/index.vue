@@ -1,12 +1,12 @@
 <template>
     <div class="p-6">
-        <SharedPageHeader title="Roles Management" description="Manage and monitor all system roles">
+        <SharedPageHeader :title="t('roles.title')" :description="t('roles.description')">
             <template #actions>
                 <UIButton variant="primary" @click="$router.push('/roles/create')">
                     <template #icon>
                         <UIIconsPlus class="h-5 w-5" />
                     </template>
-                    Add Role
+                    {{ t('common.button.create') }}
                 </UIButton>
             </template>
         </SharedPageHeader>
@@ -22,7 +22,7 @@
                     <template #icon>
                         <UIIconsPencil class="h-4 w-4" />
                     </template>
-                    Edit
+                    {{ t('common.button.edit') }}
                 </UIButton>
 
                 <UIButton variant="danger" size="xs" outlined @click="openDeleteModal(item.id)" title="Delete Role"
@@ -30,13 +30,13 @@
                     <template #icon>
                         <UIIconsTrash class="h-4 w-4" />
                     </template>
-                    Delete
+                    {{ t('common.button.delete') }}
                 </UIButton>
             </template>
         </GenericTable>
 
         <ModalConfirmationDialog v-if="showDeleteModal" title="Delete Role" :message="deleteMessage" type="delete"
-        @confirm="confirmDelete" @cancel="closeDeleteModal" />
+            @confirm="confirmDelete" @cancel="closeDeleteModal" />
     </div>
 </template>
 
@@ -49,28 +49,29 @@ import { formatDate } from "~/utils/date";
 definePageMeta({ middleware: ["auth"] });
 
 const router = useRouter();
+const { t } = useLocalization();
 const { roles, loading, pagination, fetchRoles, deleteRole } = useRolePermission();
 
 const showDeleteModal = ref(false);
 const deleteRoleId = ref<number | null>(null);
 const deleteMessage = ref(
-  "Are you sure you want to delete this role? This action cannot be undone."
+    "Are you sure you want to delete this role? This action cannot be undone."
 );
 
-const roleColumns: Column[] = [
-    { key: "id", label: "ID", sortable: true },
-    { key: "name", label: "Name", sortable: true },
-    { key: "description", label: "Description" },
-    { key: "is_system", label: "System Role" },
-    { key: "level", label: "Level" },
-    { key: "permissions", label: "Permissions" },
+const roleColumns: Column[] = computed(() => [
+    { key: "id", label: t("common.id"), sortable: true },
+    { key: "name", label: t("common.name"), sortable: true },
+    { key: "description", label: t("common.description") },
+    { key: "is_system", label: t("roles.system_roles") },
+    { key: "level", label: t("roles.level"), sortable: true },
+    { key: "permissions", label: t("common.permissions") },
     {
         key: "created_at",
-        label: "Created At",
+        label: t("common.created_at"),
         sortable: true,
         format: (val) => formatDate(val),
     },
-];
+]);
 
 const handleSort = (key: string, order: "asc" | "desc") => {
     fetchRoles({ sort_field: key, sort_order: order, page: pagination.value?.currentPage || 1 });
@@ -81,26 +82,26 @@ const handlePageChange = (page: number) => {
 };
 
 const editRole = (id: number) => {
-  router.push(`/roles/${id}/edit`);
+    router.push(`/roles/${id}/edit`);
 };
 
 const openDeleteModal = (id: number) => {
-  deleteRoleId.value = id;
-  showDeleteModal.value = true;
+    deleteRoleId.value = id;
+    showDeleteModal.value = true;
 };
 
 const closeDeleteModal = () => {
-  showDeleteModal.value = false;
-  deleteRoleId.value = null;
+    showDeleteModal.value = false;
+    deleteRoleId.value = null;
 };
 
 const confirmDelete = async () => {
-  if (deleteRoleId.value) {
-    const response = await deleteRole(deleteRoleId.value);
-    if (response.success) {
-      closeDeleteModal();
+    if (deleteRoleId.value) {
+        const response = await deleteRole(deleteRoleId.value);
+        if (response.success) {
+            closeDeleteModal();
+        }
     }
-  }
 };
 
 onMounted(() => fetchRoles());

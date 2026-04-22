@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <SharedPageHeader title="Create Permission" description="Add a new permission and assign it to the right module." />
+    <SharedPageHeader :title="t('permissions.create')" :description="t('permissions.description_for_create')" />
     <div class="mt-6">
       <PermissionsForm />
     </div>
@@ -9,4 +9,5 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: ['auth'] })
+const { t } = useLocalization()
 </script>

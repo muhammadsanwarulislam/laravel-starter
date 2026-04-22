@@ -7,7 +7,7 @@
     <!-- Main content -->
     <main class="flex-1">
       <slot />
-
+      <UILoadingSpinner v-if="isLoading" />
       <!-- Language Selector -->
       <LayoutLanguageSelector />
     </main>
@@ -21,4 +21,10 @@
 
 <script setup>
 import BaseLayout from "./base.vue";
+
+const isLoading = ref(true)
+
+onNuxtReady(() => {
+  isLoading.value = false
+})
 </script>

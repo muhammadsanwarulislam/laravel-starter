@@ -7,12 +7,12 @@
     <template v-else>
       <div>
         <h4 class="text-md font-medium text-gray-900 mb-4">
-          {{ isEditMode ? 'Edit Permission' : 'Basic Information' }}
+          {{ isEditMode ? 'Edit Permission' : '' }}
         </h4>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div class="col-span-full">
             <label for="permission-name" class="block text-sm font-medium text-gray-700 mb-2">
-              Permission Name
+              {{ t('permissions.form.name') }}
             </label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -26,7 +26,7 @@
                   'block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 transition-all duration-200',
                   errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
                 ]"
-                placeholder="View Reports"
+                :placeholder="t('permissions.form.name_placeholder')"
               />
             </div>
             <p v-if="errors.name" class="mt-2 text-xs text-red-600 flex items-center">
@@ -35,13 +35,13 @@
             </p>
             <p v-else-if="form.name.trim()" class="mt-2 text-xs text-green-600 flex items-center">
               <UIIconsCheck class="h-4 w-4 mr-1 text-green-600" />
-              Permission name looks good
+              {{ t('permissions.form.name_valid') }}
             </p>
           </div>
 
           <div>
             <label for="permission-module" class="block text-sm font-medium text-gray-700 mb-2">
-              Module
+              {{ t('permissions.form.module') }}
             </label>
             <input
               id="permission-module"
@@ -58,12 +58,12 @@
               {{ errors.module }}
             </p>
             <p v-else class="mt-2 text-xs text-gray-500">
-              Use a short module name like `users`, `roles`, or `reports`.
+              {{ t('permissions.form.module_info') }}
             </p>
           </div>
 
           <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4">
-            <p class="text-sm font-medium text-gray-700">Generated Slug</p>
+            <p class="text-sm font-medium text-gray-700">{{ t('permissions.slug_generated') }}</p>
             <p class="mt-1 text-sm font-semibold text-gray-900">
               {{ previewSlug || 'name-module' }}
             </p>
@@ -74,7 +74,7 @@
 
           <div class="col-span-full">
             <label for="permission-description" class="block text-sm font-medium text-gray-700 mb-2">
-              Description
+              {{ t('common.description') }}
             </label>
             <textarea
               id="permission-description"
@@ -107,7 +107,7 @@
           @click="router.push('/permissions')"
           class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
         >
-          {{ t('common.cancel') }}
+          {{ t('common.button.cancel') }}
         </button>
         <button
           type="submit"
@@ -119,7 +119,7 @@
             <path class="opacity-75" fill="currentColor"
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
           </svg>
-          {{ isEditMode ? t('common.update') : t('common.create') }}
+          {{ isEditMode ? t('common.button.update') : t('common.button.create') }}
         </button>
       </div>
     </template>

@@ -19,8 +19,8 @@
               </span>
             </div>
           </th>
-          <th v-if="hasActions" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Actions
+          <th v-if="hasActions" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider items-center">
+            {{ t("common.actions") }}
           </th>
         </tr>
       </thead>
@@ -42,7 +42,8 @@
 
     <!-- Empty state -->
     <div v-if="!loading && displayedData.length === 0" class="text-center py-10 text-gray-500">
-      <slot name="empty"> No data available. </slot>
+      <!-- <slot name="empty"> No data available. </slot> -->
+      <UILoadingSpinner />
     </div>
 
     <!-- Pagination -->
@@ -54,12 +55,12 @@
         <div class="flex gap-2">
           <button @click="emitPage(currentPage - 1)" :disabled="currentPage === 1"
             class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">
-            Previous
+            {{ t("common.previous") }}
           </button>
           <span class="px-3 py-1">Page {{ currentPage }} of {{ totalPages }}</span>
           <button @click="emitPage(currentPage + 1)" :disabled="currentPage === totalPages"
             class="px-3 py-1 border rounded disabled:opacity-50 disabled:cursor-not-allowed">
-            Next
+            {{ t("common.next") }}
           </button>
         </div>
       </div>
@@ -92,6 +93,8 @@ const props = defineProps<{
   };
 }>();
 
+const { t } = useLocalization();
+
 const emit = defineEmits<{
   (e: "update:sort", key: string, order: "asc" | "desc"): void;
   (e: "update:page", page: number): void;
@@ -99,7 +102,6 @@ const emit = defineEmits<{
 
 const hasActions = computed(() => !!useSlots().actions);
 
-// Sorting (client-side by default, can be overridden by parent)
 const sortKey = ref<string | null>(null);
 const sortOrder = ref<"asc" | "desc">("asc");
 

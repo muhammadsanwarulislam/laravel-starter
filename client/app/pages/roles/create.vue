@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <SharedPageHeader title="Create Role" description="Add a new role and configure its permissions." />
+    <SharedPageHeader :title="t('roles.create')" :description="t('roles.description_for_create')" />
     <div class="mt-6">
       <RolesForm />
     </div>
@@ -9,4 +9,6 @@
 
 <script setup lang="ts">
 definePageMeta({ middleware: ['auth'] })
+
+const { t } = useLocalization()
 </script>

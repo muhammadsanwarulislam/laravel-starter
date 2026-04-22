@@ -1,12 +1,12 @@
 <template>
   <div class="p-6">
-    <SharedPageHeader title="Permissions Management" description="Manage system permissions and keep module access organized.">
+    <SharedPageHeader :title="t('permissions.title')" :description="t('permissions.description')">
       <template #actions>
         <UIButton variant="primary" @click="$router.push('/permissions/create')">
           <template #icon>
             <UIIconsPlus class="h-5 w-5" />
           </template>
-          Add Permission
+          {{ t('common.button.create') }}
         </UIButton>
       </template>
     </SharedPageHeader>
@@ -41,7 +41,7 @@
           <template #icon>
             <UIIconsPencil class="h-4 w-4" />
           </template>
-          Edit
+          {{ t('common.button.edit') }}
         </UIButton>
 
         <UIButton
@@ -55,7 +55,7 @@
           <template #icon>
             <UIIconsTrash class="h-4 w-4" />
           </template>
-          Delete
+          {{ t('common.button.delete') }}
         </UIButton>
       </template>
     </GenericTable>
@@ -87,16 +87,17 @@ const deletePermissionId = ref<number | null>(null)
 const deleteMessage = ref(
   'Are you sure you want to delete this permission? This action cannot be undone.'
 )
+const { t } = useLocalization()
 
 const permissionColumns: Column[] = [
-  { key: 'id', label: 'ID', sortable: true },
-  { key: 'name', label: 'Name', sortable: true },
-  { key: 'slug', label: 'Slug', sortable: true },
-  { key: 'module', label: 'Module', sortable: true },
-  { key: 'description', label: 'Description' },
+  { key: 'id', label: t('common.id'), sortable: true },
+  { key: 'name', label: t('common.name'), sortable: true },
+  { key: 'slug', label: t('common.slug'), sortable: true },
+  { key: 'module', label: t('common.module'), sortable: true },
+  { key: 'description', label: t('common.description'), sortable: true },
   {
     key: 'created_at',
-    label: 'Created At',
+    label: t('common.created_at'),
     sortable: true,
     format: (val) => formatDate(val),
   },

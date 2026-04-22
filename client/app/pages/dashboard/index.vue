@@ -9,18 +9,26 @@
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <Card title="Total Users" :value="stats.users" color="blue" />
-      <Card title="Active Roles" :value="stats.roles" color="green" />
-      <Card title="Permissions" :value="stats.permissions" color="purple" />
-      <Card title="Languages" :value="stats.languages" color="yellow" />
+      <Card :title="t('common.users')" :value="stats.users" color="blue" />
+      <Card :title="t('common.roles')" :value="stats.roles" color="green" />
+      <Card :title="t('common.permissions')" :value="stats.permissions" color="purple" />
+      <Card :title="t('common.languages')" :value="stats.languages" color="yellow" />
+      <Card :title="t('common.active_languages')" :value="activeLanguagesCount" color="green" />
+      <Card :title="t('common.ltr_languages')" :value="ltrLanguagesCount" color="purple" />
+      <Card :title="t('common.rtl_languages')" :value="rtlLanguagesCount" color="yellow" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({ middleware: ["auth"] })
-import Card from "~/components/UI/Card.vue"
+import { computed, onMounted, watch, ref } from 'vue'
+import { useLocalization } from '~/composables/useLocalization'
 import { useAuth } from "~/composables/auth/useAuth"
+import Card from "~/components/UI/Card.vue"
+
+definePageMeta({ middleware: ["auth"] })
+
+const { allLanguages} = useLocalization()
 const { t } = useLocalization();
 
 const auth = useAuth()
@@ -32,6 +40,10 @@ const stats = ref({
   permissions: 0,
   languages: 0,
 })
+
+const activeLanguagesCount = computed(() => allLanguages.value.filter((lang: any) => lang.is_active).length)
+const ltrLanguagesCount = computed(() => allLanguages.value.filter((lang: any) => lang.direction === 'ltr').length)
+const rtlLanguagesCount = computed(() => allLanguages.value.filter((lang: any) => lang.direction === 'rtl').length)
 
 onMounted(async () => {
   try {

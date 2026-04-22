@@ -57,8 +57,8 @@
     </GenericTable>
 
     <!-- Delete Confirmation Modal -->
-    <ModalConfirmationDialog v-if="showDeleteModal" :title="t('common.button.delete')" :message="deleteMessage" type="delete"
-      @confirm="confirmDelete" @cancel="closeDeleteModal" />
+    <ModalConfirmationDialog v-if="showDeleteModal" :title="t('common.button.delete')" :message="deleteMessage"
+      type="delete" @confirm="confirmDelete" @cancel="closeDeleteModal" />
   </div>
 </template>
 
@@ -80,20 +80,20 @@ const deleteMessage = ref(
   "Are you sure you want to delete this user? This action cannot be undone."
 )
 
-const userColumns: Column[] = [
+const userColumns: Column[] = computed(() => [
   { key: "id", label: "ID", sortable: true },
   { key: "name", label: t("common.name"), sortable: true },
   { key: "email", label: t("common.email"), sortable: true },
   { key: "phone", label: t("common.phone") },
   { key: "roles", label: t("common.roles") },
   { key: "status", label: t("common.status"), sortable: true },
-  // {
-  //   key: "created_at",
-  //   label: t("common.created_at"),
-  //   sortable: true,
-  //   format: (val) => formatDate(val),
-  // },
-]
+  {
+    key: "created_at",
+    label: t("common.created_at"),
+    sortable: true,
+    format: (val) => formatDate(val),
+  },
+])
 
 const handleSort = (key: string, order: "asc" | "desc") => {
   fetchUsers({ sort_by: key, sort_order: order })

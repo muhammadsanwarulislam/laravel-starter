@@ -9,14 +9,6 @@
 
     <!-- Success State -->
     <div v-else>
-      <!-- Summary Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <UICard title="Total Languages" :value="totalItems" color="blue" />
-        <UICard title="Active Languages" :value="activeLanguagesCount" color="green" />
-        <UICard title="LTR Languages" :value="ltrLanguagesCount" color="purple" />
-        <UICard title="RTL Languages" :value="rtlLanguagesCount" color="yellow" />
-      </div>
-
       <!-- UI Translations Summary with Add Button -->
       <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -219,12 +211,6 @@ const addError = ref('')
 // Pagination state
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
-
-// Computed for summary cards
-const totalItems = computed(() => allLanguages.value.length)
-const activeLanguagesCount = computed(() => allLanguages.value.filter((lang: any) => lang.is_active).length)
-const ltrLanguagesCount = computed(() => allLanguages.value.filter((lang: any) => lang.direction === 'ltr').length)
-const rtlLanguagesCount = computed(() => allLanguages.value.filter((lang: any) => lang.direction === 'rtl').length)
 
 // Filtered & paginated entries
 const filteredTranslationEntries = computed<[string, string][]>(() => {

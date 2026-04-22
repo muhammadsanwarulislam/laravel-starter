@@ -11,6 +11,7 @@
     "auth.otp_resend_success": "ओटीपी पुन: भेजा गया",
     "auth.otp_verification_failed": "ओटीपी विफल",
 
+
     "common.welcome": "स्वागत है",
     "common.dashboard": "डैशबोर्ड",
     "common.profile": "प्रोफ़ाइल",
@@ -21,6 +22,7 @@
     "common.modules": "मॉड्यूल्स",
     "common.ecommerce": "ई-कॉमर्स",
     "common.button.save": "सहेजें",
+    "common.button.update": "अपडेट",
     "common.button.cancel": "रद्द करें",
     "common.button.edit": "संपादित करें",
     "common.button.delete": "हटाएं",
@@ -31,19 +33,40 @@
     "common.button.backToHome": "होम पेज",
     "common.button.logout": "लॉगआउट",
     "common.button.profile": "प्रोफ़ाइल",
+    "common.id": "आईडी",
     "common.name": "नाम",
+    "common.slug": "स्लग",
     "common.email": "ईमेल",
     "common.phone": "फोन",
     "common.roles": "भूमिकाएं",
     "common.status": "स्थिति",
     "common.actions": "कार्य",
     "common.created_at": "निर्मित दिनांक",
+    "common.next": "अगला",
+    "common.previous": "पिछला",
+    "common.description": "विवरण",
+    "common.total_users": "कुल यूजर्स",
+    "common.total_roles": "कुल भूमिकाएं",
+    "common.total_permissions": "कुल परमिशन्स",
+    "common.total_modules": "कुल मॉड्यूल्स",
+    "common.total_languages": "कुल भाषाएं",
+    "common.total_active_languages": "सक्रिय भाषाएं",
+    "common.total_active_modules": "सक्रिय मॉड्यूल्स",
+    "common.total_ltr_languages": "LTR भाषाएं",
+    "common.total_rtl_languages": "RTL भाषाएं",
+    "common.total_keys": "कुल कीज़",
+
+
     "navbar.home": "होम",
     "navbar.features": "विशेषताएं",
     "navbar.tech_stack": "टेक स्टैक",
+
+
     "button.view_docs": "डॉक्यूमेंटेशन देखें",
     "button.view_github": "GitHub पर देखें",
     "button.sign_in": "साइन इन",
+
+
     "user.registration.form.title": "एक खाता बनाएं",
     "user.registration.form.subtitle": "क्या आपको एक खाता है?",
     "user.registration.form.slogan": "समाज में युक्त हो",
@@ -54,13 +77,50 @@
     "user.registration.form.phone": "फोन नंबर",
     "user.registration.form.country_code": "देश कोड",
     "user.registration.form.agreement": "मैं सर्तों और शर्तों में सहमत हूं",
+
+
     "user.login.form.emailOrPhone": "ईमेल या फोन",
+
+
     "users.title": "उपयोगकर्ता प्रबंधन",
     "users.description": "सिस्टम उपयोगकर्ता प्रबंधित करें",
+
     "roles.title": "भूमिका प्रबंधन",
     "roles.description": "सिस्टम भूमिकाओं को प्रबंधित करें",
+    "roles.system_roles": "सिस्टम भूमिकाएं",
+    "roles.level": "स्तर",
+    "roles.details": "विवरण",
+    "roles.create": "भूमिका बनाएं",
+    "roles.edit": "भूमिका संपादित करें",
+    "roles.description_for_create": "एक नया भूमिका बनाएं और उसे स्थापित करें",
+    "roles.description_for_edit": "एक भूमिका संपादित करें और उसे अपडेट करें",
+    "roles.basic_information": "मुख्य जानकारी",
+    "roles.form.name": "भूमिका का नाम",
+    "roles.form.level": "भूमिका का स्तर",
+    "roles.form.name_placeholder": "भूमिका का नाम",
+    "roles.form.name_valid": "भूमिका का नाम हरूआंक और अंकों में होना चाहिए",
+    "roles.form.level_info":"भूमिका का स्तर दिए गए स्तरों को अनुमति देने के लिए चुनें।",
+    "roles.form.details_placeholder": "भूमिका के विवरण हें",
+    "roles.form.permissions_info":"इस भूमिका को शामिल करने वाले अनुमतियों को चुनें।",
+
     "permissions.title": "अनुमति प्रबंधन",
     "permissions.description": "सिस्टम अनुमतियों को प्रबंधित करें",
+    "permissions.slug_generated": "अनुमति का नाम",
+    "permissions.details": "विवरण",
+    "permissions.create": "अनुमति बनाएं",
+    "permissions.edit": "अनुमति संपादित करें",
+    "permissions.description_for_create": "एक नई परमिशन जोड़ें और इसे T-right मॉड्यूल को असाइन करें।",
+    "permissions.description_for_edit": "एक परमिशन संपादित करें और इसे T-right मॉड्यूल को असाइन करें।",
+    "permissions.basic_information": "मुख्य जानकारी",
+    "permissions.form.name": "अनुमति का नाम",
+    "permissions.form.module": "अनुमति मॉड्यूल में",
+    "permissions.form.name_placeholder": "अनुमति का नाम दर्ज करें",
+    "permissions.form.name_valid": "अनुमति का नाम अच्छा लग रहा है",
+    "permissions.form.module_info":"उपयोग करें अनुमति मॉड्यूल का शॉर्ट नाम जैसे `users`, `roles`, या `reports`।",
+    "permissions.form.details_placeholder": "लोव की टीम के सदस्य रिपोर्टिंग डैशबोर्ड और एक्सपोर्ट देख सकते हैं।",
+    "permissions.form.permissions_info":"वे परमिशन चुनें जो इस रोल में शामिल होनी चाहिए।",
+
+
     "hero.tagline": "🚀 आधुनिक पूर्ण-स्टैक स्टार्टर किट",
     "hero.title.part1": "बनाएं",
     "hero.title.part2": "Nuxt.js और Laravel के साथ",
@@ -68,6 +128,8 @@
     "hero.get_started": "शुरू करें",
     "hero.view_demo": "डेमो देखें",
     "hero.production_ready": "प्रोडक्शन रेडी",
+
+
     "features.tagline": "✨ मुख्य विशेषताएं",
     "features.title.part1": "आपको जो कुछ भी चाहिए",
     "features.title.part2": "आधुनिक ऐप्स बनाने के लिए",
@@ -84,6 +146,8 @@
     "feature.best_practices.description": "कोडिंग मानकों, सुरक्षा और प्रदर्शन के लिए उद्योग की सर्वोत्तम प्रथाओं का पालन करें।",
     "feature.seeding.title": "डायनेमिक कंटेंट सीडिंग",
     "feature.seeding.description": "टेस्ट डेटा के साथ आपके एप्लिकेशन को जल्दी से भरने के लिए प्री-कॉन्फ़िगर किए गए सीडर्स।",
+
+
     "tech.tagline": "💻 आधुनिक टेक स्टैक",
     "tech.title.part1": "के साथ बनाया गया",
     "tech.title.part2": "नवीनतम प्रौद्योगिकियों के साथ",
@@ -100,6 +164,8 @@
     "tech.nuxt.feature2": "सर्वर-साइड रेंडरिंग (SSR)",
     "tech.nuxt.feature3": "अंतर्राष्ट्रीयकरण (i18n)",
     "tech.nuxt.feature4": "कंपोनेंट-बेस्ड आर्किटेक्चर",
+
+
     "validation.required": "यह फ़ील्ड आवश्यक है",
     "validation.email": "कृपया मान्य ईमेल दर्ज करें",
     "validation.min": "न्यूनतम :min अक्षर आवश्यक",
