@@ -214,7 +214,7 @@
             <div class="border-t border-gray-200 pt-4 flex justify-end space-x-3">
                 <button type="button" @click="router.push('/users')"
                     class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-                    {{ t('common.cancel') }}
+                    {{ t('common.button.cancel') }}
                 </button>
                 <button type="submit" :disabled="isSubmitting"
                     class="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-4 py-2 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center">
@@ -224,7 +224,7 @@
                         <path class="opacity-75" fill="currentColor"
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
-                    {{ isEditMode ?  t('common.update') : t('common.create') }}
+                    {{ isEditMode ?  t('common.button.update') : t('common.button.create') }}
                 </button>
             </div>
         </template>

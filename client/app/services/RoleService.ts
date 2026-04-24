@@ -77,11 +77,6 @@ export class RoleService {
 
   async createRole(data: CreateRoleData): Promise<{ success: boolean; data?: Role; message?: string; errors?: Record<string, string[]> }> {
     try {
-      const validation = await this.validateRoleName(data.name)
-      if (!validation.success || !validation.valid) {
-        return { success: false, message: validation.message || 'Role name validation failed' }
-      }
-
       const response = await this.repository.create(data)
 
       if (response.success && response.data) {
@@ -96,11 +91,6 @@ export class RoleService {
 
   async updateRole(id: number, data: CreateRoleData): Promise<{ success: boolean; data?: Role; message?: string; errors?: Record<string, string[]> }> {
     try {
-      const validation = await this.validateRoleName(data.name, id)
-      if (!validation.success || !validation.valid) {
-        return { success: false, message: validation.message || 'Role name validation failed' }
-      }
-
       const response = await this.repository.update(id, data)
 
       if (response.success && response.data) {
@@ -148,5 +138,9 @@ export class RoleService {
     } catch (error) {
       return { success: false, message: 'An error occurred while assigning permissions' }
     }
+  }
+
+  private isSystemRole(slug: string): boolean {
+    return ['super-admin', 'admin', 'user'].includes(slug)
   }
 }

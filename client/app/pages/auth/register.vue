@@ -1,16 +1,16 @@
 <template>
     <div class="min-h-screen flex">
         <!-- Left side -->
-        <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="flex-1 flex flex-col justify-center py-4 px-4 sm:px-6 lg:px-8">
             <div class="sm:mx-auto sm:w-full sm:max-w-lg">
                 <div
                     class="bg-white dark:bg-gray-800 py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-gray-200 dark:border-gray-700">
                     <div class="text-center">
                         <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">
-                            Create Account
+                            {{ t('user.registration.form.title') }}
                         </h2>
                         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            Join us today and get started
+                            {{ t('user.registration.form.slogan') }}
                         </p>
                     </div>
 
@@ -20,7 +20,7 @@
                             <div class="col-span-full">
                                 <label for="name"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Full Name
+                                    {{ t('user.registration.form.name') }}
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -34,7 +34,7 @@
                                         @input="validateNameOnInput"
                                         :class="['block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
                                             errors.name ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600']"
-                                        placeholder="John Doe" />
+                                        :placeholder="t('user.registration.form.name_placeholder')" />
                                 </div>
                                 <p v-if="errors.name"
                                     class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
@@ -58,14 +58,17 @@
 
                             <!-- Phone with Country Code -->
                             <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Phone Number
+                                <label for="phone"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    {{ t('user.registration.form.phone') }}
                                 </label>
                                 <div class="flex gap-2">
                                     <!-- Country Code Selector -->
                                     <div class="relative flex-1 max-w-xs">
-                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <div
+                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                                             </svg>
@@ -73,17 +76,21 @@
                                         <select v-model="form.country_code_id"
                                             :class="['block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200 appearance-none',
                                                 errors.country_code_id ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-gray-300 dark:border-gray-600']">
-                                            <option v-for="country in countryCodes" :key="country.id" :value="country.id">
+                                            <option v-for="country in countryCodes" :key="country.id"
+                                                :value="country.id">
                                                 {{ country.dial_code }} {{ country.name }}
                                             </option>
                                         </select>
-                                        <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 20 20" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 8l4 4 4-4" />
+                                        <div
+                                            class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 20 20"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M6 8l4 4 4-4" />
                                             </svg>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Phone Number Input -->
                                     <div class="relative flex-1">
                                         <input id="phone" v-model="form.phone" name="phone" type="tel" required
@@ -92,7 +99,8 @@
                                             placeholder="01XXXXXXXXX" />
                                     </div>
                                 </div>
-                                <p v-if="errors.phone" class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
+                                <p v-if="errors.phone"
+                                    class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd"
                                             d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
@@ -106,7 +114,7 @@
                             <div>
                                 <label for="email"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Email Address (Optional)
+                                    {{ t('user.registration.form.email') }}
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -137,7 +145,7 @@
                             <div>
                                 <label for="password"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Password
+                                    {{ t('user.registration.form.password') }}
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -179,7 +187,7 @@
                             <div>
                                 <label for="password_confirmation"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Confirm Password
+                                    {{ t('user.registration.form.password_confirmation') }}
                                 </label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -206,37 +214,37 @@
                                     {{ errors.password_confirmation }}
                                 </p>
                             </div>
-                        </div>
 
-                        <!-- Terms -->
-                        <div class="flex items-start">
-                            <div class="flex items-center h-5">
-                                <input id="accepted_terms" v-model="form.accepted_terms" name="accepted_terms"
-                                    type="checkbox"
-                                    class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600 rounded transition duration-200" />
-                            </div>
-                            <div class="ml-3">
-                                <label for="accepted_terms" class="text-sm text-gray-700 dark:text-gray-300">
-                                    I agree to the
-                                    <a href="#"
-                                        class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200">
-                                        Terms
-                                    </a>
-                                    and
-                                    <a href="#"
-                                        class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200">
-                                        Privacy Policy
-                                    </a>
-                                </label>
-                                <p v-if="errors.accepted_terms"
-                                    class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd"
-                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    {{ errors.accepted_terms }}
-                                </p>
+                            <!-- Terms -->
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input id="accepted_terms" v-model="form.accepted_terms" name="accepted_terms"
+                                        type="checkbox"
+                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-600 rounded transition duration-200" />
+                                </div>
+                                <div class="ml-3">
+                                    <label for="accepted_terms" class="text-sm text-gray-700 dark:text-gray-300">
+                                        I agree to the
+                                        <a href="#"
+                                            class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200">
+                                            Terms
+                                        </a>
+                                        and
+                                        <a href="#"
+                                            class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200">
+                                            Privacy Policy
+                                        </a>
+                                    </label>
+                                    <p v-if="errors.accepted_terms"
+                                        class="mt-1 text-xs text-red-600 dark:text-red-400 flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        {{ errors.accepted_terms }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
@@ -255,7 +263,7 @@
                                     </svg>
                                 </span>
                                 <span class="relative">
-                                    {{ loading ? 'Creating Account...' : 'Create Account' }}
+                                    {{ loading ? 'Creating Account...' : t('common.button.create_account') }}
                                 </span>
                                 <svg class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
@@ -304,7 +312,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                                 </svg>
-                                Sign in to your account
+                                {{ t('common.button.sign_in_account') }}
                             </NuxtLink>
                         </div>
                     </form>
@@ -318,7 +326,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
-                        Back to home
+                        {{ t("common.button.backToHome") }}
                     </NuxtLink>
                 </div>
             </div>
@@ -329,28 +337,14 @@
             <div class="flex flex-col justify-between h-full">
                 <div>
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                            </svg>
-                        </div>
-                        <span class="text-2xl font-bold text-white">Join Us</span>
+                        <UIIconsCheck2 class="w-10 h-10" />
+                        <span class="text-2xl font-bold text-white">{{ t('user.registration.form.slogan') }}</span>
                     </div>
                     <div class="mt-16">
-                        <h1 class="text-4xl font-bold text-white leading-tight">
-                            Start Your Journey<br>
-                            <span class="text-yellow-300">Today</span>
-                        </h1>
                         <ul class="mt-8 space-y-4">
                             <li v-for="benefit in benefits" :key="benefit"
                                 class="flex items-center text-lg text-white/90">
-                                <svg class="w-6 h-6 mr-3 text-green-300" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7" />
-                                </svg>
+                                <UIIconsCheck class="w-6 h-6 mr-3 text-pink-300 mt-0.5" />
                                 {{ benefit }}
                             </li>
                         </ul>
@@ -372,6 +366,7 @@ import { notification } from '~/utils/notification'
 
 const auth = useAuth()
 const router = useRouter()
+const { t } = useLocalization();
 
 interface RegisterForm {
     name: string
@@ -410,20 +405,20 @@ const error = ref('')
 const showPassword = ref(false)
 const errors = reactive<FormErrors>({})
 
-const benefits = [
-    'Connect with for free and flexible',
-    'Explore the latest features',
-    'Start your projects quickly',
-    'Collaborate with others',
-    'Access exclusive resources',
-]
+const benefits = computed(() => [
+    t("user.registration.form.slogan1"),
+    t("user.registration.form.slogan2"),
+    t("user.registration.form.slogan3"),
+    t("user.registration.form.slogan4"),
+    t("user.registration.form.slogan5"),
+])
 
 const validateForm = (): boolean => {
     Object.keys(errors).forEach(key => delete errors[key as keyof FormErrors])
     let isValid = true
 
     const nameRegex = /^[A-Za-z][A-Za-z0-9]*([-_ ][A-Za-z0-9]+)*$/
-    
+
     if (!form.name.trim()) {
         errors.name = 'Name is required'
         isValid = false
