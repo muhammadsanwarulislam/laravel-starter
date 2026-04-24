@@ -125,6 +125,15 @@
     "permissions.form.details_placeholder": "Allows team members to view reporting dashboards and exports.",
     "permissions.form.permissions_info":"Select the permissions this role should include.",
 
+    "profile.title":"My Profile",
+    "profile.description":"Manage your account details, update your photo, and keep your password secure.",
+    "profile.basic_info":"Basic Information",
+    "profile.slogan":"Keep your personal details and contact information up to date.",
+    "profile.details":"Profile Details",
+    "profile.avatar":"Avatar",
+    "profile.photo_upload_info":"Upload a profile photo for your account and profile page",
+
+
     "hero.tagline": "🚀 Modern Full-Stack Starter Kit",
     "hero.title.part1": "Build with",
     "hero.title.part2": "Nuxt.js & Laravel",

@@ -1,6 +1,6 @@
 <template>
   <div class="p-6">
-    <SharedPageHeader title="My Profile" description="Review your account details, update your photo, and keep your password secure." />
+    <SharedPageHeader :title="t('profile.title')" :description="t('profile.description')" />
 
     <div v-if="loadingProfile" class="flex justify-center py-10">
       <UILoadingSpinner size="lg" />
@@ -11,29 +11,24 @@
         <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 class="text-lg font-semibold text-gray-900">Profile Photo</h3>
-              <p class="mt-1 text-sm text-gray-500">Upload a clear square photo for your account menu and profile.</p>
+              <h3 class="text-lg font-semibold text-gray-900">{{ t('profile.avatar') }}</h3>
+              <p class="mt-1 text-sm text-gray-500">{{ t('profile.photo_upload_info') }}</p>
             </div>
 
             <div class="flex items-center gap-4">
-              <div class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-semibold text-white">
-                <img v-if="displayAvatarUrl" :src="displayAvatarUrl" alt="Profile photo" class="h-full w-full object-cover" />
+              <div
+                class="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-semibold text-white">
+                <img v-if="displayAvatarUrl" :src="displayAvatarUrl" alt="Profile photo"
+                  class="h-full w-full object-cover" />
                 <span v-else>{{ initials }}</span>
               </div>
 
               <div class="space-y-2">
-                <input
-                  ref="photoInput"
-                  type="file"
-                  accept="image/png,image/jpeg,image/jpg,image/webp"
-                  class="hidden"
-                  @change="handlePhotoSelected"
-                />
-                <button
-                  type="button"
+                <input ref="photoInput" type="file" accept="image/png,image/jpeg,image/jpg,image/webp" class="hidden"
+                  @change="handlePhotoSelected" />
+                <button type="button"
                   class="inline-flex items-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-                  @click="photoInput?.click()"
-                >
+                  @click="photoInput?.click()">
                   Choose Photo
                 </button>
                 <p class="text-xs text-gray-500">PNG, JPG, or WebP up to 5MB.</p>
@@ -44,7 +39,8 @@
           <p v-if="photoError" class="mt-4 text-sm text-red-600">{{ photoError }}</p>
         </section>
 
-        <form @submit.prevent="submitProfile" class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <form @submit.prevent="submitProfile"
+          class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div>
             <h3 class="text-lg font-semibold text-gray-900">Basic Information</h3>
             <p class="mt-1 text-sm text-gray-500">Keep your personal details and contact information up to date.</p>
@@ -57,14 +53,8 @@
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <UIIconsUser class="h-5 w-5 text-gray-400" />
                 </div>
-                <input
-                  id="profile-name"
-                  v-model="form.name"
-                  type="text"
-                  :class="inputClass(errors.name)"
-                  class="pl-10"
-                  placeholder="John Doe"
-                />
+                <input id="profile-name" v-model="form.name" type="text" :class="inputClass(errors.name)" class="pl-10"
+                  placeholder="John Doe" />
               </div>
               <p v-if="errors.name" class="mt-2 flex items-center text-xs text-red-600">
                 <UIIconsExclamation2 class="mr-1 h-4 w-4 text-red-600" />
@@ -74,18 +64,14 @@
 
             <div>
               <label for="profile-email" class="mb-2 block text-sm font-medium text-gray-700">Email</label>
-              <input
-                id="profile-email"
-                v-model="form.email"
-                type="email"
-                :class="inputClass(errors.email)"
-                placeholder="you@example.com"
-              />
+              <input id="profile-email" v-model="form.email" type="email" :class="inputClass(errors.email)"
+                placeholder="you@example.com" />
               <p v-if="errors.email" class="mt-2 text-xs text-red-600">{{ errors.email }}</p>
             </div>
 
             <div>
-              <label for="profile-locale" class="mb-2 block text-sm font-medium text-gray-700">Preferred Language</label>
+              <label for="profile-locale" class="mb-2 block text-sm font-medium text-gray-700">Preferred
+                Language</label>
               <select id="profile-locale" v-model="form.ui_locale" :class="inputClass(errors.ui_locale)">
                 <option value="">System Default</option>
                 <option v-for="language in languages" :key="language.code" :value="language.code">
@@ -96,17 +82,14 @@
             </div>
 
             <div>
-              <label for="profile-country-code" class="mb-2 block text-sm font-medium text-gray-700">Country Code</label>
+              <label for="profile-country-code" class="mb-2 block text-sm font-medium text-gray-700">Country
+                Code</label>
               <div class="relative">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <UIIconsPhone class="h-5 w-5 text-gray-400" />
                 </div>
-                <select
-                  id="profile-country-code"
-                  v-model.number="form.country_code_id"
-                  :class="inputClass(errors.country_code_id)"
-                  class="appearance-none pl-10"
-                >
+                <select id="profile-country-code" v-model.number="form.country_code_id"
+                  :class="inputClass(errors.country_code_id)" class="appearance-none pl-10">
                   <option :value="null">Select country code</option>
                   <option v-for="country in countries" :key="country.id" :value="country.id">
                     {{ country.dial_code }} {{ country.name }}
@@ -121,22 +104,17 @@
 
             <div>
               <label for="profile-phone" class="mb-2 block text-sm font-medium text-gray-700">Phone Number</label>
-              <input
-                id="profile-phone"
-                v-model="form.phone"
-                type="tel"
-                :class="inputClass(errors.phone)"
-                placeholder="01XXXXXXXXX"
-              />
+              <input id="profile-phone" v-model="form.phone" type="tel" :class="inputClass(errors.phone)"
+                placeholder="01XXXXXXXXX" />
               <p v-if="errors.phone" class="mt-2 text-xs text-red-600">{{ errors.phone }}</p>
             </div>
           </div>
 
           <div class="border-t border-gray-200 pt-6">
-            <h3 class="text-lg font-semibold text-gray-900">Profile Details</h3>
+            <h3 class="text-lg font-semibold text-gray-900">{{ t('profile.details') }}</h3>
             <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label for="profile-gender" class="mb-2 block text-sm font-medium text-gray-700">Gender</label>
+                <label for="profile-gender" class="mb-2 block text-sm font-medium text-gray-700">{{ t('common.gender') }}</label>
                 <select id="profile-gender" v-model="form.gender" :class="inputClass(errors.gender)">
                   <option value="">Select gender</option>
                   <option value="male">Male</option>
@@ -159,24 +137,16 @@
 
               <div class="md:col-span-2">
                 <label for="profile-address" class="mb-2 block text-sm font-medium text-gray-700">Address</label>
-                <textarea
-                  id="profile-address"
-                  v-model="form.address"
-                  rows="4"
-                  :class="inputClass(errors.address)"
-                  placeholder="House, road, area, city"
-                />
+                <textarea id="profile-address" v-model="form.address" rows="4" :class="inputClass(errors.address)"
+                  placeholder="House, road, area, city" />
                 <p v-if="errors.address" class="mt-2 text-xs text-red-600">{{ errors.address }}</p>
               </div>
             </div>
           </div>
 
           <div class="flex justify-end border-t border-gray-200 pt-6">
-            <button
-              type="submit"
-              :disabled="saving"
-              class="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700 disabled:bg-green-400"
-            >
+            <button type="submit" :disabled="saving"
+              class="inline-flex items-center rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-green-700 disabled:bg-green-400">
               <svg v-if="saving" class="-ml-1 mr-2 h-4 w-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
@@ -186,57 +156,46 @@
           </div>
         </form>
 
-        <form @submit.prevent="submitPasswordChange" class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <form @submit.prevent="submitPasswordChange"
+          class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div>
             <h3 class="text-lg font-semibold text-gray-900">Change Password</h3>
-            <p class="mt-1 text-sm text-gray-500">Use a strong password with uppercase, lowercase, number, and special character.</p>
+            <p class="mt-1 text-sm text-gray-500">Use a strong password with uppercase, lowercase, number, and special
+              character.</p>
           </div>
 
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="md:col-span-2">
-              <label for="current-password" class="mb-2 block text-sm font-medium text-gray-700">Current Password</label>
-              <input
-                id="current-password"
-                v-model="passwordForm.current_password"
-                type="password"
-                :class="inputClass(passwordErrors.current_password)"
-                placeholder="Enter current password"
-              />
-              <p v-if="passwordErrors.current_password" class="mt-2 text-xs text-red-600">{{ passwordErrors.current_password }}</p>
+              <label for="current-password" class="mb-2 block text-sm font-medium text-gray-700">Current
+                Password</label>
+              <input id="current-password" v-model="passwordForm.current_password" type="password"
+                :class="inputClass(passwordErrors.current_password)" placeholder="Enter current password" />
+              <p v-if="passwordErrors.current_password" class="mt-2 text-xs text-red-600">{{
+                passwordErrors.current_password }}</p>
             </div>
 
             <div>
               <label for="new-password" class="mb-2 block text-sm font-medium text-gray-700">New Password</label>
-              <input
-                id="new-password"
-                v-model="passwordForm.password"
-                type="password"
-                :class="inputClass(passwordErrors.password)"
-                placeholder="Create new password"
-              />
+              <input id="new-password" v-model="passwordForm.password" type="password"
+                :class="inputClass(passwordErrors.password)" placeholder="Create new password" />
               <p v-if="passwordErrors.password" class="mt-2 text-xs text-red-600">{{ passwordErrors.password }}</p>
             </div>
 
             <div>
-              <label for="confirm-password" class="mb-2 block text-sm font-medium text-gray-700">Confirm Password</label>
-              <input
-                id="confirm-password"
-                v-model="passwordForm.password_confirmation"
-                type="password"
-                :class="inputClass(passwordErrors.password_confirmation)"
-                placeholder="Confirm new password"
-              />
-              <p v-if="passwordErrors.password_confirmation" class="mt-2 text-xs text-red-600">{{ passwordErrors.password_confirmation }}</p>
+              <label for="confirm-password" class="mb-2 block text-sm font-medium text-gray-700">Confirm
+                Password</label>
+              <input id="confirm-password" v-model="passwordForm.password_confirmation" type="password"
+                :class="inputClass(passwordErrors.password_confirmation)" placeholder="Confirm new password" />
+              <p v-if="passwordErrors.password_confirmation" class="mt-2 text-xs text-red-600">{{
+                passwordErrors.password_confirmation }}</p>
             </div>
           </div>
 
           <div class="flex justify-end border-t border-gray-200 pt-6">
-            <button
-              type="submit"
-              :disabled="changingPassword"
-              class="inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-gray-800 disabled:bg-gray-500"
-            >
-              <svg v-if="changingPassword" class="-ml-1 mr-2 h-4 w-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+            <button type="submit" :disabled="changingPassword"
+              class="inline-flex items-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-gray-800 disabled:bg-gray-500">
+              <svg v-if="changingPassword" class="-ml-1 mr-2 h-4 w-4 animate-spin text-white" fill="none"
+                viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
@@ -249,8 +208,10 @@
       <aside class="space-y-6">
         <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div class="flex items-center gap-4">
-            <div class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-semibold text-white">
-              <img v-if="displayAvatarUrl" :src="displayAvatarUrl" alt="Profile photo" class="h-full w-full object-cover" />
+            <div
+              class="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-indigo-600 text-xl font-semibold text-white">
+              <img v-if="displayAvatarUrl" :src="displayAvatarUrl" alt="Profile photo"
+                class="h-full w-full object-cover" />
               <span v-else>{{ initials }}</span>
             </div>
             <div>
@@ -260,16 +221,12 @@
           </div>
           <div class="mt-4 space-y-3 text-sm text-gray-600">
             <div class="flex items-center justify-between">
-              <span>Roles</span>
+              <span>{{ t('common.roles') }}</span>
               <span class="font-medium text-gray-900">{{ roleNames }}</span>
             </div>
             <div class="flex items-center justify-between">
-              <span>Permissions</span>
+              <span>{{ t('common.permissions') }}</span>
               <span class="font-medium text-gray-900">{{ permissions.length }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span>Files</span>
-              <span class="font-medium text-gray-900">{{ fileCount }}</span>
             </div>
           </div>
         </section>
@@ -304,6 +261,7 @@ import { notification } from '~/utils/notification'
 
 definePageMeta({ middleware: ['auth'] })
 
+const { t } = useLocalization()
 const auth = useAuth()
 const loadingProfile = ref(true)
 const saving = ref(false)

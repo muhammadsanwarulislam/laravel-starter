@@ -115,6 +115,16 @@
     "permissions.form.details_placeholder": "وصف الصلاحية هنا",
     "permissions.form.permissions_info":"حدد الصلاحيات التي يمكن لها الوصول لهذه الصلاحية.",
 
+    "profile.title":"الملف الشخصي",
+    "profile.description":"ادارة تفاصيل حسابك وتحديث صورتك وحفظ كلمة المرور الخاصة بك.",
+    "profile.basic_info":"المعلومات الاساسية",
+    "profile.slogan":"حفظ تفاصيلك الشخصية وتحديث صورتك وحفظ كلمة المرور الخاصة بك.",
+    "profile.details":"تفاصيل الملف الشخصي",
+    "profile.avatar":"الصورة الشخصية",
+    "profile.photo_upload_info":"قم بتحميل صورة شخصية لحسابك وصفحة الملف الشخصي.",
+    "profile.change_password":"تغيير كلمة المرور",
+
+
 
     "hero.tagline": "🚀 مجموعة البدء الكاملة للمطورين",
     "hero.title.part1": "إنشاء",

@@ -13,9 +13,9 @@
       <Card :title="t('common.roles')" :value="stats.roles" color="green" />
       <Card :title="t('common.permissions')" :value="stats.permissions" color="purple" />
       <Card :title="t('common.languages')" :value="stats.languages" color="yellow" />
-      <Card :title="t('common.active_languages')" :value="activeLanguagesCount" color="green" />
-      <Card :title="t('common.ltr_languages')" :value="ltrLanguagesCount" color="purple" />
-      <Card :title="t('common.rtl_languages')" :value="rtlLanguagesCount" color="yellow" />
+      <Card :title="t('common.total_active_languages')" :value="activeLanguagesCount" color="green" />
+      <Card :title="t('common.total_ltr_languages')" :value="ltrLanguagesCount" color="purple" />
+      <Card :title="t('common.total.rtl_languages')" :value="rtlLanguagesCount" color="yellow" />
     </div>
   </div>
 </template>

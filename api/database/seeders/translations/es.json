@@ -71,6 +71,28 @@
     
     "permissions.title": "Gestión de permisos",
     "permissions.description": "Gestionar permisos del sistema",
+    "permissions.slug_generated": "Slug generado",
+    "permissions.details": "Detalles",
+    "permissions.create": "Crear Permiso",
+    "permissions.edit": "Editar Permiso",
+    "permissions.description_for_create": "Add a new permission and assign it to the right module.",
+    "permissions.description_for_edit": "Editar un permiso y asignarlo al modulo adecuado.",
+    "permissions.basic_information": "Información Básica",
+    "permissions.form.name": "Permiso Nombre",
+    "permissions.form.module": "Permiso Módulo",
+    "permissions.form.name_placeholder": "Ingrese el nombre del permiso",
+    "permissions.form.name_valid": "Permiso nombre looks good",
+    "permissions.form.module_info":"Use a short module name like `users`, `roles`, or `reports`",
+    "permissions.form.details_placeholder": "Allows team members to view reporting dashboards and exports.",
+    "permissions.form.permissions_info":"Select the permissions this role should include.",
+
+    "profile.title":"Manage Your Profile",
+    "profile.description":"Manage your account details, update your photo, and keep your password secure.",
+    "profile.basic_info":"Basic Information",
+    "profile.slogan":"Keep your personal details and contact information up to date.",
+    "profile.details":"Profile Details",
+    "profile.avatar":"Avatar",
+    "profile.photo_upload_info":"Upload a profile photo for your account and profile page",
 
 
     "hero.tagline": "🚀 Kit de inicio completo para desarrolladores",

@@ -120,6 +120,14 @@
     "permissions.form.details_placeholder": "लोव की टीम के सदस्य रिपोर्टिंग डैशबोर्ड और एक्सपोर्ट देख सकते हैं।",
     "permissions.form.permissions_info":"वे परमिशन चुनें जो इस रोल में शामिल होनी चाहिए।",
 
+    "profile.title":"प्रोफाइल प्रबंधन",
+    "profile.description":"अवतार विवरण, फोटो अपडेट करें और अपना पासवर्ड सुरक्षित करें",
+    "profile.basic_info":"मुख्य जानकारी",
+    "profile.slogan":"अपना व्यक्तिगत विवरण और संपर्क विवरण अद्यतन करें।",
+    "profile.details":"प्रोफाइल विवरण",
+    "profile.avatar":"अवतार",
+    "profile.photo_upload_info":"अपना अवतार एक अकाउंट और प्रोफाइल पृष्ठ पर अपलोड करें",
+
 
     "hero.tagline": "🚀 आधुनिक पूर्ण-स्टैक स्टार्टर किट",
     "hero.title.part1": "बनाएं",
