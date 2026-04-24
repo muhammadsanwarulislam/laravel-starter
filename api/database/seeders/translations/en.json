@@ -30,6 +30,7 @@
     "common.localizations": "Localizations",
     "common.modules": "Modules",
     "common.ecommerce": "Ecommerce",
+    "common.or": "Or",
     "common.id": "ID",
     "common.name": "Name",
     "common.slug": "Slug",
@@ -74,6 +75,8 @@
     "button.view_github": "View on GitHub",
     "button.sign_in": "Sign In",
 
+    "users.title": "Users Management",
+    "users.description": "Manage system users",
 
     "user.registration.form.title": "Create an Account",
     "user.registration.form.subtitle": "Already have an account?",
@@ -85,10 +88,10 @@
     "user.registration.form.phone": "Phone Number",
     "user.registration.form.country_code": "Country Code",
     "user.registration.form.agreement": "I agree to the terms and conditions",
-    "user.login.form.emailOrPhone": "Email or Phone",
-    "users.title": "Users Management",
-    "users.description": "Manage system users",
 
+    "user.login.form.welcome": "Welcome to",
+    "user.login.form.subtitle": "Sign in to access your dashboard and manage your account.",
+    "user.login.form.emailOrPhone": "Email or Phone",
 
     "roles.title": "Roles Management",
     "roles.description": "Manage and monitor all system roles",
@@ -141,6 +144,9 @@
     "hero.get_started": "Get Started",
     "hero.view_demo": "View Demo",
     "hero.production_ready": "Production Ready",
+    "hero.free_open_source": "Free & Open Source",
+
+
     "features.tagline": "✨ Key Features",
     "features.title.part1": "Everything You Need to",
     "features.title.part2": "Build Modern Apps",
@@ -174,5 +180,13 @@
     "tech.nuxt.feature1": "Vue 3 Composition API",
     "tech.nuxt.feature2": "Server-side rendering (SSR)",
     "tech.nuxt.feature3": "Internationalization (i18n)",
-    "tech.nuxt.feature4": "Component-based architecture"
+    "tech.nuxt.feature4": "Component-based architecture",
+
+    "tect2.laravel":"Laravel",
+    "tech2.title":"API Backend",
+    "tech2.nuxt":"Nuxt.js",
+    "tech2.title2":"Frontend",
+    "tech2.feature1":"Secure Authentication",
+    "tech2.feature2":"Profile Management",
+    "tech2.feature3":"Multi-Language Support"
 }

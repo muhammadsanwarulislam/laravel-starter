@@ -20,6 +20,8 @@
     "common.localizations": "Localizaciones",
     "common.modules": "Módulos",
     "common.ecommerce": "E-commerce",
+    "common.or": "o",
+    "common.button.update": "Actualizar",
     "common.button.save": "Guardar",
     "common.button.cancel": "Cancelar",
     "common.button.edit": "Editar",
@@ -49,7 +51,6 @@
     "button.view_github": "Ver en GitHub",
     "button.sign_in": "Iniciar sesión",
 
-
     "user.registration.form.title": "Crear una cuenta",
     "user.registration.form.subtitle": "¿Ya tienes una cuenta?",
     "user.registration.form.slogan": "Unirse a la comunidad",
@@ -60,7 +61,12 @@
     "user.registration.form.phone": "Número de teléfono",
     "user.registration.form.country_code": "Código de país",
     "user.registration.form.agreement": "Estoy de acuerdo con los términos y condiciones",
+
+    "user.login.form.welcome": "Bienvenido",
+    "user.login.form.subtitle": "Iniciar sesión para acceder a tu dashboard y gestionar tu cuenta.",
     "user.login.form.emailOrPhone": "Correo electrónica o teléfono",
+
+
     "users.title": "Gestión de usuarios",
     "users.description": "Gestionar usuarios del sistema",
 
@@ -102,6 +108,9 @@
     "hero.get_started": "Comenzar",
     "hero.view_demo": "Ver demo",
     "hero.production_ready": "Listo para producción",
+    "hero.free_open_source": "Gratis & Open Source",
+
+
     "features.tagline": "✨ Características clave",
     "features.title.part1": "Todo lo que necesitas para",
     "features.title.part2": "Construir aplicaciones modernas",
@@ -118,6 +127,8 @@
     "feature.best_practices.description": "Sigue las mejores prácticas de la industria para los estándares de codificación, seguridad y rendimiento.",
     "feature.seeding.title": "Seeding de contenido dinámico",
     "feature.seeding.description": "Seeders preconfigurados para contenido dinámico para poblar rápidamente tu aplicación con datos de prueba.",
+
+
     "tech.tagline": "💻 Pila de tecnología moderna",
     "tech.title.part1": "Construido con",
     "tech.title.part2": "Últimas tecnologías",
@@ -142,5 +153,13 @@
     "success.created": "Creado exitosamente",
     "error.not_found": "Recurso no encontrado",
     "error.unauthorized": "Acceso no autorizado",
-    "error.server": "Ocurrió un error en el servidor"
+    "error.server": "Ocurrió un error en el servidor",
+
+    "tect2.laravel":"Laravel",
+    "tech2.title":"API Backend",
+    "tech2.nuxt":"Nuxt.js",
+    "tech2.title2":"Frontend",
+    "tech2.feature1":"Autenticación segura",
+    "tech2.feature2":"Gestión de perfil de usuario",
+    "tech2.feature3":"Internacionalización (i18n)"
 }

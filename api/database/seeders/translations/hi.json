@@ -21,6 +21,7 @@
     "common.localizations": "लोकालिजेशन",
     "common.modules": "मॉड्यूल्स",
     "common.ecommerce": "ई-कॉमर्स",
+    "common.or": "या",
     "common.button.save": "सहेजें",
     "common.button.update": "अपडेट",
     "common.button.cancel": "रद्द करें",
@@ -78,7 +79,8 @@
     "user.registration.form.country_code": "देश कोड",
     "user.registration.form.agreement": "मैं सर्तों और शर्तों में सहमत हूं",
 
-
+    "user.login.form.welcome": "स्वागत है",
+    "user.login.form.subtitle": "साइन इन करें और अपना डैशबोर्ड पर जाएं",
     "user.login.form.emailOrPhone": "ईमेल या फोन",
 
 
@@ -136,7 +138,7 @@
     "hero.get_started": "शुरू करें",
     "hero.view_demo": "डेमो देखें",
     "hero.production_ready": "प्रोडक्शन रेडी",
-
+    "hero.free_open_source": "फ्री और ऑपन सोर्स",
 
     "features.tagline": "✨ मुख्य विशेषताएं",
     "features.title.part1": "आपको जो कुछ भी चाहिए",
@@ -180,5 +182,13 @@
     "success.created": "सफलतापूर्वक बनाया गया",
     "error.not_found": "संसाधन नहीं मिला",
     "error.unauthorized": "अनधिकृत पहुंच",
-    "error.server": "सर्वर त्रुटि हुई"
+    "error.server": "सर्वर त्रुटि हुई",
+
+    "tect2.laravel":"Laravel",
+    "tech2.title":"API Backend",
+    "tech2.nuxt":"Nuxt.js",
+    "tech2.title2":"Frontend",
+    "tech2.feature1":"सुरक्षित प्रवेश",
+    "tech2.feature2":"उपयोगकर्ता प्रोफाइल प्रबंधन",
+    "tech2.feature3":"अंतर्राष्ट्रीयकरण (i18n)"
 }

@@ -18,6 +18,7 @@
     "common.users": "المستخدمين",
     "common.permissions": "الصلاحيات",
     "common.localizations": "الترجمات",
+    "common.or": "او",
     "common.modules": "الموديلات",
     "common.button.save": "حفظ",
     "common.button.update": "تحديث",
@@ -75,7 +76,12 @@
     "user.registration.form.phone": "رقم الهاتف",
     "user.registration.form.country_code": "كود البلد",
     "user.registration.form.agreement": "اوافق على الشروط والاحكام",
+
+    "user.login.form.welcome": "مرحبا",
+    "user.login.form.subtitle": "تسجيل الدخول للوصول للوحة القيادة وادارة الحساب الخاص بك.",
     "user.login.form.emailOrPhone": "البريد الالكتروني او رقم الهاتف",
+
+
     "users.title": "إدارة المستخدمين",
     "users.description": "إدارة مستخدمي النظام",
 
@@ -133,7 +139,7 @@
     "hero.get_started": "ابدأ الآن",
     "hero.view_demo": "عرض العرض التجريبي",
     "hero.production_ready": "جاهز للإنتاج",
-
+    "hero.free_open_source": "مجان ومفتوح المصدر",
 
     "features.tagline": "✨ الميزات الرئيسية",
     "features.title.part1": "كل ما تحتاجه",
@@ -177,5 +183,13 @@
     "success.created": "تم الإنشاء بنجاح",
     "error.not_found": "الموارد غير موجودة",
     "error.unauthorized": "وصول غير مصرح به",
-    "error.server": "حدث خطأ في الخادم"
+    "error.server": "حدث خطأ في الخادم",
+
+    "tect2.laravel":"Laravel",
+    "tech2.title":"API Backend",
+    "tech2.nuxt":"Nuxt.js",
+    "tech2.title2":"Frontend",
+    "tech2.feature1":"مصادقة آمنة",
+    "tech2.feature2":"ادارة الملف الشخصي للمستخدم",
+    "tech2.feature3":"دعم لغات متعددة"
 }

@@ -20,6 +20,7 @@
     "common.localizations": "Localisations",
     "common.modules": "Modules",
     "common.ecommerce": "E-commerce",
+    "common.or": "ou",
     "common.button.save": "Enregistrer",
     "common.button.update": "Mettre à jour",
     "common.button.cancel": "Annuler",
@@ -76,7 +77,12 @@
     "user.registration.form.phone": "Numéro de tелефone",
     "user.registration.form.country_code": "Code pays",
     "user.registration.form.agreement": "Je suis d’accord avec les conditions et les obligations",
+
+    "user.login.form.welcome": "Bienvenue",
+    "user.login.form.subtitle": "Connectez-vous pour acceder à votre tableau de bord et gerer votre compte.",
     "user.login.form.emailOrPhone": "Email ou tелефone",
+
+
     "users.title": "Gestion des utilisateurs",
     "users.description": "Gérer les utilisateurs du système",
 
@@ -124,7 +130,7 @@
     "hero.get_started": "Commencer",
     "hero.view_demo": "Voir la démo",
     "hero.production_ready": "Prêt pour la production",
-
+    "hero.free_open_source": "Gratuit & Open Source",
 
     "features.tagline": "✨ Caractéristiques clés",
     "features.title.part1": "Tout ce dont vous avez besoin pour",
@@ -167,5 +173,13 @@
     "success.created": "Créé avec succès",
     "error.not_found": "Ressource non trouvée",
     "error.unauthorized": "Accès non autorisé",
-    "error.server": "Une erreur serveur est survenue"
+    "error.server": "Une erreur serveur est survenue",
+
+    "tect2.laravel":"Laravel",
+    "tech2.title":"API Backend",
+    "tech2.nuxt":"Nuxt.js",
+    "tech2.title2":"Frontend",
+    "tech2.feature1":"Secure Authentication",
+    "tech2.feature2":"Profile Management",
+    "tech2.feature3":"Multi-Language Support"
 }

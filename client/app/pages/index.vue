@@ -84,7 +84,7 @@
                       <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
                       <div class="w-3 h-3 rounded-full bg-green-400"></div>
                     </div>
-                    <span class="text-white font-medium text-sm">Tech Stack</span>
+                    <span class="text-white font-medium text-sm">{{  t("features.tagline") }}</span>
                   </div>
                   <div class="text-gray-400 text-xs">v1.0</div>
                 </div>
@@ -96,32 +96,28 @@
                     <div
                       class="bg-linear-to-br from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-xl p-4 flex items-center">
                       <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center mr-3">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                        </svg>
+                        <UIIconsHexa />
                       </div>
                       <div>
                         <div class="text-lg font-bold text-gray-900 dark:text-white">
-                          Laravel
+                          {{ t("tect2.laravel") }}
                         </div>
                         <div class="text-xs text-red-600 dark:text-red-400 font-medium">
-                          API Backend
+                          {{ t("tech2.title") }}
                         </div>
                       </div>
                     </div>
                     <div
                       class="bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4 flex items-center">
                       <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3">
-                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                        </svg>
+                        <UIIconsHexa />
                       </div>
                       <div>
                         <div class="text-lg font-bold text-gray-900 dark:text-white">
-                          Nuxt.js
+                          {{ t("tech2.nuxt") }}
                         </div>
                         <div class="text-xs text-green-600 dark:text-green-400 font-medium">
-                          Frontend
+                          {{ t("tech2.title2") }}
                         </div>
                       </div>
                     </div>
@@ -130,31 +126,20 @@
                   <!-- Features -->
                   <div class="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-4">
                     <div class="flex justify-between items-center mb-3">
-                      <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Key Features</span>
-                      <span class="text-xs text-green-500 bg-green-100 dark:bg-green-900/30 px-2 py-1 rounded-full">5
-                        Included</span>
+                      <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ t("features.tagline") }}</span>
                     </div>
                     <div class="space-y-2">
                       <div class="flex items-center">
-                        <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
-                          </path>
-                        </svg>
-                        <span class="text-sm text-gray-600 dark:text-gray-300">Secure Authentication</span>
+                        <UIIconsCheck class="mr-2" />
+                        <span class="text-sm text-gray-600 dark:text-gray-300">{{ t("tech2.feature1") }}</span>
                       </div>
                       <div class="flex items-center">
-                        <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
-                          </path>
-                        </svg>
-                        <span class="text-sm text-gray-600 dark:text-gray-300">Profile Management</span>
+                        <UIIconsCheck class="mr-2" />
+                        <span class="text-sm text-gray-600 dark:text-gray-300">{{ t("tech2.feature2") }}</span>
                       </div>
                       <div class="flex items-center">
-                        <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
-                          </path>
-                        </svg>
-                        <span class="text-sm text-gray-600 dark:text-gray-300">Multi-language Support</span>
+                        <UIIconsCheck class="mr-2" />
+                        <span class="text-sm text-gray-600 dark:text-gray-300">{{ t("tech2.feature3") }}</span>
                       </div>
                     </div>
                   </div>

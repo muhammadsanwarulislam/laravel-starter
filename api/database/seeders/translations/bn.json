@@ -29,6 +29,7 @@
     "common.localizations": "লোকালিজেশন",
     "common.modules": "মডিউল",
     "common.ecommerce": "ইকমার্স",
+    "common.or": "অথবা",
     "common.settings": "সেটিংস",
     "common.id": "আইডি",
     "common.name": "নাম",
@@ -89,6 +90,9 @@
     "user.registration.form.phone": "ফোন নম্বর",
     "user.registration.form.country_code": "দেশের কোড",
     "user.registration.form.agreement": "আমি নিয়োগ করি নিবন্ধনের শর্তাবলী",
+
+    "user.login.form.welcome": "স্বাগতম",
+    "user.login.form.subtitle": "অ্যাকাউন্ট এর জন্য সাইন ইন করুন এবং অ্যাকাউন্ট পরিচালনা করুন",
     "user.login.form.emailOrPhone": "ইমেল অথবা ফোন",
 
 
@@ -147,7 +151,7 @@
     "hero.get_started": "শুরু করুন",
     "hero.view_demo": "ডেমো দেখুন",
     "hero.production_ready": "প্রোডাকশন রেডি",
-
+    "hero.free_open_source": "ফ্রি ওপেন সোর্স",
 
     "features.tagline": "✨ মূল ফিচারসমূহ",
     "features.title.part1": "আপনার যা যা প্রয়োজন",
@@ -181,5 +185,13 @@
     "tech.nuxt.feature1": "Vue 3 Composition API",
     "tech.nuxt.feature2": "সার্ভার-সাইড রেন্ডারিং (SSR)",
     "tech.nuxt.feature3": "আন্তর্জাতিকীকরণ (i18n)",
-    "tech.nuxt.feature4": "কম্পোনেন্ট-ভিত্তিক আর্কিটেকচার"
+    "tech.nuxt.feature4": "কম্পোনেন্ট-ভিত্তিক আর্কিটেকচার",
+
+    "tect2.laravel":"লারাভেল",
+    "tech2.title":"API ব্যাকএন্ড",
+    "tech2.nuxt":"Nuxt.js",
+    "tech2.title2":"ফ্রন্টএন্ড",
+    "tech2.feature1":"সিকিউর অথেনটিকেশন",
+    "tech2.feature2":"প্রোফাইল ম্যানেজমেন্ট",
+    "tech2.feature3":"মাল্টি-ল্যাংগুয়েজে সাপোর্ট"
 }

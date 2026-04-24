@@ -6,11 +6,11 @@
                 <div>
                     <div class="mt-16">
                         <h1 class="text-4xl font-bold text-white leading-tight">
-                            Welcome to
+                            {{ t("user.login.form.welcome") }}
                             <span class="text-yellow-300">NuxtLaravel</span>
                         </h1>
                         <p class="mt-6 text-lg text-white/90">
-                            Sign in to access your dashboard and manage your account.
+                            {{ t("user.login.form.subtitle") }}
                         </p>
                     </div>
                 </div>
@@ -32,7 +32,7 @@
                             {{ t('button.sign_in') }}
                         </h2>
                         <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            Or
+                            {{ t('common.or') }}
                             <NuxtLink to="/auth/register"
                                 class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200">
                                 {{ t('user.registration.form.title') }}
@@ -94,12 +94,12 @@
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-between">
+                        <!-- <div class="flex items-center justify-between">
                             <NuxtLink to="/auth/forgot-password"
                                 class="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors duration-200">
                                 Forgot password?
                             </NuxtLink>
-                        </div>
+                        </div> -->
 
                         <div>
                             <button type="submit" :disabled="loading || (form.identifier && !isEmail && !isValidPhone)"
@@ -140,7 +140,7 @@
                     <NuxtLink to="/"
                         class="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors duration-200 inline-flex items-center">
                         <UIIconsArrowLeft2 class="bg-transparent w-4 h-4 mr-1" />
-                        Back to home
+                        {{ t('common.button.backToHome') }}
                     </NuxtLink>
                 </div>
             </div>
