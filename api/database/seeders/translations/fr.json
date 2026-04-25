@@ -10,6 +10,8 @@
     "auth.otp_resend": "Code envoyé",
     "auth.otp_resend_success": "Code envoyé",
     "auth.otp_verification_failed": "Code incorrect",
+    "auth.verify_otp":"Verifier le code",
+    "auth.verify_otp_text":"Entrez le code de verification envoyé",
 
     "common.welcome": "Bienvenue",
     "common.dashboard": "Tableau de bord",
@@ -36,6 +38,8 @@
     "common.button.backToHome": "Retour à la maison",
     "common.button.logout": "Déconnexion",
     "common.button.profile": "Profil",
+    "common.button.resend": "Renvoyer",
+    "common.button.verify_code": "Verifier le code",
     "comomon.id": "ID",
     "common.name": "Nom",
     "common.slug": "Slug",

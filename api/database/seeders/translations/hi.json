@@ -10,7 +10,8 @@
     "auth.otp_resend": "ओटीपी पुन: भेजा गया",
     "auth.otp_resend_success": "ओटीपी पुन: भेजा गया",
     "auth.otp_verification_failed": "ओटीपी विफल",
-
+    "auth.verify_otp":"ओटीपी सत्यापित करें",
+    "auth.verify_otp_text":"ओटीपी सत्यापित करें",
 
     "common.welcome": "स्वागत है",
     "common.dashboard": "डैशबोर्ड",
@@ -37,6 +38,9 @@
     "common.button.backToHome": "होम पेज",
     "common.button.logout": "लॉगआउट",
     "common.button.profile": "प्रोफ़ाइल",
+    "common.button.resend": "पुन: भेजें",
+    "common.button.verify_code": "कोड सत्यापित करें",
+
     "common.id": "आईडी",
     "common.name": "नाम",
     "common.slug": "स्लग",

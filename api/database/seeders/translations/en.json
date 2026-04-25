@@ -10,6 +10,8 @@
     "auth.otp_resend": "OTP resent",
     "auth.otp_resend_success": "OTP resent successfully",
     "auth.otp_verification_failed": "OTP failed",
+    "auth.verify_otp":"Verify OTP",
+    "auth.verify_otp_text":"Enter the 6-digit verification code sent to",
 
     "validation.required": "This field is required",
     "validation.email": "Please enter a valid email address",
@@ -68,6 +70,8 @@
     "common.button.backToHome": "Back to Home",
     "common.button.logout": "Logout",
     "common.button.profile": "Profile",
+    "common.button.resend": "Resend",
+    "common.button.verify_code": "Verify Code",
 
     "navbar.home": "Home",
     "navbar.features": "Features",

@@ -10,6 +10,8 @@
     "auth.otp_resend": "تم ارسال الكود مرة اخرى",
     "auth.otp_resend_success": "تم ارسال الكود مرة اخرى بنجاح",
     "auth.otp_verification_failed": "فشل الكود",
+    "auth.verify_otp":"تحقق من الكود",
+    "auth.verify_otp_text":"ادخل الكود المرسل لك",
 
     "common.welcome": "مرحبا",
     "common.dashboard": "لوحة القيادة",
@@ -34,6 +36,8 @@
     "common.button.profile": "الملف الشخصي",
     "common.button.create_account": "إنشاء حساب",
     "common.button.sign_in_account": "تسجيل الدخول على حسابك",
+    "common.button.resend": "ارسال مرة اخرى",
+    "common.button.verify_code": "تحقق من الكود",
 
     "common.id": "المعرف",
     "common.name": "اسم",

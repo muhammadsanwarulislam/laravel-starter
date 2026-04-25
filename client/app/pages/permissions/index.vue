@@ -93,7 +93,7 @@ const permissionColumns: Column[] = [
   { key: 'id', label: t('common.id'), sortable: true },
   { key: 'name', label: t('common.name'), sortable: true },
   { key: 'slug', label: t('common.slug'), sortable: true },
-  { key: 'module', label: t('common.module'), sortable: true },
+  { key: 'module', label: t('common.modules'), sortable: true },
   { key: 'description', label: t('common.description'), sortable: true },
   {
     key: 'created_at',

@@ -7,7 +7,7 @@
           <UIIconsCheck class="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
         </div>
         <h3 class="text-lg font-semibold leading-6 text-gray-900 dark:text-white">
-          Verify OTP
+          {{ t('auth.verify_otp') }}
         </h3>
       </div>
     </template>
@@ -15,7 +15,7 @@
     <template #content>
       <div class="text-center mb-2">
         <p class="text-sm text-gray-500 dark:text-gray-400">
-          Enter the 6-digit verification code sent to
+          {{ t('auth.verify_otp_text') }}
           <span class="font-medium text-gray-700 dark:text-gray-300">
             {{ maskedIdentifier }}
           </span>
@@ -42,9 +42,6 @@
               {{ timer.formatTime() }}
             </span>
           </p>
-          <p v-if="timer.isExpired" class="mt-1 text-xs text-red-500">
-            OTP has expired. Please request a new one.
-          </p>
         </div>
       </div>
 
@@ -53,16 +50,7 @@
         <button @click="verifyOTP" :disabled="loading || !isOtpComplete || timer.isExpired"
           class="w-full py-3 px-4 rounded-xl text-white font-medium bg-linear-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
           <UIIconsSpinner v-if="loading" class="animate-spin h-5 w-5 mr-2" />
-          <span>{{ loading ? 'Verifying...' : 'Verify Code' }}</span>
-        </button>
-
-        <button @click="resendOTP" :disabled="resendLoading || !resendTimer.isExpired"
-          class="w-full py-2 px-4 rounded-xl font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
-          <UIIconsSpinner v-if="resendLoading" class="animate-spin h-4 w-4 mr-2" />
-          <span>
-            {{ resendLoading ? 'Sending...' : `Resend ${!resendTimer.isExpired ? `in ${resendTimer.formatTime()}` : ''}`
-            }}
-          </span>
+          <span>{{ loading ? 'Verifying...' : t('common.button.verify_code') }}</span>
         </button>
       </div>
     </template>
@@ -72,7 +60,7 @@
         <button @click="goBackToLogin"
           class="text-sm font-medium text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-300 transition-colors duration-200 inline-flex items-center">
           <UIIconsArrowLeft class="bg-transparent w-4 h-4 mr-1" />
-          Back to login
+          {{ t('common.button.back') }}
         </button>
       </div>
     </template>
@@ -98,6 +86,7 @@ const emit = defineEmits<{
 
 const auth = useAuth()
 const router = useRouter()
+const { t } = useLocalization()
 
 // Initialize OTP functionality
 const { otpDigits, digitInputs, focusedIndex, otpCode, isComplete: isOtpComplete, handleDigitInput, handleKeyDown, handlePaste, resetOTP, setFocus } = useOTP(6)

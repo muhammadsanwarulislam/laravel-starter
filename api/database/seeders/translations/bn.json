@@ -10,6 +10,8 @@
     "auth.otp_resend": "ওটি পুনরায় পাঠানো হয়েছে",
     "auth.otp_resend_success": "ওটি পুনরায় পাঠানো হয়েছে",
     "auth.otp_verification_failed": "ওটি ভুল হয়েছে",
+    "auth.verify_otp":"ওটি যাচাই করুন",
+    "auth.verify_otp_text":"পাঠানো ৬-সংখ্যার যাচাইকরণ কোডটি প্রবেশ করান",
 
     "validation.required": "এই ক্ষেত্রটি প্রয়োজন",
     "validation.email": "সঠিক ইমেইল দিন",
@@ -70,6 +72,8 @@
     "common.button.backToHome": "হোম পেইজ",
     "common.button.logout": "লগআউট",
     "common.button.profile": "প্রোফাইল",
+    "common.button.resend": "পুনরায় পাঠান",
+    "common.button.verify_code": "ভেরিফাই কোড",
 
 
     "navbar.home": "হোম",
