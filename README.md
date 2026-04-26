@@ -45,5 +45,6 @@ Follow the steps mentioned below to install and run the project.
   - Internationalization (i18n) implementation
 
 **Demonstration**
+
 [Screencast from 2026-04-26 09-21-09.webm](https://github.com/user-attachments/assets/442db327-e70a-4675-bed8-c572768ba7aa)
 
