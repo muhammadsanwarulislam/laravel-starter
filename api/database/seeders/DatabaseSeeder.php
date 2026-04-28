@@ -23,7 +23,6 @@ class DatabaseSeeder extends Seeder
             LanguageSeeder::class,
             UiTranslationSeeder::class,
             ContentTranslationSeeder::class,
-            FileManagerSeeder::class,
         ]);
 
         $this->command->info('===============================================');

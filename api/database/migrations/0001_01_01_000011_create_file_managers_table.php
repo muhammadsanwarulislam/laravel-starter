@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('file_managers', function (Blueprint $table) {
         $table->id();
         $table->unsignedBigInteger('user_id');
+        $table->unsignedBigInteger('fileable_id')->nullable();
+        $table->string('fileable_type')->nullable();
         $table->uuid('uuid')->unique();
         $table->string('name');
         $table->string('file');
@@ -27,6 +29,7 @@ return new class extends Migration
         
         // Performance indexes
         $table->index(['user_id', 'created_at']);
+        $table->index('fileable_type');
         $table->index('type');
         $table->index(['type', 'created_at']);
         $table->index('uuid');

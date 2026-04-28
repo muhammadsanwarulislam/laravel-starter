@@ -134,18 +134,4 @@ class UserController extends Controller
             'permissions' => $updatedUser->cachedPermissions(),
         ], 'Profile updated successfully');
     }
-
-    public function updateProfilePhoto(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'photo' => 'required|image|mimes:jpeg,jpg,png,webp|max:5120',
-        ]);
-
-        $updatedUser = $this->userService->updateProfilePhoto($request->user(), $validated['photo']);
-
-        return $this->success([
-            'user' => $updatedUser->load(['profile', 'roles', 'files']),
-            'permissions' => $updatedUser->cachedPermissions(),
-        ], 'Profile photo updated successfully');
-    }
 }

@@ -1,9 +1,10 @@
 <template>
   <div class="p-6">
-    <SharedPageHeader :title="t('profile.title')" :description="t('profile.description')" />
+    <SharedPageHeader title="My Profile"
+      description="Review your account details, update your photo, and keep your password secure." />
 
     <div v-if="loadingProfile" class="flex justify-center py-10">
-      <UILoadingSpinner size="lg" />
+      <UILoadingSpinner message="Loading" />
     </div>
 
     <div v-else class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -11,8 +12,8 @@
         <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 class="text-lg font-semibold text-gray-900">{{ t('profile.avatar') }}</h3>
-              <p class="mt-1 text-sm text-gray-500">{{ t('profile.photo_upload_info') }}</p>
+              <h3 class="text-lg font-semibold text-gray-900">Profile Photo</h3>
+              <p class="mt-1 text-sm text-gray-500">Upload a clear square photo for your account menu and profile.</p>
             </div>
 
             <div class="flex items-center gap-4">
@@ -111,10 +112,10 @@
           </div>
 
           <div class="border-t border-gray-200 pt-6">
-            <h3 class="text-lg font-semibold text-gray-900">{{ t('profile.details') }}</h3>
+            <h3 class="text-lg font-semibold text-gray-900">Profile Details</h3>
             <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
               <div>
-                <label for="profile-gender" class="mb-2 block text-sm font-medium text-gray-700">{{ t('common.gender') }}</label>
+                <label for="profile-gender" class="mb-2 block text-sm font-medium text-gray-700">Gender</label>
                 <select id="profile-gender" v-model="form.gender" :class="inputClass(errors.gender)">
                   <option value="">Select gender</option>
                   <option value="male">Male</option>
@@ -221,12 +222,16 @@
           </div>
           <div class="mt-4 space-y-3 text-sm text-gray-600">
             <div class="flex items-center justify-between">
-              <span>{{ t('common.roles') }}</span>
+              <span>Roles</span>
               <span class="font-medium text-gray-900">{{ roleNames }}</span>
             </div>
             <div class="flex items-center justify-between">
-              <span>{{ t('common.permissions') }}</span>
+              <span>Permissions</span>
               <span class="font-medium text-gray-900">{{ permissions.length }}</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>Files</span>
+              <span class="font-medium text-gray-900">{{ fileCount }}</span>
             </div>
           </div>
         </section>
@@ -261,7 +266,6 @@ import { notification } from '~/utils/notification'
 
 definePageMeta({ middleware: ['auth'] })
 
-const { t } = useLocalization()
 const auth = useAuth()
 const loadingProfile = ref(true)
 const saving = ref(false)
@@ -466,7 +470,7 @@ const handlePhotoSelected = async (event: Event) => {
   uploadingPhoto.value = true
 
   try {
-    const response = await services.user.updateProfilePhoto(file)
+    const response = await services.user.uploadFile(file, 'profile_image', 'user', profileUser.value?.id, true)
 
     if (response.success && response.data) {
       applyProfile(response.data)

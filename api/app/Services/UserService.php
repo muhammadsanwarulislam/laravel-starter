@@ -16,11 +16,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserService
 {
-    protected UserRepository $userRepository;
-
-    public function __construct(UserRepository $userRepository)
+    public function __construct(protected UserRepository $userRepository, protected FileService $fileService)
     {
-        $this->userRepository = $userRepository;
     }
 
     public function getFilteredUsers(
@@ -134,36 +131,12 @@ class UserService
 
     public function updateProfilePhoto(User $user, UploadedFile $photo): User
     {
-        $uploadDirectory = public_path('uploads/profile-photos');
-
-        if (!File::exists($uploadDirectory)) {
-            File::makeDirectory($uploadDirectory, 0755, true);
-        }
-
-        $existingPhoto = $user->files()->where('type', 'profile_image')->latest()->first();
-
-        if ($existingPhoto) {
-            $existingPath = public_path('uploads/' . ltrim($existingPhoto->path, '/'));
-            if (File::exists($existingPath)) {
-                File::delete($existingPath);
-            }
-            $existingPhoto->delete();
-        }
-
-        $extension = $photo->getClientOriginalExtension() ?: 'jpg';
-        $filename = Str::uuid()->toString() . '.' . $extension;
-        $relativePath = 'profile-photos/' . $filename;
-
-        $photo->move($uploadDirectory, $filename);
-
-        FileManager::create([
-            'user_id' => $user->id,
-            'uuid' => Str::uuid()->toString(),
-            'name' => pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME),
-            'file' => $filename,
+        $this->fileService->upload($user, $photo, [
             'type' => 'profile_image',
-            'size' => (string) $photo->getSize(),
-            'path' => $relativePath,
+            'directory' => 'profile-photos',
+            'attachable_type' => 'user',
+            'attachable_id' => $user->id,
+            'replace_existing' => true,
         ]);
 
         return $user->fresh(['profile', 'roles', 'files']);

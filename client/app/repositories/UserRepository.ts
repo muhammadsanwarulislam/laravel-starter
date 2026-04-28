@@ -1,5 +1,5 @@
 import { BaseRepository } from './BaseRepository'
-import type { User, UserProfileResponse, PaginatedResponse, CreateUserData, UpdateUserData } from '~/api/types/api.types'
+import type { User, UserProfileResponse, PaginatedResponse, CreateUserData, UpdateUserData, FileManager } from '~/api/types/api.types'
 import type { ApiResponse } from '~/api/types/api.types'
 
 export class UserRepository extends BaseRepository {
@@ -43,10 +43,8 @@ export class UserRepository extends BaseRepository {
     return this.put<UserProfileResponse>('/profile', data)
   }
 
-  async updateProfilePhoto(photo: File): Promise<ApiResponse<UserProfileResponse>> {
-    const formData = new FormData()
-    formData.append('photo', photo)
-
-    return this.post<UserProfileResponse>('/profile/photo', formData)
+  async uploadFile(formData: FormData): Promise<ApiResponse<FileManager>> {
+    return this.post<ApiResponse<FileManager>>('/files', formData, {
+    });
   }
 }

@@ -207,3 +207,17 @@ export interface AuthUserResponse {
   locale: string
   locales: Record<string, Language>
 }
+
+export interface FileManager {
+  id: number
+  uuid: string
+  name: string
+  type: string
+  size: string
+  token: string
+  access_url: string
+  download_url: string
+  extension?: string | null
+  created_at: string
+  updated_at: string
+}

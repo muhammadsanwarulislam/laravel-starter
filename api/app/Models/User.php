@@ -94,7 +94,7 @@ class User extends Authenticatable
                     return null;
                 }
 
-                return url('uploads/' . ltrim($file->path, '/'));
+                return $file->access_url;
             }
         );
     }

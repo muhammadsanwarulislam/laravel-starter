@@ -34,11 +34,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
     Route::get('/me', [App\Http\Controllers\Api\AuthController::class, 'me']);
     Route::put('/change-password', [App\Http\Controllers\Api\AuthController::class, 'changePassword']);
+    Route::get('/files', [App\Http\Controllers\Api\FileController::class, 'index']);
+    Route::post('/files', [App\Http\Controllers\Api\FileController::class, 'store']);
 
     // Profile
     Route::get('/profile', [App\Http\Controllers\Api\UserController::class, 'profile']);
     Route::put('/profile', [App\Http\Controllers\Api\UserController::class, 'updateProfile']);
-    Route::post('/profile/photo', [App\Http\Controllers\Api\UserController::class, 'updateProfilePhoto']);
 
     // User Management (requires permissions)
     Route::prefix('users')->group(function () {
