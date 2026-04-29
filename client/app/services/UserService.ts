@@ -1,5 +1,5 @@
 import { UserRepository } from '../repositories/UserRepository'
-import type { User, UserProfileResponse, CreateUserData, UpdateUserData } from '~/api/types/api.types'
+import type { User, UserProfileResponse, CreateUserData, UpdateUserData, FileManager } from '~/api/types/api.types'
 
 export class UserService {
   private repository: UserRepository
@@ -171,13 +171,7 @@ export class UserService {
     }
   }
 
-  async uploadFile(
-    file: File,
-    type: string,
-    attachableType?: string,
-    attachableId?: number,
-    replaceExisting = false,
-  ): Promise<{ success: boolean; data?: FileManager; message?: string }> {
+  async uploadFile(file: File, type: string, attachableType?: string, attachableId?: number, replaceExisting = false,): Promise<{ success: boolean; data?: FileManager; message?: string }> {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("type", type);
