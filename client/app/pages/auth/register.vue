@@ -263,7 +263,7 @@
                                     </svg>
                                 </span>
                                 <span class="relative">
-                                    {{ loading ? 'Creating Account...' : t('common.button.create_account') }}
+                                    {{ loading ? t('common.loading.signup') : t('common.button.create_account') }}
                                 </span>
                                 <svg class="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">

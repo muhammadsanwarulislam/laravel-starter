@@ -108,7 +108,7 @@
                                     <UIIconsSpinner class="animate-spin h-5 w-5 text-white" />
                                 </span>
                                 <span class="relative">
-                                    {{ loading ? 'Signing in...' : t('button.sign_in') }}
+                                    {{ loading ? t('common.loading.signin') : t('button.sign_in') }}
                                 </span>
                                 <UIIconsArrowRight class="bg-transparent" />
                             </button>

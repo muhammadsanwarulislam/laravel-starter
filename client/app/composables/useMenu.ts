@@ -44,7 +44,7 @@ export const useMenu = () => {
             ],
             roles: [], 
             isActive: route.path.startsWith('/users'),
-            badge: 42 
+            // badge: 42 
           },
           {
             id: 'roles',

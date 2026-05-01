@@ -1,7 +1,6 @@
 <template>
   <div class="p-6">
-    <SharedPageHeader title="My Profile"
-      description="Review your account details, update your photo, and keep your password secure." />
+    <SharedPageHeader :title="t('profile.title')" :description="t('profile.description')" />
 
     <div v-if="loadingProfile" class="flex justify-center py-10">
       <UILoadingSpinner message="Loading" />
@@ -12,8 +11,8 @@
         <section class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div class="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 class="text-lg font-semibold text-gray-900">Profile Photo</h3>
-              <p class="mt-1 text-sm text-gray-500">Upload a clear square photo for your account menu and profile.</p>
+              <h3 class="text-lg font-semibold text-gray-900">{{ t('profile.avatar') }}</h3>
+              <p class="mt-1 text-sm text-gray-500">{{ t('profile.photo_upload_info') }}</p>
             </div>
 
             <div class="flex items-center gap-4">
@@ -43,7 +42,7 @@
         <form @submit.prevent="submitProfile"
           class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
           <div>
-            <h3 class="text-lg font-semibold text-gray-900">Basic Information</h3>
+            <h3 class="text-lg font-semibold text-gray-900">{{ t('profile.basic_info') }}</h3>
             <p class="mt-1 text-sm text-gray-500">Keep your personal details and contact information up to date.</p>
           </div>
 
@@ -222,16 +221,12 @@
           </div>
           <div class="mt-4 space-y-3 text-sm text-gray-600">
             <div class="flex items-center justify-between">
-              <span>Roles</span>
+              <span>{{ t('common.roles') }}</span>
               <span class="font-medium text-gray-900">{{ roleNames }}</span>
             </div>
             <div class="flex items-center justify-between">
-              <span>Permissions</span>
+              <span>{{ t('common.permissions') }}</span>
               <span class="font-medium text-gray-900">{{ permissions.length }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-              <span>Files</span>
-              <span class="font-medium text-gray-900">{{ fileCount }}</span>
             </div>
           </div>
         </section>
@@ -240,15 +235,15 @@
           <h3 class="text-sm font-semibold text-gray-900">Account Summary</h3>
           <dl class="mt-4 space-y-3 text-sm">
             <div class="flex justify-between gap-4">
-              <dt class="text-gray-500">Status</dt>
+              <dt class="text-gray-500">{{ t('common.status') }}</dt>
               <dd class="font-medium text-gray-900">{{ profileUser?.status ? 'Active' : 'Inactive' }}</dd>
             </div>
             <div class="flex justify-between gap-4">
-              <dt class="text-gray-500">Joined</dt>
+              <dt class="text-gray-500">{{ t('common.created_at') }}</dt>
               <dd class="font-medium text-gray-900">{{ formatDisplayDate(profileUser?.created_at) }}</dd>
             </div>
             <div class="flex justify-between gap-4">
-              <dt class="text-gray-500">Last Updated</dt>
+              <dt class="text-gray-500">{{ t('common.updated_at') }}</dt>
               <dd class="font-medium text-gray-900">{{ formatDisplayDate(profileUser?.updated_at) }}</dd>
             </div>
           </dl>
@@ -265,6 +260,8 @@ import { useAuth } from '~/composables/auth/useAuth'
 import { notification } from '~/utils/notification'
 
 definePageMeta({ middleware: ['auth'] })
+
+const { t } = useLocalization()
 
 const auth = useAuth()
 const loadingProfile = ref(true)

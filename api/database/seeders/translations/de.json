@@ -36,6 +36,7 @@
     "common.status": "Status",
     "common.actions": "Aktionen",
     "common.created_at": "Erstellt am",
+    "common.updated_at": "Aktualisiert am",
     "common.next": "Weiter",
     "common.previous": "Zurück",
     "common.description": "Beschreibung",

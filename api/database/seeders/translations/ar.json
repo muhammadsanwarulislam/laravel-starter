@@ -48,6 +48,7 @@
     "common.status": "الحالة",
     "common.actions": "العمليات",
     "common.created_at": "تاريخ الإنشاء",
+    "common.updated_at": "تاريخ التحديث",
     "common.next": "التالي",
     "common.previous": "السابق",
     "common.description": "الوصف",
@@ -61,6 +62,10 @@
     "common.total_ltr_languages": "LTR Languages",
     "common.total_rtl_languages": "RTL Languages",
     "common.total_keys": "Total Keys",
+    "common.loading.signin": "تسجيل الدخول",
+    "common.loading.signup": "تسجيل حساب",
+    "common.loading": "تحميل",
+    "common.total": "المجموع",
 
     "navbar.home": "الصفحة الرئيسية",
     "navbar.features": "الميزات",
