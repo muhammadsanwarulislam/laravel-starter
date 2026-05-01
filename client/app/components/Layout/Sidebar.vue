@@ -31,29 +31,6 @@
         </li>
       </ul>
     </nav>
-
-    <!-- Sidebar footer -->
-    <div class="p-5 border-t border-slate-200 dark:border-slate-800">
-      <div class="rounded-3xl bg-slate-100 dark:bg-slate-900 p-4">
-        <div class="flex items-center gap-3">
-          <div class="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 text-white">
-            <component :is="getIconComponent('Help')" class="h-5 w-5" />
-          </div>
-          <div>
-            <p class="text-sm font-semibold text-slate-900 dark:text-white">
-              Need help?
-            </p>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              Use the docs or reach out to support.
-            </p>
-          </div>
-        </div>
-        <button
-          class="mt-4 w-full rounded-3xl border border-blue-200 bg-white px-4 py-2 text-sm font-semibold text-blue-700 transition hover:bg-blue-50 dark:border-blue-900 dark:bg-slate-950 dark:text-blue-300 dark:hover:bg-slate-900">
-          View Docs
-        </button>
-      </div>
-    </div>
   </aside>
 </template>
 

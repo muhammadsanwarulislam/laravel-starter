@@ -38,8 +38,6 @@ class SentOtp extends Notification
                     ->subject('Your One-Time Password (OTP)')
                     ->line('Dear ' . $notifiable->name . ',')
                     ->line('Your One-Time Password (OTP) is: ' . $this->otp)
-                    ->line('This OTP is valid for the next 10 minutes. Please do not share it with anyone.')
-                    ->line('If you did not request this OTP, please contact our support team immediately.')
                     ->line('Thank you for using our application!');
     }
 
