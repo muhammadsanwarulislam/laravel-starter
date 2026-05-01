@@ -48,13 +48,12 @@
 
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div class="md:col-span-2">
-              <label for="profile-name" class="mb-2 block text-sm font-medium text-gray-700">Full Name</label>
+              <label for="profile-name" class="mb-2 block text-sm font-medium text-gray-700">{{ t('common.full_name') }}</label>
               <div class="relative">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <UIIconsUser class="h-5 w-5 text-gray-400" />
                 </div>
-                <input id="profile-name" v-model="form.name" type="text" :class="inputClass(errors.name)" class="pl-10"
-                  placeholder="John Doe" />
+                <input id="profile-name" v-model="form.name" type="text" :class="inputClass(errors.name)" class="pl-10" :placeholder="t('user.registration.form.name_placeholder')" />
               </div>
               <p v-if="errors.name" class="mt-2 flex items-center text-xs text-red-600">
                 <UIIconsExclamation2 class="mr-1 h-4 w-4 text-red-600" />
@@ -63,7 +62,7 @@
             </div>
 
             <div>
-              <label for="profile-email" class="mb-2 block text-sm font-medium text-gray-700">Email</label>
+              <label for="profile-email" class="mb-2 block text-sm font-medium text-gray-700">{{ t('common.email') }}</label>
               <input id="profile-email" v-model="form.email" type="email" :class="inputClass(errors.email)"
                 placeholder="you@example.com" />
               <p v-if="errors.email" class="mt-2 text-xs text-red-600">{{ errors.email }}</p>
@@ -82,8 +81,7 @@
             </div>
 
             <div>
-              <label for="profile-country-code" class="mb-2 block text-sm font-medium text-gray-700">Country
-                Code</label>
+              <label for="profile-country-code" class="mb-2 block text-sm font-medium text-gray-700">{{ t('common.country_code') }}</label>
               <div class="relative">
                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <UIIconsPhone class="h-5 w-5 text-gray-400" />

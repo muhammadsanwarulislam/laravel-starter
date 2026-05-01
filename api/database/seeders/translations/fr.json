@@ -42,6 +42,7 @@
     "common.button.verify_code": "Verifier le code",
     "comomon.id": "ID",
     "common.name": "Nom",
+    "common.full_name":"Nom complet",
     "common.slug": "Slug",
     "common.email": "E-mail",
     "common.phone": "Téléphone",
