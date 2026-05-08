@@ -17,7 +17,7 @@
             @click="$emit('close')"
             class="absolute top-4 right-4 text-gray-400 hover:text-gray-500 dark:text-gray-500 dark:hover:text-gray-400 transition-colors"
           >
-            <UIIconsX class="h-6 w-6" />
+            <UIIconsCross class="h-6 w-6" />
           </button>
 
           <!-- Header slot -->
