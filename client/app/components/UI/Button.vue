@@ -10,7 +10,7 @@
 import { computed } from 'vue'
 
 interface Props {
-    variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'info' | 'light' | 'dark'
+    variant?: 'primary' | 'secondary' | 'danger' | 'success' | 'warning' | 'info' | 'light' | 'dark' | 'gradient'
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
     type?: 'button' | 'submit' | 'reset'
     disabled?: boolean
@@ -63,7 +63,8 @@ const buttonClasses = computed(() => {
         warning: 'border-transparent text-white bg-amber-500 hover:bg-amber-600 focus:ring-amber-500',
         info: 'border-transparent text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-cyan-500',
         light: 'border-gray-200 text-gray-700 bg-gray-50 hover:bg-gray-100 focus:ring-gray-500',
-        dark: 'border-transparent text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-700'
+        dark: 'border-transparent text-white bg-gray-800 hover:bg-gray-900 focus:ring-gray-700',
+        gradient: 'border-transparent text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 focus:ring-indigo-500'
     }
 
     const outlinedVariants = {
