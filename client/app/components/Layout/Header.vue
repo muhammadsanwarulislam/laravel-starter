@@ -1,67 +1,97 @@
 <template>
-  <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-    <div class="px-6 py-4 flex items-center justify-between">
-      <!-- Left section: Logo and mobile menu toggle -->
-      <div class="flex items-center space-x-4">
-        <!-- Mobile menu button (hidden on lg and above) -->
+  <header
+    class="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-2xl border-b border-slate-200/60 dark:border-slate-800/60">
+    <div class="px-4 sm:px-6 py-3 flex items-center justify-between">
+      <!-- Left: Logo & Mobile Toggle -->
+      <div class="flex items-center gap-3">
         <button @click="$emit('toggleSidebar')"
-          class="lg:hidden p-2 rounded-md text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          class="lg:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 active:scale-95">
+          <UIIconsMenu class="h-5 w-5" />
         </button>
 
-        <!-- Logo/Brand -->
-        <div class="flex items-center space-x-2">
-          <div class="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                clip-rule="evenodd" />
-            </svg>
+        <!-- Animated Logo -->
+        <div class="flex items-center gap-2.5 group cursor-pointer" @click="router.push('/')">
+          <div class="relative h-9 w-9">
+            <div
+              class="absolute inset-0 bg-linear-to-br from-indigo-500 to-violet-600 rounded-xl shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-shadow duration-300">
+            </div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <UIIconsLogo class="h-6 w-6 text-white" />
+            </div>
           </div>
-          <span class="text-xl font-bold text-gray-800 dark:text-white">Admin Panel</span>
+          <div class="hidden sm:block">
+            <span
+              class="text-lg font-bold bg-linear-to-r from-slate-800 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">
+              Admin Panel
+            </span>
+            <span
+              class="hidden md:inline-block ml-2 text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+              PRO
+            </span>
+          </div>
         </div>
       </div>
 
-      <!-- Right section: User menu -->
-      <div class="flex items-center space-x-4">
-        <!-- User menu -->
-        <div class="relative">
+      <!-- Right: Actions & User -->
+      <div class="flex items-center gap-1 sm:gap-2">
+        <!-- User Menu -->
+        <div class="relative ml-1" ref="userMenuRef">
           <button @click="toggleUserMenu"
-            class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-            <div class="h-8 w-8 overflow-hidden rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
-              <img v-if="userAvatarUrl" :src="userAvatarUrl" alt="Profile photo" class="h-full w-full object-cover" />
-              <span v-else>{{ userInitials }}</span>
+            class="flex items-center gap-2.5 p-1.5 pr-3 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 active:scale-95 border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+            <div class="relative">
+              <div
+                class="h-8 w-8 rounded-full bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-sm font-bold shadow-md">
+                <img v-if="userAvatarUrl" :src="userAvatarUrl" class="h-full w-full rounded-full object-cover" />
+                <span v-else>{{ userInitials }}</span>
+              </div>
+              <span
+                class="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900"></span>
             </div>
-            <div class="hidden md:block text-left">
-              <p class="text-sm font-medium text-gray-800 dark:text-white">{{ userName }}</p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">{{ userRole }}</p>
-            </div>
-            <UIIconsChevronDown class="h-5 w-5 text-gray-600 dark:text-gray-300" />
+            <UIIconsChevronDown class="h-4 w-4 text-slate-400 transition-transform duration-200"
+              :class="{ 'rotate-180': showUserMenu }" />
           </button>
 
-          <!-- User dropdown menu -->
-          <div v-if="showUserMenu"
-            class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
-            <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-              <p class="text-sm font-medium text-gray-800 dark:text-white">{{ userName }}</p>
-              <p class="text-xs text-gray-500 dark:text-gray-400">{{ userEmail }}</p>
+          <!-- Dropdown with animation -->
+          <Transition name="dropdown">
+            <div v-if="showUserMenu"
+              class="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl shadow-slate-200/50 dark:shadow-black/50 border border-slate-200/60 dark:border-slate-700/60 z-50 overflow-hidden">
+              <div
+                class="p-4 border-b border-slate-100 dark:border-slate-700/50 bg-linear-to-br from-slate-50 to-white dark:from-slate-800/50 dark:to-slate-800">
+                <div class="flex items-center gap-3">
+                  <div
+                    class="h-10 w-10 rounded-full bg-linear-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold">
+                    <img v-if="userAvatarUrl" :src="userAvatarUrl" class="h-full w-full rounded-full object-cover" />
+                    <span v-else>{{ userInitials }}</span>
+                  </div>
+                  <div>
+                    <p class="text-sm font-bold text-slate-800 dark:text-white">
+                      {{ userName }}
+                    </p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">
+                      {{ userEmail }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="p-2">
+                <NuxtLink to="/auth/profile"
+                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors duration-150">
+                  <UIIconsProfile class="h-4 w-4 text-slate-400" />
+                  {{ t("common.button.profile") }}
+                </NuxtLink>
+                <NuxtLink to="/settings"
+                  class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors duration-150">
+                  <UIIconsSettings class="h-4 w-4 text-slate-400" />
+                  Settings
+                </NuxtLink>
+                <div class="my-2 border-t border-slate-100 dark:border-slate-700/50">
+                  <UIButton @click="handleLogout" variant="danger" class="w-full mt-2">
+                    {{ t("common.button.logout") }}
+                  </UIButton>
+                </div>
+              </div>
             </div>
-            <div class="py-2">
-              <NuxtLink to="/auth/profile"
-                class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <UIIconsProfile class="mr-3 h-5 w-5 text-gray-700 dark:text-gray-200" />
-                {{ t('common.button.profile') }}
-              </NuxtLink>
-              <div class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
-              <button @click="handleLogout"
-                class="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                <UIIconsLogout class="mr-3 h-5 w-5 text-red-600 dark:text-red-400" />
-                {{ t('common.button.logout') }}
-              </button>
-            </div>
-          </div>
+          </Transition>
         </div>
       </div>
     </div>
@@ -69,52 +99,99 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useAuth } from '~/composables/auth/useAuth'
-import { notification } from '~/utils/notification'
+import { onMounted, onUnmounted, ref } from "vue";
+import { useAuth } from "~/composables/auth/useAuth";
+import { notification } from "~/utils/notification";
 
-const emit = defineEmits(['toggleSidebar'])
+const emit = defineEmits(["toggleSidebar"]);
 
-const auth = useAuth()
-const router = useRouter()
-const showUserMenu = ref(false)
-const { t } = useLocalization()
+const auth = useAuth();
+const router = useRouter();
+const showUserMenu = ref(false);
+const { t } = useLocalization();
 
-const user = computed(() => auth.user.value)
-const userName = computed(() => user.value?.name || 'User')
-const userEmail = computed(() => user.value?.email || 'user@example.com')
-const userRole = computed(() => {
-  if (user.value?.roles?.some(r => r.slug === 'super_admin')) return 'Super Admin'
-  if (user.value?.roles?.some(r => r.slug === 'admin')) return 'Admin'
-  return 'User'
-})
-const userAvatarUrl = computed(() => user.value?.avatar_url || null)
+// User data
+const user = computed(() => auth.user.value);
+const userName = computed(() => user.value?.name || "User");
+const userEmail = computed(() => user.value?.email || "user@example.com");
+const userAvatarUrl = computed(() => user.value?.avatar_url || null);
 
 const userInitials = computed(() => {
-  const name = userName.value
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2)
-})
+  const name = userName.value;
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .substring(0, 2);
+});
 
+// Toggle user menu
 const toggleUserMenu = () => {
-  showUserMenu.value = !showUserMenu.value
-}
+  showUserMenu.value = !showUserMenu.value;
+};
 
+// Close user menu
+const closeUserMenu = () => {
+  showUserMenu.value = false;
+};
+
+// Logout handler
 const handleLogout = async () => {
-  const result = await auth.logout()
+  const result = await auth.logout();
   if (result.success) {
-    notification.success(t('auth.logout.success'))
-    router.push('/')
+    notification.success(t("auth.logout.success"));
+    router.push("/");
   } else {
-    notification.error(t('auth.logout.failed'))
+    notification.error(t("auth.logout.failed"));
   }
-}
+};
 
+// ==================== AUTO-CLOSE LOGIC ====================
+// Reference to the user menu container element
+const userMenuRef = ref<HTMLElement | null>(null);
+
+/**
+ * Handle click outside the user menu to close it.
+ * Listens to global click events and checks if the target is inside the menu.
+ */
+const handleClickOutside = (event: MouseEvent) => {
+  if (
+    showUserMenu.value &&
+    userMenuRef.value &&
+    !userMenuRef.value.contains(event.target as Node)
+  ) {
+    closeUserMenu();
+  }
+};
+
+/**
+ * Handle Escape key press to close the user menu.
+ */
+const handleEscape = (event: KeyboardEvent) => {
+  if (event.key === "Escape" && showUserMenu.value) {
+    closeUserMenu();
+  }
+};
+
+// Lifecycle hooks for adding/removing event listeners
 onMounted(() => {
-  auth.initialize()
-})
+  auth.initialize();
+  // Add global click listener for outside click detection
+  document.addEventListener("click", handleClickOutside);
+  // Add keyboard listener for Escape key
+  document.addEventListener("keydown", handleEscape);
+});
+
+onUnmounted(() => {
+  // Clean up event listeners to prevent memory leaks
+  document.removeEventListener("click", handleClickOutside);
+  document.removeEventListener("keydown", handleEscape);
+});
 </script>
 
 <style scoped>
+/* Header backdrop blur */
 header {
   backdrop-filter: blur(10px);
   background-color: rgba(255, 255, 255, 0.95);
@@ -122,5 +199,23 @@ header {
 
 .dark header {
   background-color: rgba(31, 41, 55, 0.95);
+}
+
+/* Dropdown enter/leave animations */
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.dropdown-enter-to,
+.dropdown-leave-from {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>

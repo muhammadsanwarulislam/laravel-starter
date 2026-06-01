@@ -1,38 +1,29 @@
+<
 <template>
   <aside
-  :class="[
-    'sidebar relative bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 h-full flex flex-col transition-all duration-300 ease-in-out',
-    collapsed ? 'sidebar-collapsed' : 'sidebar-expanded',
-  ]"
-  :style="{
-    width: collapsed ? '80px' : '280px',
-    minWidth: collapsed ? '80px' : '280px',
-  }"
->
-    <!-- Collapse Toggle Button -->
+    :class="[
+      'sidebar relative h-full flex flex-col transition-all duration-500 ease-in-out',
+      collapsed ? 'w-20' : 'w-70',
+      'bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-slate-200/60 dark:border-slate-800/60',
+      mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+      'fixed lg:static inset-y-0 left-0 z-40 lg:z-auto',
+    ]"
+  >
+    <!-- Mobile Overlay -->
+    <div
+      v-if="mobileOpen"
+      class="fixed inset-0 bg-black/20 backdrop-blur-sm z-[-1] lg:hidden"
+      @click="$emit('closeMobile')"
+    ></div>
+
+    <!-- Collapse Toggle (Desktop) -->
     <button
       @click="toggleSidebar"
-      class="absolute -right-3 top-20 z-20 flex h-6 w-6 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-      :aria-label="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      class="hidden lg:flex absolute -right-3 top-24 z-20 h-6 w-6 items-center justify-center rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-200"
     >
-      <!-- Chevron icon: right when collapsed, left when expanded -->
       <svg
-        v-if="collapsed"
-        class="h-3 w-3"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"
-        />
-      </svg>
-      <svg
-        v-else
-        class="h-3 w-3"
+        class="h-3 w-3 transition-transform duration-300"
+        :class="collapsed ? '' : 'rotate-180'"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -46,106 +37,20 @@
       </svg>
     </button>
 
-    <!-- Scrollable Nav Area -->
-    <nav class="flex-1 overflow-y-auto px-3 pb-4 mt-6">
-      <ul class="space-y-4">
-        <li
-          v-for="(section, sectionIdx) in visibleMenuItems"
-          :key="sectionIdx"
-          class="space-y-2"
-        >
-          <!-- Section Title (only when expanded) -->
-          <div v-if="section.title && !collapsed" class="px-3 pt-4">
-            <p
-              class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400 dark:text-slate-500"
-            >
-              {{ t(section.title) }}
-            </p>
-          </div>
-
-          <!-- Items -->
-          <ul class="space-y-1">
-            <li v-for="item in section.items" :key="item.id">
-              <NuxtLink
-                :to="item.to"
-                :class="[
-                  'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200',
-                  item.isActive
-                    ? 'bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-700 dark:from-indigo-950/30 dark:to-blue-950/30 dark:text-indigo-300 shadow-sm'
-                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900/70 hover:text-slate-900 dark:hover:text-white',
-                ]"
-                :aria-current="item.isActive ? 'page' : undefined"
-              >
-                <!-- Icon Container -->
-                <div
-                  class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition-all duration-200 group-hover:scale-105 dark:bg-slate-900 dark:text-slate-400"
-                  :class="
-                    item.isActive ? 'bg-white shadow-sm dark:bg-slate-800' : ''
-                  "
-                >
-                  <component
-                    :is="getIconComponent(item.icon)"
-                    class="h-5 w-5"
-                  />
-                </div>
-
-                <!-- Label (with tooltip when collapsed) -->
-                <span
-                  v-if="!collapsed"
-                  class="font-medium truncate"
-                  :class="item.isActive ? 'font-semibold' : ''"
-                >
-                  {{ t(item.title) }}
-                </span>
-                <span
-                  v-else
-                  class="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-white group-hover:inline-block dark:bg-slate-700"
-                >
-                  {{ t(item.title) }}
-                </span>
-
-                <!-- Badge (only when expanded) -->
-                <span
-                  v-if="item.badge && !collapsed"
-                  class="ml-auto rounded-full bg-indigo-100 px-2 py-0.5 text-[11px] font-semibold text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-200"
-                >
-                  {{ item.badge }}
-                </span>
-              </NuxtLink>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-
-    <!-- User Profile Section (at bottom) -->
-    <div class="mt-auto border-t border-slate-200 p-3 dark:border-slate-800">
-      <NuxtLink
-        v-if="!collapsed"
-        to="/auth/profile"
-        class="flex items-center gap-3 rounded-xl p-2 transition-all hover:bg-slate-100 dark:hover:bg-slate-900"
+    <!-- Logo Area (Mobile) -->
+    <div
+      v-if="mobileOpen"
+      class="lg:hidden p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between"
+    >
+      <span class="text-lg font-bold text-slate-800 dark:text-white"
+        >Admin Panel</span
       >
-        <div class="relative">
-          <img
-            :src="userAvatar"
-            :alt="userName"
-            class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-slate-800"
-          />
-          <span
-            class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-slate-800"
-          />
-        </div>
-        <div class="flex-1 truncate">
-          <p class="text-sm font-medium text-slate-700 dark:text-slate-200">
-            {{ userName }}
-          </p>
-          <p class="text-xs text-slate-500 dark:text-slate-400">
-            {{ userRole }}
-          </p>
-        </div>
-        <!-- Chevron right icon -->
+      <button
+        @click="$emit('closeMobile')"
+        class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+      >
         <svg
-          class="h-4 w-4 text-slate-400"
+          class="h-5 w-5"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -154,39 +59,109 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M9 5l7 7-7 7"
+            d="M6 18L18 6M6 6l12 12"
           />
         </svg>
-      </NuxtLink>
+      </button>
+    </div>
 
-      <!-- Collapsed avatar-only version -->
-      <NuxtLink
-        v-else
-        to="/auth/profile"
-        class="group relative flex justify-center rounded-xl p-2 transition-all hover:bg-slate-100 dark:hover:bg-slate-900"
-      >
-        <img
-          :src="userAvatar"
-          :alt="userName"
-          class="h-9 w-9 rounded-full object-cover"
-        />
-        <span
-          class="absolute left-full ml-2 hidden whitespace-nowrap rounded-md bg-slate-800 px-2 py-1 text-xs text-white group-hover:inline-block dark:bg-slate-700"
+    <!-- Navigation -->
+    <nav
+      class="flex flex-1 flex-col overflow-y-auto scrollbar-thin px-2 py-4 lg:py-6 lg:px-3 space-y-1"
+    >
+      <ul class="space-y-2 text-sm font-medium">
+        <li
+          v-for="(section, sectionIdx) in visibleMenuItems"
+          :key="sectionIdx"
+          class="space-y-1"
         >
-          {{ userName }}
-        </span>
-      </NuxtLink>
+          <!-- Section Title -->
+          <div v-if="section.title && !collapsed" class="px-3 mb-2">
+            <p
+              class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-600"
+            >
+              {{ t(section.title) }}
+            </p>
+          </div>
 
-      <!-- Logout Button -->
+          <!-- Items -->
+          <ul class="space-y-0.5">
+            <li v-for="item in section.items" :key="item.id">
+              <NuxtLink
+                :to="item.to"
+                :class="[
+                  'group relative flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200',
+                  item.isActive
+                    ? 'bg-linear-to-r from-indigo-500/10 to-violet-500/10 text-indigo-700 dark:text-indigo-300 shadow-sm shadow-indigo-500/10'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-slate-200',
+                ]"
+              >
+                <!-- Icon -->
+                <div
+                  :class="[
+                    'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-200',
+                    item.isActive
+                      ? 'bg-linear-to-br from-indigo-500 to-violet-600 text-white shadow-md shadow-indigo-500/30'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-500 group-hover:bg-white dark:group-hover:bg-slate-700 group-hover:shadow-sm',
+                  ]"
+                >
+                  <component
+                    :is="getIconComponent(item.icon)"
+                    class="h-4.5 w-4.5"
+                  />
+                </div>
+
+                <!-- Label -->
+                <span
+                  v-if="!collapsed"
+                  class="font-medium text-sm truncate transition-all duration-300"
+                  :class="item.isActive ? 'font-semibold' : ''"
+                >
+                  {{ t(item.title) }}
+                </span>
+
+                <!-- Collapsed Tooltip -->
+                <div
+                  v-if="collapsed"
+                  class="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-slate-800 text-white text-xs font-medium whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 shadow-xl z-50"
+                >
+                  {{ t(item.title) }}
+                  <div
+                    class="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800"
+                  ></div>
+                </div>
+
+                <!-- Badge -->
+                <span
+                  v-if="item.badge && !collapsed"
+                  class="ml-auto rounded-full bg-indigo-100 dark:bg-indigo-900/40 px-2 py-0.5 text-[10px] font-bold text-indigo-700 dark:text-indigo-300"
+                >
+                  {{ item.badge }}
+                </span>
+
+                <!-- Active Indicator -->
+                <div
+                  v-if="item.isActive && !collapsed"
+                  class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-linear-to-b from-indigo-500 to-violet-600"
+                ></div>
+              </NuxtLink>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- User Mini Profile -->
+    <div
+      class="mt-auto border-t border-slate-200/60 dark:border-slate-800/60 p-3"
+    >
       <button
         @click="logout"
-        class="mt-3 flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-red-600 transition-all hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+        class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 transition-all duration-200 active:scale-95"
         :class="collapsed ? 'px-2' : ''"
       >
-        <!-- Logout icon (inline SVG) -->
         <svg
           class="h-4 w-4"
-          :class="collapsed ? 'mr-0' : 'mr-2'"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -208,14 +183,17 @@
 import { computed, ref, onMounted } from "vue";
 import { useMenu } from "../../composables/useMenu";
 import { useAuth } from "../../composables/auth/useAuth";
-import { useLocalization } from "../../composables/useLocalization";
 import { resolveComponent } from "vue";
+
+const props = defineProps({
+  mobileOpen: { type: Boolean, default: false },
+});
+const emit = defineEmits(["closeMobile"]);
 
 const menu = useMenu();
 const auth = useAuth();
 const { t } = useLocalization();
 
-// Collapse state with localStorage persistence
 const STORAGE_KEY = "sidebar_collapsed";
 const collapsed = ref(false);
 
@@ -226,27 +204,17 @@ const toggleSidebar = () => {
 
 onMounted(() => {
   const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved !== null) {
-    collapsed.value = saved === "true";
-  }
+  if (saved !== null) collapsed.value = saved === "true";
 });
 
-// Filter menu items based on permissions/roles (from your existing logic)
 const visibleMenuItems = computed(() => {
   return menu.menuItems.value.filter((section) => section.items.length > 0);
 });
 
-// User data (adjust based on your actual auth.user structure)
-const user = computed(() => (auth as any).user || { name: "Guest", role: "", avatar: "" });
-const userName = computed(() => user.value.name || "User");
-const userRole = computed(() => user.value.role || "Member");
-const userAvatar = computed(
-  () =>
-    user.value.avatar ||
-    `https://ui-avatars.com/api/?background=6366f1&color=fff&name=${encodeURIComponent(userName.value)}`,
+const user = computed(
+  () => (auth as any).user || { name: "Guest", role: "", avatar: "" },
 );
 
-// Icon mapping (same as your original but with fallback)
 const getIconComponent = (iconName: string) => {
   const iconMap: Record<string, any> = {
     Dashboard: resolveComponent("UIIconsDashboard"),
@@ -257,11 +225,12 @@ const getIconComponent = (iconName: string) => {
     Localization: resolveComponent("UIIconsLocalization"),
     Profile: resolveComponent("UIIconsProfile"),
     Help: resolveComponent("UIIconsHelp"),
+    SuperMarket: resolveComponent("UIIconsSuperMarket"),
+    Modules: resolveComponent("UIIconsModules"),
   };
   return iconMap[iconName] || resolveComponent("UIIconsDashboard");
 };
 
-// Logout handler
 const logout = async () => {
   await auth.logout();
   await navigateTo("/auth/login");
@@ -269,38 +238,20 @@ const logout = async () => {
 </script>
 
 <style scoped>
-/* Smooth width transition for the entire aside */
-.sidebar {
-  transition-property: width, min-width;
-}
-
-/* Hide scrollbar for cleaner look (optional) */
-.sidebar ::-webkit-scrollbar {
+.scrollbar-thin::-webkit-scrollbar {
   width: 4px;
 }
-.sidebar ::-webkit-scrollbar-track {
+
+.scrollbar-thin::-webkit-scrollbar-track {
   background: transparent;
 }
-.sidebar ::-webkit-scrollbar-thumb {
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 4px;
 }
-.dark .sidebar ::-webkit-scrollbar-thumb {
-  background: #475569;
-}
 
-/* Tooltip fade-in */
-.group-hover\:inline-block {
-  animation: fadeIn 0.1s ease-in-out;
-}
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #475569;
 }
 </style>
