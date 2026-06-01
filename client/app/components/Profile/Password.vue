@@ -1,18 +1,17 @@
 <template>
   <form @submit.prevent="submit" class="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
     <div>
-      <h3 class="text-lg font-semibold text-gray-900">{{ t('profile.change_password') }}</h3>
-      <p class="mt-1 text-sm text-gray-500">{{ t('profile.password_requirements') }}</p>
+      <h3 class="text-lg font-semibold text-gray-900">{{ t('common.label.change_password') }}</h3>
     </div>
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div class="md:col-span-2">
-        <label class="mb-2 block text-sm font-medium text-gray-700">{{ t('profile.current_password') }}</label>
+        <label class="mb-2 block text-sm font-medium text-gray-700">{{ t('common.label.current_password') }}</label>
         <UIFormFieldsTextField
           v-model="form.current_password"
           name="current_password"
           type="password"
-          placeholder="Enter current password"
+          :placeholder="t('common.label.current_password')"
           :error="!!errors.current_password"
           required
         >
@@ -66,7 +65,7 @@
         :loading="changing"
         :disabled="changing"
       >
-        {{ t('profile.update_password') }}
+        {{ t('common.button.update') }}
       </UIButton>
     </div>
   </form>

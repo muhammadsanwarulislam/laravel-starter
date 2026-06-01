@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Services\UserService;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\CreateOrUpdateRequest;
+use App\Http\Requests\User\UpdateProfileRequest;
+use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct(protected UserService $userService)
-    {
-    }
+    public function __construct(protected UserService $userService) {}
 
     public function index(Request $request)
     {
@@ -112,26 +111,46 @@ class UserController extends Controller
         ], 'Profile retrieved successfully');
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(UpdateProfileRequest $request)
     {
-        $user = $request->user();
+        try {
+            $user = $request->user();
+            $validated = $request->validated();
 
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'email' => 'sometimes|string|email|max:255|unique:users,email,' . $user->id,
-            'phone' => 'nullable|string|max:20|unique:users,phone,' . $user->id,
-            'country_code_id' => 'nullable|exists:countries,id',
-            'ui_locale' => 'nullable|exists:languages,code',
-            'gender' => 'nullable|in:male,female,other',
-            'type' => 'nullable|in:student,teacher,admin',
-            'address' => 'nullable|string|max:500',
-        ]);
+            // Update user table fields
+            $userFields = ['name', 'email', 'phone', 'country_code_id', 'ui_locale'];
+            foreach ($userFields as $field) {
+                if (isset($validated[$field])) {
+                    $user->$field = $validated[$field];
+                }
+            }
+            $user->save();
 
-        $updatedUser = $this->userService->updateOwnProfile($user, $validated);
+            // Update profile table fields
+            $profileFields = ['gender', 'type', 'address'];
+            $profileData = [];
+            foreach ($profileFields as $field) {
+                if (isset($validated[$field])) {
+                    $profileData[$field] = $validated[$field];
+                }
+            }
 
-        return $this->success([
-            'user' => $updatedUser->load(['profile', 'roles', 'files']),
-            'permissions' => $updatedUser->cachedPermissions(),
-        ], 'Profile updated successfully');
+            if (!empty($profileData)) {
+                if ($user->profile) {
+                    $user->profile->update($profileData);
+                } else {
+                    $user->profile()->create($profileData);
+                }
+            }
+
+            $user->load(['profile', 'roles', 'files']);
+
+            return $this->success([
+                'user' => $user,
+                'permissions' => $user->cachedPermissions()
+            ], 'Profile updated successfully');
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), null);
+        }
     }
 }

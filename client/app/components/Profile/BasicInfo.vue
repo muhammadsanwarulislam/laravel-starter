@@ -99,7 +99,7 @@
         :loading="saving"
         :disabled="saving"
       >
-        {{ t('common.save_changes') }}
+        {{ t('common.button.update') }}
       </UIButton>
     </div>
   </form>

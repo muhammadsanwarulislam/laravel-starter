@@ -103,6 +103,21 @@
     "common.placeholder.code": "কোড",
     "common.placeholder.message": "বার্তা",
 
+    "common.label.change_password":"পাসওয়ার্ড পরিবর্তন করুন",
+    "common.label.profile_details":"প্রোফাইল বিবরণ",
+    "common.label.gender":"লিঙ্গ",
+    "common.label.current_password":"বর্তমান পাসওয়ার্ড",
+    "common.label.new_password":"নতুন পাসওয়ার্ড",
+    "common.label.new_password_confirmation":"নতুন পাসওয়ার্ড নিশ্চিত করুন",
+    "common.label.address":"ঠিকানা",
+    "common.label.city":"শহর",
+    "common.label.state":"বিভাগ",
+    "common.label.zip_code":"জিপ কোড",
+    "common.label.country":"দেশ",
+    "common.label.phone":"ফোন",
+    "common.label.email":"ইমেইল",
+    "common.label.name":"নাম",
+
 
     "navbar.home": "হোম",
     "navbar.features": "ফিচার",
