@@ -1,9 +1,6 @@
 <template>
-  <div class="p-6">
-    <SharedPageHeader :title="t('permissions.edit')" :description="t('permissions.description_for_edit')" />
-    <div class="mt-6">
-      <PermissionsForm :permission-id="permissionId" />
-    </div>
+  <div class="p-4 rounded-lg shadow">
+    <PermissionsForm :permission-id="permissionId" />
   </div>
 </template>
 

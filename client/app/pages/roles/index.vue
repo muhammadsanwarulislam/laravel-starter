@@ -1,43 +1,74 @@
 <template>
-    <div class="p-6">
-        <SharedPageHeader :title="t('roles.title')" :description="t('roles.description')">
-            <template #actions>
-                <UIButton variant="primary" @click="$router.push('/roles/create')">
-                    <template #icon>
-                        <UIIconsPlus class="h-5 w-5" />
-                    </template>
-                    {{ t('common.button.create') }}
-                </UIButton>
-            </template>
-        </SharedPageHeader>
+  <div class="p-6">
+    <SharedPageHeader
+      :title="t('roles.title')"
+      :description="t('roles.description')"
+    >
+      <template #actions>
+        <UIButton 
+            variant="secondary"
+            size="xs"
+            outlined 
+            @click="$router.push('/roles/create')">
+          <template #icon>
+            <UIIconsPlus class="h-5 w-5" />
+          </template>
+          {{ t("common.button.create") }}
+        </UIButton>
+      </template>
+    </SharedPageHeader>
 
-        <GenericTable :columns="roleColumns" :data="roles" :loading="loading" :pagination="pagination"
-            @update:sort="handleSort" @update:page="handlePageChange">
-            <template #column-permissions="{ item }">
-                <span>{{ item.permissions?.[0]?.name || 'No Permissions' }}</span>
-            </template>
-            <template #actions="{ item }">
-                <UIButton variant="secondary" size="xs" outlined title="Edit Role" @click="editRole(item.id)"
-                    class="hover:shadow-md mr-2">
-                    <template #icon>
-                        <UIIconsPencil class="h-4 w-4" />
-                    </template>
-                    {{ t('common.button.edit') }}
-                </UIButton>
+    <GenericTable
+      :columns="roleColumns"
+      :data="roles"
+      :loading="loading"
+      :pagination="pagination"
+      @update:sort="handleSort"
+      @update:page="handlePageChange"
+    >
+      <template #column-permissions="{ item }">
+        <span>{{ item.permissions?.[0]?.name || "No Permissions" }}</span>
+      </template>
+      <template #actions="{ item }">
+        <UIButton
+          variant="secondary"
+          size="xs"
+          outlined
+          title="Edit Role"
+          @click="editRole(item.id)"
+          class="hover:shadow-md mr-2"
+        >
+          <template #icon>
+            <UIIconsPencil class="h-4 w-4" />
+          </template>
+          {{ t("common.button.edit") }}
+        </UIButton>
 
-                <UIButton variant="danger" size="xs" outlined @click="openDeleteModal(item.id)" title="Delete Role"
-                    class="hover:shadow-md">
-                    <template #icon>
-                        <UIIconsTrash class="h-4 w-4" />
-                    </template>
-                    {{ t('common.button.delete') }}
-                </UIButton>
-            </template>
-        </GenericTable>
+        <UIButton
+          variant="danger"
+          size="xs"
+          outlined
+          @click="openDeleteModal(item.id)"
+          title="Delete Role"
+          class="hover:shadow-md"
+        >
+          <template #icon>
+            <UIIconsTrash class="h-4 w-4" />
+          </template>
+          {{ t("common.button.delete") }}
+        </UIButton>
+      </template>
+    </GenericTable>
 
-        <ModalConfirmationDialog v-if="showDeleteModal" title="Delete Role" :message="deleteMessage" type="delete"
-            @confirm="confirmDelete" @cancel="closeDeleteModal" />
-    </div>
+    <ModalConfirmationDialog
+      v-if="showDeleteModal"
+      title="Delete Role"
+      :message="deleteMessage"
+      type="delete"
+      @confirm="confirmDelete"
+      @cancel="closeDeleteModal"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -50,58 +81,63 @@ definePageMeta({ middleware: ["auth"] });
 
 const router = useRouter();
 const { t } = useLocalization();
-const { roles, loading, pagination, fetchRoles, deleteRole } = useRolePermission();
+const { roles, loading, pagination, fetchRoles, deleteRole } =
+  useRolePermission();
 
 const showDeleteModal = ref(false);
 const deleteRoleId = ref<number | null>(null);
 const deleteMessage = ref(
-    "Are you sure you want to delete this role? This action cannot be undone."
+  "Are you sure you want to delete this role? This action cannot be undone.",
 );
 
 const roleColumns: Column[] = computed(() => [
-    { key: "id", label: t("common.id"), sortable: true },
-    { key: "name", label: t("common.name"), sortable: true },
-    { key: "description", label: t("common.description") },
-    { key: "is_system", label: t("roles.system_roles") },
-    { key: "level", label: t("roles.level"), sortable: true },
-    { key: "permissions", label: t("common.permissions") },
-    {
-        key: "created_at",
-        label: t("common.created_at"),
-        sortable: true,
-        format: (val) => formatDate(val),
-    },
+  { key: "id", label: t("common.id"), sortable: true },
+  { key: "name", label: t("common.name"), sortable: true },
+  { key: "description", label: t("common.description") },
+  { key: "is_system", label: t("roles.system_roles") },
+  { key: "level", label: t("roles.level"), sortable: true },
+  { key: "permissions", label: t("common.permissions") },
+  {
+    key: "created_at",
+    label: t("common.created_at"),
+    sortable: true,
+    format: (val) => formatDate(val),
+  },
 ]);
 
 const handleSort = (key: string, order: "asc" | "desc") => {
-    fetchRoles({ sort_field: key, sort_order: order, page: pagination.value?.currentPage || 1 });
+  fetchRoles({
+    sort_field: key,
+    sort_order: order,
+    page: pagination.value?.currentPage || 1,
+  });
 };
 
 const handlePageChange = (page: number) => {
-    fetchRoles({ page });
+  fetchRoles({ page });
 };
 
 const editRole = (id: number) => {
-    router.push(`/roles/${id}/edit`);
+  router.push(`/roles/${id}/edit`);
 };
 
 const openDeleteModal = (id: number) => {
-    deleteRoleId.value = id;
-    showDeleteModal.value = true;
+  deleteRoleId.value = id;
+  showDeleteModal.value = true;
 };
 
 const closeDeleteModal = () => {
-    showDeleteModal.value = false;
-    deleteRoleId.value = null;
+  showDeleteModal.value = false;
+  deleteRoleId.value = null;
 };
 
 const confirmDelete = async () => {
-    if (deleteRoleId.value) {
-        const response = await deleteRole(deleteRoleId.value);
-        if (response.success) {
-            closeDeleteModal();
-        }
+  if (deleteRoleId.value) {
+    const response = await deleteRole(deleteRoleId.value);
+    if (response.success) {
+      closeDeleteModal();
     }
+  }
 };
 
 onMounted(() => fetchRoles());

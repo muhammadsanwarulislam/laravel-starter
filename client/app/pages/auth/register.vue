@@ -25,19 +25,40 @@
                 >
                   {{ t("user.registration.form.name") }}
                 </label>
-                <UIFormFieldsTextField
-                  v-model="form.name"
-                  name="name"
-                  type="text"
-                  :placeholder="t('user.registration.form.name_placeholder')"
-                  required
-                  :error="!!errors.name"
-                  @input="validateNameOnInput"
-                >
-                  <template #prefix>
-                    <UIIconsUser class="h-5 w-5 text-gray-400" />
-                  </template>
-                </UIFormFieldsTextField>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    id="name"
+                    v-model="form.name"
+                    name="name"
+                    type="text"
+                    required
+                    @input="validateNameOnInput"
+                    :class="[
+                      'block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
+                      errors.name
+                        ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20'
+                        : 'border-gray-300 dark:border-gray-600',
+                    ]"
+                    :placeholder="t('user.registration.form.name_placeholder')"
+                  />
+                </div>
                 <p
                   v-if="errors.name"
                   class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center"
@@ -180,27 +201,59 @@
               <!-- Email -->
               <div>
                 <label
+                  for="email"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                   {{ t("user.registration.form.email") }}
                 </label>
-                <UIFormFieldsTextField
-                  v-model="form.email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  placeholder="you@example.com"
-                  :error="!!errors.email"
-                >
-                  <template #prefix>
-                    <UIIconsEmail class="h-5 w-5 text-gray-400" />
-                  </template>
-                </UIFormFieldsTextField>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    id="email"
+                    v-model="form.email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    :class="[
+                      'block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
+                      errors.email
+                        ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20'
+                        : 'border-gray-300 dark:border-gray-600',
+                    ]"
+                    placeholder="you@example.com"
+                  />
+                </div>
                 <p
                   v-if="errors.email"
                   class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center"
                 >
-                  <UIIconsAlert class="w-4 h-4 mr-1" />
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                   {{ errors.email }}
                 </p>
               </div>
@@ -208,38 +261,83 @@
               <!-- Password -->
               <div>
                 <label
+                  for="password"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                   {{ t("user.registration.form.password") }}
                 </label>
-                <UIFormFieldsTextField
-                  v-model="form.password"
-                  name="password"
-                  :type="showPassword ? 'text' : 'password'"
-                  autocomplete="new-password"
-                  placeholder="••••••••"
-                  required
-                  :error="!!errors.password"
-                >
-                  <template #prefix>
-                    <UIIconsPassword class="h-5 w-5 text-gray-400" />
-                  </template>
-                  <template #suffix>
-                    <button
-                      type="button"
-                      @click="showPassword = !showPassword"
-                      class="text-gray-400 hover:text-gray-600"
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
-                      <UIIconsEye v-if="showPassword" class="h-5 w-5" />
-                      <UIIconsEyeOff v-else class="h-5 w-5" />
-                    </button>
-                  </template>
-                </UIFormFieldsTextField>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    id="password"
+                    v-model="form.password"
+                    name="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    autocomplete="new-password"
+                    required
+                    :class="[
+                      'block w-full pl-10 pr-10 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
+                      errors.password
+                        ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20'
+                        : 'border-gray-300 dark:border-gray-600',
+                    ]"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    @click="showPassword = !showPassword"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        :d="
+                          showPassword
+                            ? 'M13.875 18.825A10.05 10.05 0 0112 19c-5.523 0-10-4.477-10-10S6.477 3 12 3c2.132 0 4.11.658 5.748 1.786m-1.873 3.031A3.001 3.001 0 0112 15a3.001 3.001 0 01-2.875-4.183m6.623-.908l1.415-1.414M14.25 9l1.415-1.414M3 3l18 18'
+                            : 'M15 12a3 3 0 11-6 0 3 3 0 016 0zM2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z'
+                        "
+                      />
+                    </svg>
+                  </button>
+                </div>
                 <p
                   v-if="errors.password"
                   class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center"
                 >
-                  <UIIconsAlert class="w-4 h-4 mr-1" />
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                   {{ errors.password }}
                 </p>
                 <p v-else class="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -250,28 +348,60 @@
               <!-- Confirm Password -->
               <div>
                 <label
+                  for="password_confirmation"
                   class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                 >
                   {{ t("user.registration.form.password_confirmation") }}
                 </label>
-                <UIFormFieldsTextField
-                  v-model="form.password_confirmation"
-                  name="password_confirmation"
-                  :type="showPassword ? 'text' : 'password'"
-                  autocomplete="new-password"
-                  placeholder="••••••••"
-                  required
-                  :error="!!errors.password_confirmation"
-                >
-                  <template #prefix>
-                    <UIIconsPassword class="h-5 w-5 text-gray-400" />
-                  </template>
-                </UIFormFieldsTextField>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
+                    <svg
+                      class="h-5 w-5 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                      />
+                    </svg>
+                  </div>
+                  <input
+                    id="password_confirmation"
+                    v-model="form.password_confirmation"
+                    name="password_confirmation"
+                    :type="showPassword ? 'text' : 'password'"
+                    autocomplete="new-password"
+                    required
+                    :class="[
+                      'block w-full pl-10 pr-10 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200',
+                      errors.password_confirmation
+                        ? 'border-red-300 dark:border-red-500 bg-red-50 dark:bg-red-900/20'
+                        : 'border-gray-300 dark:border-gray-600',
+                    ]"
+                    placeholder="••••••••"
+                  />
+                </div>
                 <p
                   v-if="errors.password_confirmation"
                   class="mt-2 text-xs text-red-600 dark:text-red-400 flex items-center"
                 >
-                  <UIIconsAlert class="w-4 h-4 mr-1" />
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                   {{ errors.password_confirmation }}
                 </p>
               </div>
@@ -363,7 +493,7 @@
                 <span class="relative">
                   {{
                     loading
-                      ? t("common.loading.signup")
+                      ? "Creating Account..."
                       : t("common.button.create_account")
                   }}
                 </span>

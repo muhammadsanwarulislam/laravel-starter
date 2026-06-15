@@ -1,11 +1,15 @@
 <template>
-  <div class="mb-8">
+  <div class="mb-4 flex flex-col gap-4">
     <div class="flex justify-between items-center">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
-        <p v-if="description" class="text-gray-600 mt-2">{{ description }}</p>
+        <h1 class="font-bold text-gray-900">{{ title }}</h1>
+        <p
+          v-if="description"
+          class="font-xs text-yellow-600 hover:text-yellow-700">
+          {{ description }}
+        </p>
       </div>
-      <div v-if="$slots.actions" class="flex gap-3">
+      <div v-if="$slots.actions" class="flex gap-2">
         <slot name="actions" />
       </div>
     </div>
@@ -14,9 +18,9 @@
 
 <script setup lang="ts">
 interface Props {
-  title: string
-  description?: string
+  title: string;
+  description?: string;
 }
 
-defineProps<Props>()
+defineProps<Props>();
 </script>

@@ -1,12 +1,5 @@
 <template>
   <div class="p-6">
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">{{ t("common.dashboard") }}</h1>
-      <p class="text-gray-600 mt-2">
-        {{ t("common.welcome") }}, {{ auth.user?.value?.name || "User" }}!
-      </p>
-    </div>
-
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <Card :title="t('common.users')" :value="stats.users" color="blue" />

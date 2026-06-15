@@ -58,31 +58,38 @@
                 >
                   {{ t("user.login.form.emailOrPhone") }}
                 </label>
-
-                <UIFormFieldsTextField
-                  v-model="form.identifier"
-                  name="identifier"
-                  type="text"
-                  autocomplete="email"
-                  :placeholder="isEmail ? 'you@example.com' : '+880 1XXXXXXXXX'"
-                  required
-                  @input="handleIdentifierInput"
-                  @blur="handleIdentifierBlur"
-                >
-                  <template #prefix>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
                     <UIIconsEmail
                       v-if="isEmail"
                       class="h-5 w-5 text-gray-400"
                     />
                     <UIIconsPhone v-else class="h-5 w-5 text-gray-400" />
-                  </template>
-                  <template #suffix>
+                  </div>
+                  <input
+                    id="identifier"
+                    v-model="form.identifier"
+                    name="identifier"
+                    type="text"
+                    autocomplete="email"
+                    :placeholder="
+                      isEmail ? 'you@example.com' : '+880 1XXXXXXXXX'
+                    "
+                    required
+                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+                    @input="handleIdentifierInput"
+                    @blur="handleIdentifierBlur"
+                  />
+                  <div
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
                     <span class="text-xs text-gray-500 dark:text-gray-400">
                       {{ isEmail ? t("common.email") : t("common.phone") }}
                     </span>
-                  </template>
-                </UIFormFieldsTextField>
-
+                  </div>
+                </div>
                 <p
                   v-if="form.identifier && !isEmail && !isValidPhone"
                   class="mt-1 text-xs text-red-500"
@@ -99,28 +106,31 @@
                 >
                   {{ t("user.registration.form.password") }}
                 </label>
-                <UIFormFieldsTextField
-                  v-model="form.password"
-                  name="password"
-                  :type="showPassword ? 'text' : 'password'"
-                  autocomplete="current-password"
-                  placeholder="••••••••"
-                  required
-                >
-                  <template #prefix>
+                <div class="relative">
+                  <div
+                    class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                  >
                     <UIIconsPassword class="h-5 w-5 text-gray-400" />
-                  </template>
-                  <template #suffix>
-                    <button
-                      type="button"
-                      @click="togglePassword"
-                      class="text-gray-400 hover:text-gray-500 focus:outline-none"
-                    >
-                      <UIIconsEye v-if="showPassword" class="h-5 w-5" />
-                      <UIIconsEyeOff v-else class="h-5 w-5" />
-                    </button>
-                  </template>
-                </UIFormFieldsTextField>
+                  </div>
+                  <input
+                    id="password"
+                    v-model="form.password"
+                    name="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    autocomplete="current-password"
+                    required
+                    class="block w-full pl-10 pr-10 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-all duration-200"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    @click="togglePassword"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500"
+                  >
+                    <UIIconsEye v-if="showPassword" class="h-5 w-5" />
+                    <UIIconsEyeOff v-else class="h-5 w-5" />
+                  </button>
+                </div>
               </div>
 
               <div>
@@ -130,7 +140,9 @@
                   size="lg"
                   rounded="lg"
                   shadow="lg"
-                  :disabled="loading || (form.identifier && !isEmail && !isValidPhone)"
+                  :disabled="
+                    loading || (form.identifier && !isEmail && !isValidPhone)
+                  "
                   class="w-full"
                 >
                   <template #icon>
