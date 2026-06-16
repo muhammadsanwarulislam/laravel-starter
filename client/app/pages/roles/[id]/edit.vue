@@ -1,9 +1,6 @@
 <template>
-  <div class="p-6">
-    <SharedPageHeader :title="t('roles.edit')" :description="t('roles.description_for_edit')" />
-    <div class="mt-6">
-      <RolesForm :role-id="roleId" />
-    </div>
+  <div class="p-4">
+    <RolesForm :role-id="roleId" />
   </div>
 </template>
 

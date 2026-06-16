@@ -1,325 +1,322 @@
 <template>
-  <form @submit.prevent="submitForm" class="space-y-6">
-    <div v-if="loadingRole || loadingPermissions" class="flex justify-center py-8">
-      <UILoadingSpinner />
+  <form @submit.prevent="handleSubmit" class="space-y-6">
+    <div
+      v-if="loadingRole || loadingPermissions"
+      class="flex justify-center py-8"
+    >
+      <UILoadingSpinner size="lg" />
     </div>
 
     <template v-else>
-      <div>
-        <h4 class="text-md font-medium text-gray-900 mb-4">{{ isEditMode ? 'Edit Role' : t('roles.basic_information') }}
-        </h4>
-        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div class="col-span-full">
-            <label for="role-name" class="block text-sm font-medium text-gray-700 mb-2">{{ t('roles.form.name') }}</label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <UIIconsRolePermissions class="h-5 w-5 text-gray-400" />
-              </div>
-              <input id="role-name" v-model="form.name" type="text" :class="[
-                'block w-full pl-10 pr-3 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 transition-all duration-200',
-                errors.name ? 'border-red-300 bg-red-50' : 'border-gray-300'
-              ]" :placeholder="t('roles.form.name_placeholder')" />
-            </div>
-            <p v-if="errors.name" class="mt-2 text-xs text-red-600 flex items-center">
-              <UIIconsExclamation2 class="h-4 w-4 mr-1 text-red-600" />
-              {{ errors.name }}
-            </p>
-            <p v-else-if="form.name.trim()" class="mt-2 text-xs text-green-600 flex items-center">
-              <UIIconsCheck class="h-4 w-4 mr-1 text-green-600" />
-              {{ t('roles.form.name_valid') }}
-            </p>
-          </div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="col-span-full">
+          <UIFormsInput
+            id="role-name"
+            v-model="values.name"
+            :label="t('roles.form.name')"
+            :placeholder="t('roles.form.name_placeholder')"
+            :error="errors.name"
+          />
+        </div>
 
-          <div>
-            <label for="role-level" class="block text-sm font-medium text-gray-700 mb-2">{{ t('roles.form.level') }}</label>
-            <div class="relative">
-              <input id="role-level" v-model.number="form.level" type="number" min="0" max="100" :class="[
-                'block w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 transition-all duration-200',
-                errors.level ? 'border-red-300 bg-red-50' : 'border-gray-300'
-              ]" placeholder="10" />
-            </div>
-            <p v-if="errors.level" class="mt-2 text-xs text-red-600 flex items-center">
-              <UIIconsExclamation2 class="h-4 w-4 mr-1 text-red-600" />
-              {{ errors.level }}
-            </p>
-            <p v-else class="mt-2 text-xs text-gray-500">
-              {{ t('roles.form.level_info') }}
-            </p>
-          </div>
+        <UIFormsInput
+          id="role-level"
+          v-model="values.level"
+          type="number"
+          :label="t('roles.form.level')"
+          :placeholder="t('roles.form.level_placeholder', '10')"
+          :error="errors.level"
+          :hint="t('roles.form.level_info')"
+        />
 
-          <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4">
-            <p class="text-sm font-medium text-gray-700">Role Type</p>
-            <p class="mt-1 text-sm text-gray-600">
-              {{ form.is_system ? 'System roles are protected from editing.' : 'Custom roles can be updated and deleted.' }}
-            </p>
-            <div class="mt-3 flex items-center gap-2 text-xs font-medium">
-              <span class="inline-flex items-center rounded-full px-2.5 py-1"
-                :class="form.is_system ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'">
-                {{ form.is_system ? 'System Role' : 'Custom Role' }}
-              </span>
-            </div>
+        <div class="rounded-xl border border-gray-200 bg-gray-50 px-4 py-4">
+          <p class="text-sm font-medium text-gray-700">Role Type</p>
+          <p class="mt-1 text-sm text-gray-600">
+            {{
+              values.is_system
+                ? "System roles are protected from editing."
+                : "Custom roles can be updated and deleted."
+            }}
+          </p>
+          <div class="mt-3 flex items-center gap-2 text-xs font-medium">
+            <span
+              class="inline-flex items-center rounded-full px-2.5 py-1"
+              :class="
+                values.is_system
+                  ? 'bg-amber-100 text-amber-800'
+                  : 'bg-emerald-100 text-emerald-800'
+              "
+            >
+              {{ values.is_system ? "System Role" : "Custom Role" }}
+            </span>
           </div>
+        </div>
 
-          <div class="md:col-span-2">
-            <label for="role-description" class="block text-sm font-medium text-gray-700 mb-2">{{ t('common.description') }}</label>
-            <textarea id="role-description" v-model="form.description" rows="4" :class="[
-              'block w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900 placeholder-gray-500 transition-all duration-200',
-              errors.description ? 'border-red-300 bg-red-50' : 'border-gray-300'
-            ]" :placeholder="t('roles.form.details_placeholder')" />
-            <p v-if="errors.description" class="mt-2 text-xs text-red-600 flex items-center">
-              <UIIconsExclamation2 class="h-4 w-4 mr-1 text-red-600" />
-              {{ errors.description }}
-            </p>
-          </div>
+        <div class="md:col-span-2">
+          <UIFormsTextarea
+            id="role-description"
+            v-model="values.description"
+            :label="t('common.description')"
+            :placeholder="t('roles.form.details_placeholder')"
+            :error="errors.description"
+            :rows=4
+          />
         </div>
       </div>
 
       <div class="border-t border-gray-200 pt-4">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h4 class="text-md font-medium text-gray-900">{{ t('common.permissions') }}</h4>
-            <p class="text-sm text-gray-600 mt-1">{{ t('roles.form.permissions_info') }}</p>
+            <h4 class="text-md font-medium text-gray-900">
+              {{ t("common.permissions") }}
+            </h4>
+            <p class="text-sm text-gray-600 mt-1">
+              {{ t("roles.form.permissions_info") }}
+            </p>
           </div>
-          <div class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700">
-            {{ form.permissions.length }} selected
+          <div
+            class="inline-flex items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700"
+          >
+            {{ values.permissions.length }} Selected
           </div>
         </div>
 
-        <div v-if="Object.keys(groupedPermissions).length === 0"
-          class="rounded-xl border border-dashed border-gray-300 px-4 py-10 text-center text-sm text-gray-500">
-          No permissions available.
+        <div
+          v-if="Object.keys(groupedPermissions).length === 0"
+          class="rounded-xl border border-dashed border-gray-300 px-4 py-10 text-center text-sm text-gray-500"
+        >
+          {{ t("roles.form.no_permissions") }}
         </div>
 
         <div v-else class="space-y-4">
-          <section v-for="(modulePermissions, module) in groupedPermissions" :key="module"
-            class="rounded-xl border border-gray-200 overflow-hidden">
-            <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
+          <section
+            v-for="(modulePermissions, module) in groupedPermissions"
+            :key="module"
+            class="rounded-xl border border-gray-200 overflow-hidden"
+          >
+            <div
+              class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3"
+            >
               <div>
-                <h4 class="text-sm font-semibold capitalize text-gray-900">{{ module }}</h4>
-                <p class="text-xs text-gray-500">{{ modulePermissions.length }} permissions</p>
+                <h4 class="text-sm font-semibold capitalize text-gray-900">
+                  {{ module }}
+                </h4>
+                <p class="text-xs text-gray-500">
+                  {{ modulePermissions.length }} {{ t("common.permissions") }}
+                </p>
               </div>
-              <button type="button"
+              <button
+                type="button"
                 class="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50"
-                @click="toggleModulePermissions(modulePermissions)">
-                {{ areAllModulePermissionsSelected(modulePermissions) ? 'Clear' : 'Select All' }}
+                @click="toggleModulePermissions(modulePermissions)"
+              >
+                {{
+                  areAllModulePermissionsSelected(modulePermissions)
+                    ? "Clear"
+                    : "Select"
+                }}
               </button>
             </div>
 
-            <div class="grid gap-3 p-4 md:grid-cols-2">
-              <label v-for="permission in modulePermissions" :key="permission.id"
-                class="flex items-start gap-3 rounded-xl border border-gray-200 p-3 transition hover:border-indigo-300 hover:bg-indigo-50/30">
-                <input v-model="form.permissions" :value="permission.id" type="checkbox"
-                  class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                <span>
-                  <span class="block text-sm font-medium text-gray-800">{{ permission.name }}</span>
-                  <span class="block text-xs text-gray-500">{{ permission.slug }}</span>
-                  <span v-if="permission.description" class="mt-1 block text-xs text-gray-500">
-                    {{ permission.description }}
-                  </span>
-                </span>
-              </label>
+            <div class="p-4">
+              <UIFormsCheckboxGroup
+                v-model="values.permissions"
+                :options="mapPermissionsToOptions(modulePermissions)"
+                :error="errors.permissions"
+              />
             </div>
           </section>
         </div>
-        <p v-if="errors.permissions" class="mt-3 text-xs text-red-600">{{ errors.permissions }}</p>
       </div>
 
+      <!-- Form actions -->
       <div class="border-t border-gray-200 pt-4 flex justify-end space-x-3">
-        <button type="button" @click="router.push('/roles')"
-          class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
-          {{ t('common.button.cancel') }}
-        </button>
-        <button type="submit" :disabled="isSubmitting || (isEditMode && form.is_system)"
-          class="bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-4 py-2 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 flex items-center">
-          <svg v-if="isSubmitting" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-            <path class="opacity-75" fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-          </svg>
-          {{ isEditMode ? t('common.button.update') : t('common.button.create') }}
-        </button>
+        <UIButton variant="secondary" size="sm" @click="router.push('/roles')">
+          {{ t("common.button.cancel") }}
+        </UIButton>
+        <UIButton
+          variant="primary"
+          size="sm"
+          type="submit"
+          :loading="isSubmitting"
+          :disabled="isEditMode && values.is_system"
+        >
+          {{
+            isEditMode ? t("common.button.update") : t("common.button.create")
+          }}
+        </UIButton>
       </div>
     </template>
   </form>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import type { Permission, Role } from '~/api/types/api.types'
-import { notification } from '~/utils/notification'
+import { computed, onMounted, ref } from "vue";
+import type { Permission, Role } from "~/api/types/api.types";
+import { notification } from "~/utils/notification";
+import { useFormValidation } from "~/composables/useFormValidation";
 
 const props = defineProps<{
-  roleId?: number
-}>()
+  roleId?: number;
+}>();
 
-const router = useRouter()
-const api = useApi()
-const { t } = useLocalization()
+const router = useRouter();
+const api = useApi();
+const { t } = useLocalization();
 
-const isEditMode = computed(() => Number.isFinite(props.roleId))
-const isSubmitting = ref(false)
-const loadingRole = ref(false)
-const loadingPermissions = ref(false)
-const permissions = ref<Permission[]>([])
+/**
+ * ====================================== VALIDATION SCHEMA ======================================
+ */
+const validationSchema = {
+  name: [
+    (v: string) => (v?.trim() ? true : t("validation.required")),
+    (v: string) => v?.length >= 2 || t("validation.min", { min: 2 }),
+    (v: string) => v?.length <= 255 || t("validation.max", { max: 255 }),
+    (v: string) =>
+      /^[a-zA-Z0-9\s]+$/.test(v) || t("validation.name.alphanumeric"),
+    (v: string) => !/^\d+$/.test(v) || t("validation.name.notOnlyNumbers"),
+    (v: string) => !/^[-_0-9]/.test(v) || t("validation.name.noLeadingSpecial"),
+    (v: string) =>
+      (!v.startsWith(" ") && !v.endsWith(" ")) ||
+      t("validation.name.noLeadingTrailingSpace"),
+    (v: string) =>
+      !v.includes("  ") || t("validation.name.noConsecutiveSpaces"),
+  ],
 
-const form = reactive({
-  name: '',
-  description: '',
-  level: 0,
-  is_system: false,
-  permissions: [] as number[],
-})
+  description: [
+    (v: string) => !v || v.length <= 500 || t("validation.max", { max: 500 }),
+  ],
+  permissions: [
+    (v: number[]) => !(isEditMode && values.is_system) || v.length >= 0,
+    (v: number[]) => v.length > 0 || t("validation.permissions.required"),
+  ],
+};
 
-const errors = reactive({
-  name: '',
-  description: '',
-  level: '',
-  permissions: '',
-})
+/**
+ * ====================================== FORM COMPOSABLE ======================================
+ */
+const { values, errors, isSubmitting, setValues, setApiErrors, handleSubmit } =
+  useFormValidation({
+    initialValues: {
+      name: "",
+      level: 0,
+      description: "",
+      is_system: false,
+      permissions: [] as number[],
+    },
+    validationSchema,
+    onSubmit: async (formData) => {
+      const payload = {
+        name: formData.name.trim(),
+        level: formData.level,
+        description: formData.description?.trim() || undefined,
+        permissions: formData.permissions,
+      };
 
+      const response = props.roleId
+        ? await api.role.updateRole(props.roleId, payload)
+        : await api.role.createRole(payload);
+
+      if (response.success) {
+        notification.success(
+          response.message ||
+            (props.roleId
+              ? t("roles.messages.updated")
+              : t("roles.messages.created")),
+        );
+        router.push("/roles");
+      } else if (response.errors) {
+        setApiErrors(response.errors);
+      }
+      return response;
+    },
+  });
+
+const isEditMode = computed(() => Number.isFinite(props.roleId));
+
+const loadingRole = ref(false);
+const loadingPermissions = ref(false);
+const permissions = ref<Permission[]>([]);
+
+/**
+ * ====================================== PERMISSIONS HELPERS ======================================
+ */
 const groupedPermissions = computed<Record<string, Permission[]>>(() => {
-  return permissions.value.reduce((groups, permission) => {
-    if (!groups[permission.module]) {
-      groups[permission.module] = []
-    }
+  return permissions.value.reduce(
+    (groups, permission) => {
+      const mod = permission.module || "general";
+      if (!groups[mod]) groups[mod] = [];
+      groups[mod].push(permission);
+      return groups;
+    },
+    {} as Record<string, Permission[]>,
+  );
+});
 
-    groups[permission.module].push(permission)
-    return groups
-  }, {} as Record<string, Permission[]>)
-})
-
-const applyRole = (role: Role) => {
-  form.name = role.name
-  form.description = role.description || ''
-  form.level = role.level
-  form.is_system = role.is_system
-  form.permissions = role.permissions?.map(permission => permission.id) || []
-}
-
-const clearErrors = () => {
-  errors.name = ''
-  errors.description = ''
-  errors.level = ''
-  errors.permissions = ''
-}
-
-const validateForm = () => {
-  clearErrors()
-
-  let isValid = true
-
-  if (!form.name.trim()) {
-    errors.name = 'Role name is required.'
-    isValid = false
-  }
-
-  if (!Number.isInteger(form.level) || form.level < 0 || form.level > 100) {
-    errors.level = 'Level must be between 0 and 100.'
-    isValid = false
-  }
-
-  return isValid
-}
-
-const mapApiErrors = (apiErrors?: Record<string, string[]>) => {
-  if (!apiErrors) {
-    return
-  }
-
-  errors.name = apiErrors.name?.[0] || ''
-  errors.description = apiErrors.description?.[0] || ''
-  errors.level = apiErrors.level?.[0] || ''
-  errors.permissions = apiErrors.permissions?.[0] || apiErrors['permissions.0']?.[0] || ''
-}
-
-const fetchPermissions = async () => {
-  loadingPermissions.value = true
-
-  try {
-    const response = await api.permission.getPermissions()
-
-    if (response.success && response.data) {
-      permissions.value = response.data
-      return
-    }
-
-    notification.error(response.message || 'Failed to fetch permissions')
-  } finally {
-    loadingPermissions.value = false
-  }
-}
-
-const fetchRole = async () => {
-  if (!isEditMode.value || !props.roleId) {
-    return
-  }
-
-  loadingRole.value = true
-
-  try {
-    const response = await api.role.getRoleById(props.roleId)
-
-    if (response.success && response.data) {
-      applyRole(response.data)
-      return
-    }
-
-    notification.error(response.message || 'Failed to fetch role')
-    router.push('/roles')
-  } finally {
-    loadingRole.value = false
-  }
-}
+const mapPermissionsToOptions = (perms: Permission[]) => {
+  return perms.map((p) => ({
+    value: p.id,
+    label: p.name,
+    description: p.description || p.slug,
+  }));
+};
 
 const areAllModulePermissionsSelected = (modulePermissions: Permission[]) => {
-  return modulePermissions.every(permission => form.permissions.includes(permission.id))
-}
+  return modulePermissions.every((p) => values.permissions.includes(p.id));
+};
 
 const toggleModulePermissions = (modulePermissions: Permission[]) => {
-  const ids = modulePermissions.map(permission => permission.id)
-
+  const ids = modulePermissions.map((p) => p.id);
   if (areAllModulePermissionsSelected(modulePermissions)) {
-    form.permissions = form.permissions.filter(id => !ids.includes(id))
-    return
+    values.permissions = values.permissions.filter((id) => !ids.includes(id));
+  } else {
+    values.permissions = Array.from(new Set([...values.permissions, ...ids]));
   }
+};
 
-  form.permissions = Array.from(new Set([...form.permissions, ...ids]))
-}
-
-const submitForm = async () => {
-  if (!validateForm()) {
-    return
-  }
-
-  isSubmitting.value = true
-  clearErrors()
-
+/**
+ * ====================================== FETCH DATA ======================================
+ */
+const fetchPermissions = async () => {
+  loadingPermissions.value = true;
   try {
-    const payload = {
-      name: form.name.trim(),
-      description: form.description.trim() || undefined,
-      level: form.level,
-      permissions: form.permissions,
+    const response = await api.permission.getPermissions({ limit: 100 });
+    if (response.success && response.data) {
+      permissions.value = response.data;
+    } else {
+      notification.error(
+        response.message || t("roles.errors.permissions_fetch"),
+      );
     }
-
-    const response = isEditMode.value && props.roleId
-      ? await api.role.updateRole(props.roleId, payload)
-      : await api.role.createRole(payload)
-
-    if (response.success) {
-      notification.success(response.message || (isEditMode.value ? 'Role updated successfully' : 'Role created successfully'))
-      router.push('/roles')
-      return
-    }
-
-    mapApiErrors(response.errors)
-    notification.error(response.message || 'Failed to save role')
   } finally {
-    isSubmitting.value = false
+    loadingPermissions.value = false;
   }
-}
+};
+
+const fetchRole = async () => {
+  if (!isEditMode.value || !props.roleId) return;
+  loadingRole.value = true;
+  try {
+    const response = await api.role.getRoleById(props.roleId);
+    if (response.success && response.data) {
+      const role = response.data;
+      setValues({
+        name: role.name,
+        level: role.level,
+        description: role.description || "",
+        is_system: role.is_system,
+        permissions: role.permissions?.map((p) => p.id) || [],
+      });
+    } else {
+      notification.error(response.message || t("roles.errors.fetch"));
+      router.push("/roles");
+    }
+  } finally {
+    loadingRole.value = false;
+  }
+};
 
 onMounted(async () => {
-  await Promise.all([fetchPermissions(), fetchRole()])
-})
+  await Promise.all([fetchPermissions(), fetchRole()]);
+});
 </script>
